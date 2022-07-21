@@ -1,0 +1,34 @@
+{
+    "name": "@quatico/magellan-java",
+    "description": "",
+    "version": "0.0.1",
+    "keywords": [
+        "typescript",
+        "java",
+        "compiler",
+        "addons"
+    ],
+    "author": "Quatico Solutions AG",
+    "files": [
+        "LICENSE",
+        "README.md"
+    ],
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "clean": "mvn clean",
+        "lint": "mvn process-sources -B -o",
+        "build": "mvn install -DskipTests -Dcheckstyle.skip -B",
+        "test": "mvn test -B -o -Dcheckstyle.skip",
+        "test:update": "mvn test -o -Dcheckstyle.skip",
+        "test:e2e": "mvn test -Pe2e -B -o -Dcheckstyle.skip",
+        "deploy": "mvn --batch-mode deploy",
+        "deploy:test": "mvn deploy -DaltDeploymentRepository=ossrh::default::file:./tmp-deploy",
+        "publish": "yarn deploy",
+        "publish-prerelease": "yarn deploy",
+        "install": "mvn dependency:tree"
+    },
+    "devDependencies": {
+        "@quatico/magellan-shared": "^0.0.1"
+    }
+}

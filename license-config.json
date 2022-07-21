@@ -1,0 +1,48 @@
+{
+    "license": "license-header.txt",
+    "licenseFormats": {
+        "ts|tsx|js|jsx|scss": {
+            "prepend": "/*",
+            "append": " */",
+            "eachLine": {
+                "prepend": " * "
+            }
+        },
+        "md|mdx": {
+            "prepend": "<!--",
+            "append": "-->",
+            "eachLine": {
+                "prepend": " "
+            }
+        },
+        "dotfile": {
+            "eachLine": {
+                "prepend": "# "
+            }
+        }
+    },
+    "trailingWhitespace": "TRIM",
+    "ignore": [
+        "**/*.!(ts|tsx|js|jsx|scss|spec.ts|test.ts|config.js|stories.js|stories.mdx|mdx|md|java)",
+        "**/__snapshots__",
+        ".git",
+        ".idea",
+        "**/.storybook",
+        ".vscode",
+        "**/coverage",
+        "**/lib",
+        "**/bin",
+        "**/node_modules",
+        "**/docs/catalogue",
+        "**/.editorconfig",
+        "**/.gitignore",
+        "**/.prettierrc",
+        "**/*.iml",
+        "yarn.lock",
+        "**/*.graffle",
+        "**/.gitkeep",
+        "**/.build",
+        "**/test-data",
+        "**/__data__"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "paths": {
+            "@quatico/magellan-shared": ["../shared/src"]
+        }
+    },
+    "exclude": ["node_modules", "coverage", "lib"],
+    "include": ["./**/*.*"]
+}

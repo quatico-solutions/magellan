@@ -1,0 +1,56 @@
+{
+    "name": "@quatico/magellan-test",
+    "description": "End to end tests for magellan suite",
+    "version": "0.5.1",
+    "author": "Quatico Solutions AG",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "license": "SEE LICENSE IN LICENSE",
+    "private": true,
+    "files": [
+        "LICENSE",
+        "README.md",
+        "lib"
+    ],
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org"
+    },
+    "scripts": {
+        "clean": "rimraf lib coverage output",
+        "lint": "eslint \"{src,test}/**/*.ts\" --fix --color",
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "test:update-snapshots": "yarn test -u",
+        "test:watch": "jest --color --watch",
+        "test:e2e": "./node_modules/.bin/cucumber-js --config ./cucumber-config.js"
+    },
+    "devDependencies": {
+        "@types/node": "16",
+        "@typescript-eslint/eslint-plugin": "^4.18.0",
+        "@typescript-eslint/parser": "^4.18.0",
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-flowtype": "^5.4.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jest": "^24.3.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-testing-library": "^3.9.2",
+        "memfs": "^3.4.0",
+        "prettier": "^2.4.1",
+        "rimraf": "^3.0.2"
+    },
+    "dependencies": {
+        "@cucumber/cucumber": "8.4.0",
+        "@quatico/magellan-cli": "^0.0.1",
+        "@quatico/magellan-server": "^0.0.1",
+        "@quatico/magellan-client": "^0.0.1",
+        "@types/node": "16",
+        "tslib": "^2.3.1",
+        "typescript": "~4.7.4"
+    },
+    "engines": {
+        "node": ">=16.x",
+        "yarn": ">=1.20.x"
+    }
+}

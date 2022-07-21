@@ -1,0 +1,69 @@
+# This workflow will run the distribution steps using node when a pull request is created or updated
+# For more information see: https://docs.github.com/en/actions/using-workflows/about-workflows
+
+name: PR Continuous Integration
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [develop]
+
+jobs:
+  dist:
+    name: Continuous integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" 
+          cache: "yarn"
+          cache-dependency-path: yarn.lock
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+            cache-name: cache-node-modules
+        with:
+            path: |
+                node_modules
+                packages/addons/node_modules
+                packages/cli/node_modules
+                packages/client/node_modules
+                packages/server/node_modules
+                packages/shared/node_modules
+                packages/test/node_modules
+            key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+            restore-keys: |
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
+
+      - name: Install YARN dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Set up JDK 
+        uses: actions/setup-java@v3
+        with:
+          cache: maven
+          java-version: "8.0.332+9"
+          distribution: "temurin"
+
+      - name: Install MAVEN dependencies
+        run: mvn dependency:resolve -B -U
+
+      - name: lint
+        run: yarn lint
+
+      - name: test
+        run: yarn test
+
+      - name: build
+        run: yarn build
+
+      - name: E2E tests
+        run: yarn test:e2e

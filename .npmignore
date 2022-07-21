@@ -1,0 +1,5 @@
+**/*.spec.js.map
+**/*.spec.js
+**/*.spec.d.ts.map
+**/*.spec.d.ts
+license-config.json

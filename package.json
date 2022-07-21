@@ -1,0 +1,73 @@
+{
+    "name": "@quatico/magellan",
+    "description": "",
+    "version": "0.0.1",
+    "keywords": [
+        "typescript",
+        "java",
+        "compiler",
+        "addons"
+    ],
+    "private": true,
+    "author": "Quatico Solutions AG",
+    "license": "MIT",
+    "files": [
+        "LICENSE",
+        "README.md"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/quatico-solutions/magellan.git"
+    },
+    "bugs": {
+        "url": "https://github.com/quatico-solutions/magellan/issues"
+    },
+    "homepage": "https://github.com/quatico-solutions/magellan#readme",
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ]
+    },
+    "scripts": {
+        "clean": "lerna run --parallel --stream clean",
+        "lint": "lerna run --parallel --stream lint",
+        "build": "lerna run --stream build && lerna link",
+        "watch": "lerna run --stream --parallel watch",
+        "test": "lerna run --stream test",
+        "test:ci": "yarn jest --verbose && yarn --cwd packages/java test",
+        "test:watch": "lerna run --stream --parallel test:watch",
+        "test:update": "lerna run --parallel test:update",
+        "test:e2e": "lerna run --parallel test:e2e",
+        "dist": "yarn clean && yarn lint && yarn test && cross-env-shell NODE_ENV=production \"yarn build\" && yarn test:e2e",
+        "publish": "yarn dist && lerna run --stream --parallel publish",
+        "publish-prerelease": "yarn dist && lerna run --stream --parallel publish-prerelease",
+        "license:check": "license-check-and-add check -f license-config.json",
+        "license:add": "license-check-and-add add -f license-config.json",
+        "license:remove": "license-check-and-add remove -f license-config.json"
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.3",
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-flowtype": "^5.4.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jest": "^24.3.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-testing-library": "^3.9.2",
+        "husky": "^8.0.0",
+        "lerna": "5.1.8",
+        "license-check-and-add": "^4.0.5",
+        "lint-staged": "^13.0.3",
+        "memfs": "^3.4.0",
+        "nx": "14.4.3",
+        "prettier": "1.19.1",
+        "regenerator-runtime": "0.13.7",
+        "rimraf": "3.0.2",
+        "typescript": "~4.7.4"
+    },
+    "engines": {
+        "node": ">=16.x",
+        "yarn": ">=1.22.x"
+    }
+}

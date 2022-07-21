@@ -1,0 +1,71 @@
+{
+    "name": "@quatico/magellan-cli",
+    "description": "CLI for the Magellan project",
+    "version": "0.0.1",
+    "author": "Quatico Solutions AG",
+    "license": "SEE LICENSE IN LICENSE",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "files": [
+        "LICENSE",
+        "README.md",
+        "lib",
+        "bin"
+    ],
+    "bin": {
+        "magellan": "./bin/magellan.js"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org"
+    },
+    "scripts": {
+        "clean": "rimraf lib bin coverage",
+        "lint": "eslint \"{src,test}/**/*.{js,ts,tsx}\" --fix --color",
+        "build": "tsc && yarn bundle",
+        "watch": "tsc --watch",
+        "bundle": "esbuild src/cli.ts --bundle  --outfile=bin/magellan.js --target=node16 --platform=node --minify --tree-shaking=true --external:typescript",
+        "dev:compile": "ts-node src/index.ts compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
+        "dev:serve": "ts-node src/index.ts serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
+        "test": "jest --color --verbose --coverage",
+        "test:watch": "jest --color --watch",
+        "test:update-snapshots": "yarn test -u",
+        "prepublishOnly": "yarn dist",
+        "publish-npm": "npm publish --access public",
+        "pre-commit": "yarn clean && yarn build",
+        "link:packages": "yarn link \"@quatico/websmith-cli\" \"@quatico/websmith-compiler\"",
+        "unlink:packages": "yarn unlink \"@quatico/websmith-cli\" \"@quatico/websmith-compiler\""
+    },
+    "dependencies": {
+        "@quatico/magellan-client": "^0.0.1",
+        "@quatico/magellan-server": "^0.0.1",
+        "@quatico/websmith-api": "^0.2.2",
+        "@quatico/websmith-cli": "^0.2.2",
+        "@quatico/websmith-compiler": "^0.2.2",
+        "commander": "^8.3.0",
+        "ts-node": "10.7.0"
+    },
+    "devDependencies": {
+        "@types/jest": "^27.0.2",
+        "@types/node": "16",
+        "@typescript-eslint/eslint-plugin": "^4.18.0",
+        "@typescript-eslint/parser": "^4.18.0",
+        "esbuild": "^0.13.15",
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-flowtype": "^5.4.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jest": "^24.3.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-testing-library": "^3.9.2",
+        "jest": "^27.3.1",
+        "minimist": "1.2.6",
+        "prettier": "^2.4.1",
+        "rimraf": "^3.0.2",
+        "typescript": "~4.7.4"
+    },
+    "engines": {
+        "node": ">=16.x",
+        "yarn": ">=1.20.x"
+    }
+}

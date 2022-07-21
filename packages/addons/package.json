@@ -1,0 +1,57 @@
+{
+    "name": "@quatico/magellan-addons",
+    "version": "0.0.1",
+    "description": "A example library for the websmith compiler",
+    "author": "Quatico Solutions AG",
+    "license": "SEE LICENSE IN LICENSE",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "files": [
+        "LICENSE",
+        "README.md",
+        "lib"
+    ],
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org"
+    },
+    "scripts": {
+        "clean": "rimraf lib dist bin coverage output.yaml",
+        "lint": "eslint \"{src,test,addons}/**/*.ts\" --fix --color",
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "test": "jest --verbose --coverage --color",
+        "test:update-snapshots": "yarn test -u",
+        "test:watch": "jest --watch",
+        "prepublishOnly": "yarn dist",
+        "publish-npm": "npm publish --access public"
+    },
+    "devDependencies": {
+        "@types/jest": "^27.4.1",
+        "@types/node": "16",
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
+        "@typescript-eslint/parser": "^5.17.0",
+        "cross-env": "7.0.3",
+        "eslint": "^8.12.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jest": "^26.1.3",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-testing-library": "^5.2.0",
+        "husky": "7.0.4",
+        "jest": "27.5.1",
+        "prettier": "^2.6.2",
+        "rimraf": "3.0.2",
+        "ts-jest": "27.1.4"
+    },
+    "dependencies": {
+        "@quatico/magellan-client": "^0.0.1",
+        "@quatico/magellan-server": "^0.0.1",
+        "@quatico/websmith-api": "^0.2.2",
+        "typescript": "^4.6.3"
+    },
+    "engines": {
+        "node": ">=16.x",
+        "yarn": ">=1.20.x"
+    }
+}

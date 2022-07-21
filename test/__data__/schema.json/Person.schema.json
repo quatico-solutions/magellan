@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2019-09/schema","type":"object","properties":{"address":{"type":"object","properties":{"city":{"type":"string"},"street":{"type":"string"},"zip":{"type":"string"}}},"age":{"type":"integer"},"children":{"type":"array","items":{"$ref":"#"}},"height":{"type":"number"},"name":{"type":"string"},"surname":{"type":"string"}}}

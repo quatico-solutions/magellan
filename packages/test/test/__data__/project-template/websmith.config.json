@@ -1,0 +1,30 @@
+{
+    "addonsDir": "../../../addons/lib",
+    "targets": {
+        "client": {
+            "writeFile": true,
+            "addons": [
+                "client-function-transform"
+            ],
+            "config": {
+                "functionsDir": "./src/functions"
+            },
+            "options": {
+                "outDir": "./lib/client"
+            }
+        },
+        "server": {
+            "writeFile": true,
+            "addons": [
+                "service-function-generate"
+            ],
+            "config": {
+                "functionsDir": "./src/functions"
+            },
+            "options": {
+                "outDir": "./lib/server",
+                "module": 1
+            }
+        }
+    }
+}

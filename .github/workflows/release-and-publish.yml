@@ -1,0 +1,86 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Create release and publish npm package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node for NPMJS Deployment
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" 
+          cache: "yarn"
+          cache-dependency-path: yarn.lock
+          registry-url: https://registry.npmjs.org/
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+            cache-name: cache-node-modules
+        with:
+            path: |
+                node_modules
+                packages/addons/node_modules
+                packages/cli/node_modules
+                packages/client/node_modules
+                packages/server/node_modules
+                packages/shared/node_modules
+                packages/test/node_modules
+            key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+            restore-keys: |
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
+
+      - name: Install YARN dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: Set up JDK for Maven Deployment 
+        uses: actions/setup-java@v3
+        with:
+          cache: maven
+          java-version: "8.0.332+9"
+          distribution: "temurin"
+          server-id: "ossrh" 
+          server-username: ${{ secrets.MAVEN_USERNAME }}
+          server-password: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Install MAVEN dependencies
+        run: mvn dependency:resolve -B -U
+
+      - name: lint
+        run: yarn lint
+
+      - name: test
+        run: yarn test
+
+      - name: build
+        run: yarn build
+
+      - name: E2E tests
+        run: yarn test:e2e
+
+      - name: create release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: release.md
+        env:
+          # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: publish
+        run: yarn publish-pkg
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
