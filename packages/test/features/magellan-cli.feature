@@ -1,6 +1,5 @@
 Feature: Magellan CLI commands
 
-    QUAWEBPLF-1485
     Developers can use various magellan features from command line.
 
     @skip
@@ -18,7 +17,7 @@ Feature: Magellan CLI commands
         And directory "lib/server" contains file "foobar.d.ts"
 
     Scenario: Compile command is called with valid pure function project configuration
-    Folder hierarchy are automatically collapsed by TSC if no hierarchy is represented in the import hierarchy yielding a different output structure.
+    Folder hierarchies are automatically collapsed by TSC if no hierarchy is represented in the import hierarchy yielding a different output structure.
         Given valid TypeScript project directory was created
         And directory "./src/functions" was created
         And valid FaaS module file "foobar.ts" was created
