@@ -6,14 +6,14 @@
  */
 
 /* eslint-disable no-var */
-import {Configuration} from "./Configuration";
-import {getDefaultConfiguration} from "./default-configuration";
+import { Configuration } from "./Configuration";
+import { getDefaultConfiguration } from "./default-configuration";
 
 declare global {
     var __qsMagellanServerConfig__: Configuration;
 }
 
-export const initProjectConfiguration = (projectConfiguration: Configuration): Configuration => {
+export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
     return setConfiguration(expandConfig(projectConfiguration));
 };
 
@@ -25,9 +25,9 @@ export const setConfiguration = (config: Configuration): Configuration => {
     return (global.__qsMagellanServerConfig__ = config);
 };
 
-const expandConfig = (configuration: Configuration | undefined): Configuration => {
+const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
     return {
         ...getDefaultConfiguration(),
-        ...configuration
+        ...configuration,
     };
 };

@@ -6,8 +6,32 @@
  */
 
 import { deserialize, serialize } from "@quatico/magellan-shared";
+import type { Configuration, Context, NamespaceMapping, TransportHandler } from "./configuration";
+import {
+    addNamespace,
+    addNamespaceIfAbsent,
+    addTransport,
+    addTransportIfAbsent,
+    initProjectConfiguration,
+    resolveNamespace,
+    setNamespace,
+    setTransport,
+} from "./configuration";
 import { remoteInvoke } from "./remote-invoke";
+import { Sdk } from "./sdk";
 
-export { addNamespace, addTransport, initProjectConfiguration, resolveNamespace } from "./configuration";
-export type { Configuration, Context, NamespaceMapping, TransportHandler } from "./configuration";
-export { deserialize, remoteInvoke, serialize };
+export {
+    addNamespace,
+    addNamespaceIfAbsent,
+    addTransport,
+    addTransportIfAbsent,
+    deserialize,
+    initProjectConfiguration,
+    remoteInvoke,
+    resolveNamespace,
+    Sdk,
+    serialize,
+    setNamespace,
+    setTransport,
+};
+export type { Configuration, Context, NamespaceMapping, TransportHandler };

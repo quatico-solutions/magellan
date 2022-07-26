@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-export type {TransportHandler, NamespaceMapping, Configuration} from "./Configuration";
-export {getConfiguration, initProjectConfiguration} from "./configuration-repository";
-export type {ResolvedNamespace} from "./ResolvedNamespace";
-export type {Context} from "./Context";
-export { addNamespace, addTransport, resolveNamespace } from "./namespace";
+export type { Configuration, NamespaceMapping, TransportHandler } from "./Configuration";
+export { getConfiguration, initProjectConfiguration } from "./configuration-repository";
+export type { Context } from "./Context";
+export { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, resolveNamespace, setNamespace, setTransport } from "./namespace";
+export type { ResolvedNamespace } from "./ResolvedNamespace";
