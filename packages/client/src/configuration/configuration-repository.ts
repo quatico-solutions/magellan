@@ -13,7 +13,7 @@ declare global {
     var __qsMagellanConfig__: Configuration;
 }
 
-export const initProjectConfiguration = (projectConfiguration: Configuration): Configuration => {
+export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
     return persistConfig(expandConfig(projectConfiguration));
 };
 
@@ -21,7 +21,7 @@ export const getConfiguration = (): Configuration => {
     return global.__qsMagellanConfig__ ?? persistConfig(expandConfig(getDefaultConfiguration()));
 };
 
-const expandConfig = (configuration: Configuration | undefined): Configuration => {
+const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
     return {
         ...getDefaultConfiguration(),
         ...configuration,
