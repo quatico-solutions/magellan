@@ -41,7 +41,7 @@
         "dist": "yarn clean && yarn lint && yarn test && cross-env-shell NODE_ENV=production \"yarn build\" && yarn test:e2e",
         "prepare-release": "yarn dist && yarn lerna version --force-publish",
         "prepare-prerelease": "yarn dist && yarn lerna version prerelease -y --force-publish",
-        "publish-pkg": "lerna run --stream publish-pkg",
+        "publish-npm": "lerna run --stream publish-npm",
         "license:check": "license-check-and-add check -f license-config.json",
         "license:add": "license-check-and-add add -f license-config.json",
         "license:remove": "license-check-and-add remove -f license-config.json"

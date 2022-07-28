@@ -29,7 +29,7 @@
         "test": "jest --color --verbose --coverage",
         "test:watch": "jest --color --watch",
         "test:update-snapshots": "yarn test -u",
-        "publish-pkg": "npm publish --access public"
+        "publish-npm": "npm publish --access public"
     },
     "dependencies": {
         "@quatico/magellan-client": "^0.1.0",

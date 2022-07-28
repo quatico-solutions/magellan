@@ -78,9 +78,14 @@ jobs:
           # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: publish
-        run: yarn publish-pkg
+
+      - name: publish MVN
+        run: mvn --batch-mode deploy
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: publish
+        run: yarn publish-npm
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
