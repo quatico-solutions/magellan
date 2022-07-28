@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.quatico.magellan</groupId>
         <artifactId>ci-root</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.quatico.magellan</groupId>
     <artifactId>oss-root</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 	<name>${project.organization.name} :: Magellan OSS</name>
     <description>The magellan core project</description>
     <url>https://github.com/quatico-solutions/magellan</url>
