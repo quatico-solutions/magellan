@@ -22,7 +22,7 @@
         "test": "mvn test -B -o -Dcheckstyle.skip",
         "test:update": "mvn test -o -Dcheckstyle.skip",
         "test:e2e": "mvn test -Pe2e -B -o -Dcheckstyle.skip",
-        "publish-pkg": "mvn --batch-mode deploy",
+        "publish-pkg": "mvn deploy -B",
         "publish-pkg:test": "mvn deploy -DaltDeploymentRepository=ossrh::default::file:./tmp-deploy",
         "install": "mvn dependency:tree"
     },
