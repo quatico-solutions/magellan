@@ -39,8 +39,8 @@
         "test:update": "lerna run --parallel test:update",
         "test:e2e": "lerna run --parallel test:e2e",
         "dist": "yarn clean && yarn lint && yarn test && cross-env-shell NODE_ENV=production \"yarn build\" && yarn test:e2e",
-        "publish": "yarn dist && lerna run --stream --parallel publish",
-        "publish-prerelease": "yarn dist && lerna run --stream --parallel publish-prerelease",
+        "prepare-release": "yarn dist && yarn lerna version",
+        "prepare-prerelease": "yarn dist && yarn lerna version prerelease",
         "license:check": "license-check-and-add check -f license-config.json",
         "license:add": "license-check-and-add add -f license-config.json",
         "license:remove": "license-check-and-add remove -f license-config.json"

@@ -24,8 +24,6 @@
         "test:e2e": "mvn test -Pe2e -B -o -Dcheckstyle.skip",
         "deploy": "mvn --batch-mode deploy",
         "deploy:test": "mvn deploy -DaltDeploymentRepository=ossrh::default::file:./tmp-deploy",
-        "publish": "yarn deploy",
-        "publish-prerelease": "yarn deploy",
         "install": "mvn dependency:tree"
     },
     "devDependencies": {
