@@ -4,9 +4,9 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import {transportRequest} from "../transport";
-import {ServerFunction} from "./ServerFunction";
-import type {RemoteFunction} from "@quatico/magellan-shared";
+import type { RemoteFunction } from "@quatico/magellan-shared";
+import { transportRequest } from "../transport";
+import { ServerFunction } from "./ServerFunction";
 
 export class FunctionService {
     constructor(private transport = transportRequest, private functions: Map<string, ServerFunction> = new Map()) {}
@@ -23,8 +23,16 @@ export class FunctionService {
         return this;
     }
 
-    public invokeFunction<O>({name, data, namespace = "default"}: RemoteFunction): Promise<O> {
+    public invokeFunction<O>({ name, data, namespace = "default" }: RemoteFunction): Promise<O> {
         const func = this.functions.get(name);
-        return func ? func(data) : this.transport({name, data, namespace});
+        return func ? func(data) : this.transport({ name, data, namespace });
     }
 }
+
+// TODO: Move type declaration to global.d.ts
+declare global {
+    // eslint-disable-next-line no-var
+    var functionService: FunctionService;
+}
+
+export const getFunctionService = () => global.functionService ?? (global.functionService = new FunctionService());

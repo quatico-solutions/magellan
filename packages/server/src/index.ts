@@ -4,19 +4,21 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { Configuration, Context, NamespaceMapping, TransportHandler } from "./configuration";
+import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
+import type { Configuration, Context } from "./configuration";
 import {
     addNamespace,
     addNamespaceIfAbsent,
     addTransport,
     addTransportIfAbsent,
+    applyExecutionContext,
     initProjectConfiguration,
     resolveNamespace,
     setNamespace,
     setTransport,
 } from "./configuration";
 import { serve, ServerOptions } from "./server";
-import { externalFunctionInvoke } from "./services";
+import { externalFunctionInvoke, getFunctionService } from "./services";
 
 export type { ServerOptions, Configuration, Context, NamespaceMapping, TransportHandler };
 export {
@@ -24,7 +26,9 @@ export {
     addNamespaceIfAbsent,
     addTransport,
     addTransportIfAbsent,
+    applyExecutionContext,
     externalFunctionInvoke,
+    getFunctionService,
     initProjectConfiguration,
     resolveNamespace,
     serve,

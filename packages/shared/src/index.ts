@@ -5,24 +5,28 @@
  * ---------------------------------------------------------------------------------------------
  */
 
+import { ExecutionContext } from "./context";
 import { deserialize, unpackObject, unpackPayload } from "./deserialize";
 import { packInput, packObject, serialize } from "./serialize";
-import type { RemoteFunction, RequestPayload, ResponsePayload, Serialization, TransportFunction } from "./transport";
-import { assert } from "./utils";
-
-export type {
+import type {
+    NamespaceMapping,
     RemoteFunction,
     RequestPayload,
     ResponsePayload,
     Serialization,
-    TransportFunction
+    TransportFunction,
+    TransportHandler,
+} from "./transport";
+import { assert } from "./utils";
+
+export type {
+    ExecutionContext,
+    NamespaceMapping,
+    RemoteFunction,
+    RequestPayload,
+    ResponsePayload,
+    Serialization,
+    TransportFunction,
+    TransportHandler,
 };
-export {
-    assert,
-    deserialize,
-    packInput,
-    packObject,
-    serialize,
-    unpackObject,
-    unpackPayload
-};
+export { assert, deserialize, packInput, packObject, serialize, unpackObject, unpackPayload };

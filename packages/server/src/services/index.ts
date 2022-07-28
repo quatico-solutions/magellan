@@ -5,8 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { externalFunctionInvoke } from "./external-invocation";
-import { FunctionService } from "./FunctionService";
+import { FunctionService, getFunctionService } from "./FunctionService";
 import { ServerFunction } from "./ServerFunction";
 
-export { FunctionService, externalFunctionInvoke };
+export { FunctionService, externalFunctionInvoke, getFunctionService };
 export type { ServerFunction };
