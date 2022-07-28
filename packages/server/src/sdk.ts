@@ -5,33 +5,28 @@
  * ---------------------------------------------------------------------------------------------
  */
 
+import type { ExecutionContext, NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import {
     addNamespace,
     addNamespaceIfAbsent,
     addTransport,
     addTransportIfAbsent,
-    NamespaceMapping,
+    applyExecutionContext,
     setNamespace,
     setTransport,
-    TransportHandler,
 } from "./configuration";
-import { FunctionService, ServerFunction } from "./services";
-
-// TODO: Move type declaration to global.d.ts
-declare global {
-    // eslint-disable-next-line no-var
-    var functionService: FunctionService;
-}
-
-if (!global.functionService) {
-    global.functionService = new FunctionService();
-}
+import { FunctionService, getFunctionService, ServerFunction } from "./services";
 
 export class Sdk {
-    constructor(private service: FunctionService = global.functionService) {}
+    constructor(private service: FunctionService = getFunctionService()) {}
 
     public registerFunction<I, O>(name: string, fn: ServerFunction<I, O>): this {
         this.service.registerFunction(name, fn);
+        return this;
+    }
+
+    public applyExecutionContext(context: Partial<ExecutionContext>): this {
+        applyExecutionContext(context);
         return this;
     }
 

@@ -4,8 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type {TransportFunction} from "@quatico/magellan-shared";
-import {Context} from "./Context";
+import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 
 export type Configuration = {
     namespaces: Record<string, NamespaceMapping>;
@@ -13,16 +12,7 @@ export type Configuration = {
     serverConfig?: ServerConfig;
 };
 
-export type TransportHandler = {
-    (func: TransportFunction, ctx: Context): Promise<string>;
-};
-
-export type NamespaceMapping = {
-    endpoint: string;
-    transport?: string;
-};
-
 export type ServerConfig = {
     url: string;
     port: number;
-}
+};

@@ -4,14 +4,14 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import {TransportFunction} from "@quatico/magellan-shared";
-import fetch, {Headers} from "node-fetch";
+import type { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
 import FormData from "form-data";
-import type {Context, TransportHandler} from "../configuration";
-import {getConfiguration} from "../configuration";
+import fetch, { Headers } from "node-fetch";
+import type { Context } from "../configuration";
+import { getConfiguration } from "../configuration";
 
 export const formdataFetch: TransportHandler = async (func: TransportFunction, ctx: Context): Promise<string> => {
-    const {name, payload, namespace, endpoint} = func;
+    const { name, payload, namespace, endpoint } = func;
 
     if (!name) {
         throw new Error('Cannot invoke remote function without "name" property.');
@@ -19,9 +19,9 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
 
     try {
         const response = await fetch(completeEndpoint(endpoint), {
-            method : "POST",
-            body   : createFormData({name, payload, namespace}),
-            headers: createHeaders({headers: ctx.headers})
+            method: "POST",
+            body: createFormData({ name, payload, namespace }),
+            headers: createHeaders({ headers: ctx.headers }),
         });
         return await response.text();
     } catch (err) {
@@ -33,12 +33,12 @@ export const completeEndpoint = (endpoint: string) => {
     return endpoint.startsWith("/") ? getHostpath(endpoint) : endpoint;
 };
 
-export const createHeaders = ({headers}: { headers: Headers } = {headers: new Headers()}) => {
+export const createHeaders = ({ headers }: { headers: Headers } = { headers: new Headers() }) => {
     headers.set("Accept", "application/json");
     return headers;
 };
 
-export const createFormData = ({name, payload, namespace}: { name: string; payload: string; namespace: string }): FormData => {
+export const createFormData = ({ name, payload, namespace }: { name: string; payload: string; namespace: string }): FormData => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("data", payload);
@@ -47,6 +47,6 @@ export const createFormData = ({name, payload, namespace}: { name: string; paylo
 };
 
 const getHostpath = (path: string): string => {
-    const config = getConfiguration().serverConfig ?? {url: "http://localhost", port: 3000};
+    const config = getConfiguration().serverConfig ?? { url: "http://localhost", port: 3000 };
     return `${config.url}:${config.port}/${path}`;
 };

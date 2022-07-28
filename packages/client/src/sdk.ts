@@ -5,26 +5,20 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import {
-    addNamespace,
-    addNamespaceIfAbsent,
-    addTransport,
-    addTransportIfAbsent,
-    NamespaceMapping,
-    setNamespace,
-    setTransport,
-    TransportHandler,
-} from "./configuration";
+import { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
+import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, setNamespace, setTransport } from "./configuration";
 
 export class Sdk {
     public addNamespace(name: string, mapping: NamespaceMapping): this | never {
         addNamespace(name, mapping);
         return this;
     }
+
     public addNamespaceIfAbsent(name: string, mapping: NamespaceMapping): this {
         addNamespaceIfAbsent(name, mapping);
         return this;
     }
+
     public setNamespace(name: string, mapping: NamespaceMapping): this {
         setNamespace(name, mapping);
         return this;

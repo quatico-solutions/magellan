@@ -4,9 +4,9 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { assert } from "@quatico/magellan-shared";
 import { formdataFetch } from "../transport";
-import type { NamespaceMapping, TransportHandler } from "./Configuration";
 import { getConfiguration } from "./configuration-repository";
 import { ResolvedNamespace } from "./ResolvedNamespace";
 

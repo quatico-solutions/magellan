@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { Context, TransportHandler } from "../configuration";
-import { TransportFunction } from "@quatico/magellan-shared";
+import { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
+import { Context } from "../configuration";
 
 export const formdataFetch: TransportHandler = async (func: TransportFunction, ctx: Context): Promise<string> => {
     const { name, payload, namespace, endpoint } = func;

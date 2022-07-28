@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { TransportHandler } from "./Configuration";
+import { TransportHandler } from "@quatico/magellan-shared";
 
 export type ResolvedNamespace = {
     name: string;
