@@ -63,7 +63,7 @@ jobs:
         run: yarn lint
 
       - name: test
-        run: yarn test
+        run: yarn test:ci
 
       - name: build
         run: yarn build
@@ -82,3 +82,5 @@ jobs:
         run: yarn publish-pkg
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
