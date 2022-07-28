@@ -74,8 +74,6 @@ jobs:
       - name: create release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
-        with:
-          body_path: release.md
         env:
           # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

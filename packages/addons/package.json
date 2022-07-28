@@ -22,8 +22,7 @@
         "test": "jest --verbose --coverage --color",
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --watch",
-        "prepublishOnly": "yarn dist",
-        "publish-npm": "npm publish --access public"
+        "publish-pkg": "npm publish --access public"
     },
     "devDependencies": {
         "@types/jest": "^27.4.1",

@@ -22,9 +22,7 @@
         "test": "jest --color --verbose --coverage",
         "test:watch": "jest --color --watch",
         "test:update-snapshots": "yarn test -u",
-        "prepublishOnly": "yarn dist",
-        "publish-npm": "npm publish --access public",
-        "pre-commit": "yarn clean && yarn build"
+        "publish-pkg": "npm publish --access public"
     },
     "dependencies": {
         "@quatico/magellan-shared": "^0.0.1"
