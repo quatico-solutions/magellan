@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-java",
     "description": "",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "keywords": [
         "typescript",
         "java",
@@ -22,11 +22,10 @@
         "test": "mvn test -B -o -Dcheckstyle.skip",
         "test:update": "mvn test -o -Dcheckstyle.skip",
         "test:e2e": "mvn test -Pe2e -B -o -Dcheckstyle.skip",
-        "deploy": "mvn --batch-mode deploy",
         "deploy:test": "mvn deploy -DaltDeploymentRepository=ossrh::default::file:./tmp-deploy",
         "install": "mvn dependency:tree"
     },
     "devDependencies": {
-        "@quatico/magellan-shared": "^0.0.1"
+        "@quatico/magellan-shared": "^0.1.0"
     }
 }

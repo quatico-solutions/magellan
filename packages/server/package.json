@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "author": "Quatico Solutions AG",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -23,12 +23,10 @@
         "test": "jest --color --verbose --coverage",
         "test:watch": "jest --color --watch",
         "test:update-snapshots": "yarn test -u",
-        "prepublishOnly": "yarn dist",
-        "publish-npm": "npm publish --access public",
-        "pre-commit": "yarn clean && yarn build"
+        "publish-npm": "npm publish --access public"
     },
     "dependencies": {
-        "@quatico/magellan-shared": "^0.0.1",
+        "@quatico/magellan-shared": "^0.1.0",
         "ajv": "8.9.0",
         "cookie-parser": "~1.4.4",
         "cors": "2.8.5",

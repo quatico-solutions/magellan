@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.quatico.magellan</groupId>
     <artifactId>ci-root</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.1</version>
 	<name>${project.organization.name} :: Magellan CI root</name>
     <description>Maven pipeline test package</description>
     <url>https://dreamora.ch</url>
