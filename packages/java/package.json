@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-java",
     "description": "",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "keywords": [
         "typescript",
         "java",
@@ -26,6 +26,6 @@
         "install": "mvn dependency:tree"
     },
     "devDependencies": {
-        "@quatico/magellan-shared": "^0.1.0"
+        "@quatico/magellan-shared": "^0.1.2"
     }
 }
