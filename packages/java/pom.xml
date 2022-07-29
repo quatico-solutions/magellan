@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.quatico.magellan</groupId>
-        <artifactId>ci-root</artifactId>
-        <version>0.1.1</version>
+        <artifactId>magellan-oss-ci-root</artifactId>
+        <version>0.1.2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>com.quatico.magellan</groupId>
-    <artifactId>oss-root</artifactId>
-    <version>0.1.1</version>
-	<name>${project.organization.name} :: Magellan OSS</name>
+    <artifactId>magellan-oss-deps</artifactId>
+    <version>0.1.2</version>
+	<name>${project.organization.name} :: Magellan OSS Dependencies</name>
     <description>The magellan core project</description>
     <url>https://github.com/quatico-solutions/magellan</url>
     <packaging>pom</packaging>
@@ -70,6 +70,11 @@
         <pluginManagement>
             <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>1.2.2</version>
+                </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.1.0</version>
