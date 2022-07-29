@@ -74,15 +74,8 @@ jobs:
       - name: E2E tests
         run: yarn test:e2e
 
-      - name: create release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: publish maven packages
-        run: mvn --batch-mode deploy
+        run: mvn --batch-mode deploy -Prelease
         env:
           MVN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MVN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
@@ -91,3 +84,10 @@ jobs:
         run: yarn publish-npm
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: create release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

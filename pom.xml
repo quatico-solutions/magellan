@@ -3,9 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.quatico.magellan</groupId>
-    <artifactId>ci-root</artifactId>
-    <version>0.1.1</version>
-	<name>${project.organization.name} :: Magellan CI root</name>
+    <artifactId>magellan-oss-ci-root</artifactId>
+    <version>0.1.2</version>
+	<name>${project.organization.name} :: Magellan OSS CI root</name>
     <description>Maven pipeline test package</description>
     <url>https://dreamora.ch</url>
     <packaging>pom</packaging>
