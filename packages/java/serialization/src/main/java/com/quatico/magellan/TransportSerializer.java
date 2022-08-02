@@ -7,33 +7,48 @@
 package com.quatico.magellan;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-
 import com.quatico.magellan.serialization.DateAdapterFactory;
+import com.quatico.magellan.serialization.LocalDateAdapter;
+import com.quatico.magellan.serialization.LocalDateTimeAdapter;
 import com.quatico.magellan.serialization.MapAdapterFactory;
 import com.quatico.magellan.serialization.SetAdapterFactory;
 import com.quatico.magellan.serialization.UtcDateAdapter;
 
 
 public class TransportSerializer {
+    static final String dateFormat     = "yyyy-MM-dd";
+    static final String dateTimeFormat = String.format("%s'T'HH:mm:ss.SSS'Z'",dateFormat);
     private final Gson gson;
     
     public TransportSerializer() {
         gson = getGson(new GsonBuilder());
     }
     
+    public static String getDateFormat() {
+        return dateFormat;
+    }
+    
+    public static String getDateTimeFormat() {
+        return dateTimeFormat;
+    }
+    
     private static Gson getGson(GsonBuilder builder) {
         return builder.registerTypeAdapter(Date.class, new UtcDateAdapter())
+                      .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                      .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                       .registerTypeAdapterFactory(new DateAdapterFactory())
                       .registerTypeAdapterFactory(new SetAdapterFactory())
                       .registerTypeAdapterFactory(new MapAdapterFactory())
                       .serializeNulls()
-                      .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                      .setDateFormat(dateTimeFormat)
                       .create();
     }
     
