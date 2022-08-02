@@ -7,9 +7,17 @@
 
 # Releases
 
-## v0.1.0
+## v0.1.3
 
 > TBD
+
+### Additional supported serializations
+
+- Feature :sparkles:: Date Transport support for LocalDate, LocalDateTime
+
+## v0.1.0
+
+> 2022-07-29
 
 ### Initial Release
 
