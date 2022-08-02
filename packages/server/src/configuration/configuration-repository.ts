@@ -50,7 +50,7 @@ export const applyExecutionContext = (context: Partial<ExecutionContext>) => {
     }
 };
 
-const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
+export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
     return {
         ...getDefaultConfiguration(),
         ...configuration,

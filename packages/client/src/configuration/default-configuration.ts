@@ -12,14 +12,14 @@ export const getDefaultConfiguration = (): Configuration => {
     return completeConfig(config);
 };
 
-const completeConfig = (config: Configuration): Configuration => {
+export const completeConfig = (config: Configuration): Configuration => {
     return {
         namespaces: Object.fromEntries(
-            Object.entries(config.namespaces).map(([name, mapping]) => [
+            Object.entries(config.namespaces ?? []).map(([name, mapping]) => [
                 name,
                 !mapping.endpoint ? { endpoint: "/api", transport: mapping.transport } : mapping,
             ])
         ),
-        transports: Object.fromEntries(Object.entries(config.transports).map(([name, transport]) => [name, transport ?? formdataFetch])),
+        transports: Object.fromEntries(Object.entries(config.transports ?? []).map(([name, transport]) => [name, transport ?? formdataFetch])),
     };
 };
