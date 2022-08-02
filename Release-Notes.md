@@ -13,7 +13,8 @@
 
 ### Additional supported serializations
 
-- Feature :sparkles:: Date Transport support for LocalDate, LocalDateTime
+- Feature :sparkles:: Implements date transport support for LocalDate and LocalDateTime.
+- Bugfix :pill:: Implements logic to handle incomplete replacement transport configurations.
 
 ## v0.1.0
 
