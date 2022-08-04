@@ -9,7 +9,7 @@
 
 ## v0.1.3
 
-> TBD
+> 2022-08-04
 
 ### Additional supported serializations
 
