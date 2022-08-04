@@ -319,9 +319,3 @@ The React page at [http://localhost:3000](http://localhost:3000) now shows us th
 We can also see this in the servers terminal
 
 ![server terminal](./docs/images/magellan-server-terminal.jpg)
-
-<style>
-    img {
-        width: 60%;
-    }
-</style>

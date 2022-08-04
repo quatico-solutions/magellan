@@ -6,7 +6,7 @@
  */
 
 /* eslint-disable no-var */
-import type { ExecutionContext, TransportFunction } from "@quatico/magellan-shared";
+import type { ExecutionContext, NamespaceMapping, TransportFunction } from "@quatico/magellan-shared";
 import { serialize, unpackObject } from "@quatico/magellan-shared";
 import { getFunctionService } from "../services";
 import { Configuration } from "./Configuration";
@@ -50,9 +50,23 @@ export const applyExecutionContext = (context: Partial<ExecutionContext>) => {
     }
 };
 
-const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
+export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
     return {
-        ...getDefaultConfiguration(),
-        ...configuration,
+        namespaces: {
+            ...(getDefaultConfiguration().namespaces ?? {}),
+            ...completeNamespaces(configuration?.namespaces ?? {}),
+        },
+        transports: { ...(getDefaultConfiguration().transports ?? {}), ...(configuration?.transports ?? {}) },
     };
+};
+
+const completeNamespaces = (namespaceMapping: Record<string, NamespaceMapping>): Record<string, NamespaceMapping> => {
+    Object.entries(namespaceMapping).forEach(([key, value]) => {
+        namespaceMapping[key] = completeNamespace(value);
+    });
+    return namespaceMapping;
+};
+
+const completeNamespace = (mapping: NamespaceMapping): NamespaceMapping => {
+    return { transport: "default", ...mapping };
 };
