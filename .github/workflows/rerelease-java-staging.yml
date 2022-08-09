@@ -31,6 +31,20 @@ jobs:
       - name: Install MAVEN dependencies
         run: mvn dependency:resolve -B -U
 
+      # - name: Configure GPG Key
+      #   run: |
+      #     mkdir -p ~/.gnupg/
+      #     printf "$GPG_SECRET_KEY" | base64 --decode > ~/.gnupg/private.key
+      #     gpg --import ~/.gnupg/private.key
+      #   env:
+      #     GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@v1
+        env:
+           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Deploy Maven packages
         run: mvn -B deploy -Prelease
         env:
