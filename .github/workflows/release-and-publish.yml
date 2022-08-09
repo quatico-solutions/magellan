@@ -74,6 +74,12 @@ jobs:
       - name: E2E tests
         run: yarn test:e2e
 
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@v1
+        env:
+           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: publish maven packages
         run: mvn --batch-mode deploy -Prelease
         env:

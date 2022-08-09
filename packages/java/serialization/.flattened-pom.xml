@@ -5,6 +5,9 @@
   <groupId>com.quatico.magellan</groupId>
   <artifactId>serialization</artifactId>
   <version>0.1.3</version>
+  <name>Quatico Solutions AG :: Magellan Serialization</name>
+  <description>Magellan Serialization Module representing the Java Counterpart confirming to the same JSON input/output as the Magellan TypeScript packages.</description>
+  <url>https://github.com/quatico-solutions/magellan/packages/java/serialization</url>
   <licenses>
     <license>
       <name>The MIT License</name>
@@ -12,6 +15,22 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <id></id>
+      <name>Marc Schaerer</name>
+      <organization>Quatico Solutions AG</organization>
+      <organizationUrl>https://quatico.com</organizationUrl>
+      <roles>
+        <role>Project-Administrator</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://github.com/quatico-solutions/magellan.git/serialization</url>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
