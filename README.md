@@ -1,22 +1,14 @@
 <!--
- @license
-
- Copyright (c) 2017-2022 Quatico Solutions AG
- Förrlibuckstrasse 220, 8005 Zurich, Switzerland
-
- All Rights Reserved.
-
- This software is the confidential and proprietary information of
- Quatico Solutions AG, ("Confidential Information"). You shall not
- disclose such Confidential Information and shall use it only in
- accordance with the terms of the license agreement you entered into
- with Quatico.
+ ---------------------------------------------------------------------------------------------
+   Copyright (c) Quatico Solutions AG. All rights reserved.
+   Licensed under the MIT License. See LICENSE in the project root for license information.
+ ---------------------------------------------------------------------------------------------
 -->
 
 # Magellan for TypeScript
 
 The Magellan project provides compiler tooling and a runtime API for remote execution of
-TypeScript service functions.
+service functions written in TypeScript.
 
 In many applications, backend developers have to create REST APIs, e.g., using swagger.io. Frontend developer implement
 client code in their components to present domain logic and data in the browser. During the development developers in
@@ -53,18 +45,18 @@ a [React](https://reactjs.org/) component that displays it in the browser. This 
 
 ```bash
 npx create-react-app magellan-demo --template typescript 
-cd magellan-demo
 ```
 
 and open the project in your favorite IDE for example in Visual Studio Code using
 
 ```bash
-code .
+code magellan-demo
 ```
 
 ### 3.1 Create service function for "GreetingService'
 
-Implement a function that returns a greeting in `src/services/greet-me.ts`
+Create a new folder `src/services` to contain your server scripts files.
+Add an example function that returns a greeting `src/services/greet-me.ts`:
 
 ```typescript
 export const greetMe = async (name: string): Promise<string> => {
@@ -78,10 +70,9 @@ export const greetMe = async (name: string): Promise<string> => {
 Update `src/App.tsx` to use the greeting service and show the greeting to the visitor.
 
 ```diff
-+import { useEffect, useState } from 'react';
-import logo from './logo.svg';
+cimport logo from './logo.svg';
+
 import './App.css';
-+ import { greetMe } from "./services/greet-me";
 
 function App() {
 +  const [greeting, setGreeting] = useState("... waiting for greetings ...")
@@ -143,7 +134,7 @@ Install the required packages in the magellan-demo project.
 npm i -D @quatico/magellan-addons @quatico/magellan-cli @quatico/magellan-client @quatico/websmith-webpack react-app-rewired
 ```
 
-Update `package.json` to use [react-app-rewrited](https://www.npmjs.com/package/react-app-rewired) and magellan
+Update the `package.json` to use [react-app-rewired](https://www.npmjs.com/package/react-app-rewired) and magellan
 
 ```diff
 {
@@ -151,9 +142,9 @@ Update `package.json` to use [react-app-rewrited](https://www.npmjs.com/package/
 -       "start": "react-scripts start",
 +       "start": "react-app-rewired start",
 -       "build": "react-scripts build",
-+       "build": "react-app-rewire build",
++       "build": "react-app-rewired build",
 -       "test": "react-scripts test",
-+       "test": "react-app-rewire test",
++       "test": "react-app-rewired test",
         "eject": "react-scripts eject",
 +       "compile": "magellan compile",
 +       "serve": "magellan serve ./lib/client --serverModuleDir ./lib/server -p 3001"
@@ -167,7 +158,7 @@ Update `tsconfig.json` to enable TypeScript to generate output
 {
     "compilerOptions": {
 -       "noEmit": true,
-+       "outDir": "./lib/client"
++       "outDir": "./lib/client",
     }
 }
 ```
@@ -234,7 +225,7 @@ Create a file `websmith.config.json` in the magellan-demo directory with the fol
 
 ### 4.2 Annotate greetMe as a service
 
-Update the greetMe function in `src/services/greet-me.ts` and annotate it as a service.
+Update function `greetMe` in `src/services/greet-me.ts` and annotate it as a service.
 
 ```diff
 +// @service()
@@ -246,50 +237,22 @@ export const greetMe = async (name: string): Promise<string> => {
 ### 4.3 Update the Application to connect to the server
 
 create-react-app requires us to run the Magellan server in parallel to the react-scripts server, so we need to to configure the location where the server is running.
-To do so, we need to add the following code to `src/App.ts`
+To do so, we need to add the following code to `src/App.tsx`
 
 ```diff
 import { useEffect, useState } from 'react';
 import logo from './logo.svg';
-import './App.css';
 import { greetMe } from "./services/greet-me";
 + import { setNamespace } from "@quatico/magellan-client"
 
-// to serve the frontend through react-scripts and run the server along it, we need to tell magellan
-// that the server is on a different port than where it is served from.
+import './App.css';
+
++ // to serve the frontend through react-scripts and run the server along it, we need to tell magellan
++ // that the server is on a different port than where it is served from.
 + setNamespace("default", { endpoint: "http://localhost:3001/api" });
 
 function App() {
-  const [greeting, setGreeting] = useState("... waiting for greetings ...")
-
-  useEffect(() => {
-    greetMe("REACT")
-      .then(setGreeting)
-      .catch((reason) => {
-        console.error(`Error requesting greeting: ${reason}`);
-        setGreeting("server does not wish to greet us");
-      });
-  }, []);
-    
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>{greeting}</p>
-      </header>
-    </div>
-  );
+ ...
 }
 
 export default App;
@@ -297,24 +260,25 @@ export default App;
 
 ### 4.4 Run react and magellan
 
-We will now use 2 terminals to start both the react and the magellan server at the same time.
+We will now use a second terminals to run the react App in addition to the magellan server at the same time. Open another terminal and run the following commands:
 
-Magellan Terminal
+#### Magellan Server Terminal
 
 ```bash
 npm run compile
 npm run serve
 ```
 
-React Terminal
-
-```bash
-npm start
-```
+> NOTE: If you run into compilation problem "Error: 1208: 'App.test.tsx' cannot be compiled under '--isolatedModules' because it is considered a global script file. Add an import, export, or an empty 'export {}' statement to make it a module." <br>
+> Remove the line `"isolatedModules": true,` from your `tsconfig.json`
 
 The React page at [http://localhost:3000](http://localhost:3000) now shows us that we successfully received the greeting executed by the service on the node server.
 
 ![browser executed function](./docs/images/react-page-by-server.jpg)
+
+In the DevTools of your browser you'll see the new network calls to the server for executing the `greetMe` function:
+
+![dev tools](./docs/images/browser-devtools-network.jpg)
 
 We can also see this in the servers terminal
 
