@@ -19,9 +19,9 @@
         "clean": "mvn clean",
         "lint": "mvn process-sources -B -o",
         "build": "mvn install -DskipTests -Dcheckstyle.skip -B",
-        "test": "mvn test -B -o -Dcheckstyle.skip",
-        "test:update": "mvn test -o -Dcheckstyle.skip",
-        "test:e2e": "mvn test -Pe2e -B -o -Dcheckstyle.skip",
+        "test": "mvn test -B -Dcheckstyle.skip",
+        "test:update": "mvn test -Dcheckstyle.skip",
+        "test:e2e": "mvn test -Pe2e -B -Dcheckstyle.skip",
         "deploy:test": "mvn deploy -DaltDeploymentRepository=ossrh::default::file:./tmp-deploy",
         "install": "mvn dependency:tree"
     },
