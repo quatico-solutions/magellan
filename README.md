@@ -70,7 +70,7 @@ export const greetMe = async (name: string): Promise<string> => {
 Update `src/App.tsx` to use the greeting service and show the greeting to the visitor.
 
 ```diff
-cimport logo from './logo.svg';
+import logo from './logo.svg';
 
 import './App.css';
 
