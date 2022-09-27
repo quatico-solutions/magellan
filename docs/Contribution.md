@@ -1,0 +1,3 @@
+# Contributing to Magellan
+
+To contribute to this project, you need to sign the Contribution License Agreement (CLA) ...
