@@ -24,20 +24,20 @@ import com.quatico.magellan.serialization.UtcDateAdapter;
 
 
 public class TransportSerializer {
-    static final String dateFormat     = "yyyy-MM-dd";
-    static final String dateTimeFormat = String.format("%s'T'HH:mm:ss.SSS'Z'",dateFormat);
-    private final Gson gson;
+    static final  String DATE_FORMAT     = "yyyy-MM-dd";
+    static final  String DATETIME_FORMAT = String.format("%s'T'HH:mm:ss.SSS'Z'", DATE_FORMAT);
+    private final Gson   gson;
     
     public TransportSerializer() {
         gson = getGson(new GsonBuilder());
     }
     
     public static String getDateFormat() {
-        return dateFormat;
+        return DATE_FORMAT;
     }
     
     public static String getDateTimeFormat() {
-        return dateTimeFormat;
+        return DATETIME_FORMAT;
     }
     
     private static Gson getGson(GsonBuilder builder) {
@@ -48,7 +48,7 @@ public class TransportSerializer {
                       .registerTypeAdapterFactory(new SetAdapterFactory())
                       .registerTypeAdapterFactory(new MapAdapterFactory())
                       .serializeNulls()
-                      .setDateFormat(dateTimeFormat)
+                      .setDateFormat(DATETIME_FORMAT)
                       .create();
     }
     
@@ -56,7 +56,19 @@ public class TransportSerializer {
         if (objToSerialise == null) {
             throw new IllegalArgumentException("objToSerialise must not be null");
         }
-        
+    
+        if (objToSerialise.getClass().isAnonymousClass()) {
+            throw new IllegalArgumentException(String.format(
+                    "objToSerialise class %s must not be a anonymous class",
+                    objToSerialise.getClass().getName()));
+        }
+    
+        if (objToSerialise.getClass().isLocalClass()) {
+            throw new IllegalArgumentException(String.format(
+                    "objToSerialise class %s must not be a local class",
+                    objToSerialise.getClass().getName()));
+        }
+    
         return gson.toJson(objToSerialise);
     }
     
