@@ -6,6 +6,14 @@
     "license": "SEE LICENSE IN LICENSE",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/quatico-solutions/magellan.git"
+    },
+    "bugs": {
+        "url": "https://github.com/quatico-solutions/magellan/issues"
+    },
+    "homepage": "https://github.com/quatico-solutions/magellan#readme",
     "files": [
         "LICENSE",
         "README.md",
