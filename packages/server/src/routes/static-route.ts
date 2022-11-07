@@ -6,7 +6,7 @@
  */
 import express, { Router } from "express";
 
-export const createStaticRoute = (path: string, route: string) => {
+export const createStaticRoute = (path: string, route = "/") => {
     const router = Router();
     // eslint-disable-next-line no-console
     console.debug(`Serving ${path} on ${route}\n`);
