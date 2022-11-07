@@ -5,6 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { unpackPayload } from "@quatico/magellan-shared";
+import { writeFileSync } from "fs";
+import { join } from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
 import { handleError, normalizePort, serve, setupApp } from "./server";
@@ -21,7 +23,7 @@ beforeAll(() => {
 describe("serve", () => {
     it("sets port in Express app", () => {
         const target = {
-            app: { set: jest.fn(), use: jest.fn() },
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
             server: { listen: jest.fn() } as any,
             requireFn: jest.fn().mockReturnValue({}) as any,
         } as any;
@@ -33,7 +35,7 @@ describe("serve", () => {
 
     it("sets static resources dir in Express app", () => {
         const target = {
-            app: { set: jest.fn(), use: jest.fn() },
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
             server: { listen: jest.fn() } as any,
             requireFn: jest.fn().mockReturnValue({}) as any,
         } as any;
@@ -46,7 +48,7 @@ describe("serve", () => {
     it("calls listen passing port on server", () => {
         const target = { listen: jest.fn() } as any;
 
-        serve({ app: { set: jest.fn(), use: jest.fn() }, server: target, requireFn: jest.fn().mockReturnValue({}) as any } as any);
+        serve({ app: { get: jest.fn(), set: jest.fn(), use: jest.fn() }, server: target, requireFn: jest.fn().mockReturnValue({}) as any } as any);
 
         expect(target.listen).toHaveBeenCalledWith(3000, expect.any(Function));
     });
@@ -54,7 +56,7 @@ describe("serve", () => {
 
 describe("setupApp", () => {
     it("calls use passing static and function route", () => {
-        const target = { set: jest.fn(), use: jest.fn() } as any;
+        const target = { get: jest.fn(), set: jest.fn(), use: jest.fn() } as any;
 
         setupApp({ app: target, port: 3000, staticDir: "./resources", serverModuleDir: "./functions" });
 
@@ -77,6 +79,62 @@ describe("setupApp", () => {
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(res.statusCode).toBe(200);
         expect(unpackPayload(res.body)).toEqual("Expected result");
+    });
+
+    it("responds with index page w/ get to /", async () => {
+        const staticDir = "./data";
+        const expected = "<html><body>expected html</body></html>";
+        writeFileSync(join(staticDir, "index.html"), expected);
+        const app = setupApp({
+            staticDir,
+            requireFn: jest.fn().mockReturnValue({}) as any,
+            sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
+        });
+
+        const res = await request(app).get("/");
+
+        expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(res.statusCode).toBe(200);
+        expect(res.text).toEqual(expected);
+    });
+
+    it("redirects to index page w/ get to non-existing wildcard route", async () => {
+        const staticDir = "./data";
+        const expected = "<html><body>expected html</body></html>";
+        writeFileSync(join(staticDir, "index.html"), expected);
+        const app = setupApp({
+            staticDir,
+            requireFn: jest.fn().mockReturnValue({}) as any,
+            sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
+        });
+
+        const res = await request(app).get("/unexpected/non-existant");
+
+        expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(res.statusCode).toBe(301);
+        expect(res.text).toBe(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Redirecting</title>
+</head>
+<body>
+<pre>Redirecting to <a href="/unexpected/non-existant/">/unexpected/non-existant/</a></pre>
+</body>
+</html>
+`);
+    });
+
+    it("responds with status 404 w/ post to /", async () => {
+        const app = setupApp({
+            requireFn: jest.fn().mockReturnValue({}) as any,
+            sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
+        });
+
+        const res = await request(app).post("/");
+
+        expect(res.header["content-type"]).toBe("text/html; charset=utf-8");
+        expect(res.statusCode).toBe(404);
     });
 });
 
