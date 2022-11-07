@@ -6,9 +6,9 @@
  */
 import express, { Router } from "express";
 
-export const createStaticRoute = (path: string) => {
+export const createStaticRoute = (path: string, route: string) => {
     const router = Router();
     // eslint-disable-next-line no-console
-    console.debug(`Serving ${path}\n`);
+    console.debug(`Serving ${path} on ${route}\n`);
     return router.use(express.static(path));
 };

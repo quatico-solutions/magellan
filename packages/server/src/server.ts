@@ -12,12 +12,13 @@ import http from "http";
 import createError from "http-errors";
 import logger from "morgan";
 import multer from "multer";
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { loadModules } from "./module-loader";
 import { createFunctionRoute, createStaticRoute } from "./routes";
 import { Sdk } from "./sdk";
 
 import cors from "cors";
+import { existsSync } from "fs";
 
 export interface ServerOptions {
     app?: Express;
@@ -27,6 +28,7 @@ export interface ServerOptions {
     requireFn?: NodeRequire;
     sdk?: Sdk;
     server?: http.Server;
+    staticRoute?: string;
     staticDir?: string;
 }
 
@@ -34,11 +36,7 @@ export const serve = (options: ServerOptions): void => {
     const { port = normalizePort(process.env.PORT) } = options;
 
     const app = setupApp(options);
-
-    let server = options.server;
-    if (!server) {
-        server = http.createServer(app);
-    }
+    const server = options.server ?? http.createServer(app);
 
     server.listen(port, () => console.debug(`magellan serve started on http://localhost:${port}`));
 };
@@ -50,6 +48,7 @@ export const setupApp = (options: ServerOptions): Application => {
         port = normalizePort(process.env.PORT),
         requireFn = require,
         sdk = new Sdk(),
+        staticRoute = "/",
         staticDir = resolve(process.cwd(), process.env.STATIC_DIR ?? "."),
     } = options;
 
@@ -65,7 +64,18 @@ export const setupApp = (options: ServerOptions): Application => {
     app.use(logger("dev"));
     app.use(cookieParser());
 
-    app.use("/", createStaticRoute(staticDir));
+    // Redirects static requests to the static route
+    app.get(/.*/, function (req, res, next) {
+        const { baseUrl, url } = req;
+        const cleanedFilePath = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
+        const staticFilePath = join(staticDir, baseUrl, cleanedFilePath);
+        if (!existsSync(staticFilePath)) {
+            req.url = staticRoute;
+        }
+        next();
+    });
+
+    app.use(staticRoute, createStaticRoute(staticDir, staticRoute));
     app.use("/api", createFunctionRoute());
 
     // catch 404 and forward to error handler
