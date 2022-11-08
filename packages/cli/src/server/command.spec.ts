@@ -16,7 +16,12 @@ describe("addServeCommand", () => {
 
         addServeCommand(new Command(), target).parse(["serve", "./resources"], { from: "user" });
 
-        expect(target).toHaveBeenCalledWith({ debug: false, serverModuleDir: "./server-esm", port: 3000, staticDir: "./resources" });
+        expect(target).toHaveBeenCalledWith({
+            debug: false,
+            serverModuleDir: "./server-esm",
+            port: 3000,
+            staticDir: "./resources",
+        });
     });
 
     it("should show the command help w/o staticDir", () => {
@@ -30,12 +35,12 @@ describe("addServeCommand", () => {
     });
 
     it("should set serverModuleDir w/ --serverModuleDir cli argument", () => {
-        setupFolders("./resources", "./server-module");
+        setupFolders("./resources", "./expected-module-dir");
         const target = jest.fn();
 
-        addServeCommand(new Command(), target).parse(["serve", "./resources", "-s", "./server-module"], { from: "user" });
+        addServeCommand(new Command(), target).parse(["serve", "./resources", "-s", "./expected-module-dir"], { from: "user" });
 
-        expect(target).toHaveBeenCalledWith({ debug: false, serverModuleDir: "./server-module", port: 3000, staticDir: "./resources" });
+        expect(target).toHaveBeenCalledWith(expect.objectContaining({ serverModuleDir: "./expected-module-dir" }));
     });
 
     it("should show the command help and error out w/ non-existent serverModuleDir", () => {
@@ -55,7 +60,7 @@ describe("addServeCommand", () => {
 
         addServeCommand(new Command(), target).parse(["serve", "./resources", "--debug"], { from: "user" });
 
-        expect(target).toHaveBeenCalledWith({ debug: true, serverModuleDir: "./server-esm", port: 3000, staticDir: "./resources" });
+        expect(target).toHaveBeenCalledWith(expect.objectContaining({ debug: true }));
     });
 
     it("should set port w/ --port cli argument", () => {
@@ -64,7 +69,7 @@ describe("addServeCommand", () => {
 
         addServeCommand(new Command(), target).parse(["serve", "./resources", "--port", "9999"], { from: "user" });
 
-        expect(target).toHaveBeenCalledWith({ debug: false, serverModuleDir: "./server-esm", port: 9999, staticDir: "./resources" });
+        expect(target).toHaveBeenCalledWith(expect.objectContaining({ port: 9999 }));
     });
 });
 

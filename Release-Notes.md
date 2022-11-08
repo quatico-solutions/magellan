@@ -11,7 +11,9 @@
 
 > TBD
 
-### TBD
+### SPA capabilities
+
+- Feature :sparkles:: Wildcard paths not pointing to static files now map to the root.
 
 - Bugfix :pill::
 - Improvement :gift_heart::
