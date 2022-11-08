@@ -65,54 +65,54 @@ describe("setupApp", () => {
     });
 
     it("responds to /api with registered function", async () => {
-        const app = setupApp({
+        const target = setupApp({
             requireFn: jest.fn().mockReturnValue({}) as any,
             sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
         });
 
-        const res = await request(app)
+        const actual = await request(target)
             .post("/api")
             .field("name", "expected")
             .field("data", JSON.stringify({ input: "expected" }))
             .set("Accept-Header", "application/json");
 
-        expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
-        expect(res.statusCode).toBe(200);
-        expect(unpackPayload(res.body)).toEqual("Expected result");
+        expect(actual.header["content-type"]).toBe("application/json; charset=utf-8");
+        expect(actual.statusCode).toBe(200);
+        expect(unpackPayload(actual.body)).toEqual("Expected result");
     });
 
-    it("responds with index page w/ get to /", async () => {
+    it("responds with index page w/ staticDir and GET to /", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
         writeFileSync(join(staticDir, "index.html"), expected);
-        const app = setupApp({
+        const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,
             sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
         });
 
-        const res = await request(app).get("/");
+        const actual = await request(target).get("/");
 
-        expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
-        expect(res.statusCode).toBe(200);
-        expect(res.text).toEqual(expected);
+        expect(actual.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(actual.statusCode).toBe(200);
+        expect(actual.text).toEqual(expected);
     });
 
-    it("redirects to index page w/ get to non-existing wildcard route", async () => {
+    it("redirects to index page w/ staticDir and GET to non-existing wildcard route", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
         writeFileSync(join(staticDir, "index.html"), expected);
-        const app = setupApp({
+        const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,
             sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
         });
 
-        const res = await request(app).get("/unexpected/non-existant");
+        const actual = await request(target).get("/unexpected/non-existant");
 
-        expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
-        expect(res.statusCode).toBe(301);
-        expect(res.text).toMatchInlineSnapshot(`
+        expect(actual.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(actual.statusCode).toBe(301);
+        expect(actual.text).toMatchInlineSnapshot(`
             "<!DOCTYPE html>
             <html lang=\\"en\\">
             <head>
@@ -128,15 +128,15 @@ describe("setupApp", () => {
     });
 
     it("responds with status 404 w/ post to /", async () => {
-        const app = setupApp({
+        const target = setupApp({
             requireFn: jest.fn().mockReturnValue({}) as any,
             sdk: new Sdk().registerFunction("expected", jest.fn().mockReturnValue("Expected result")),
         });
 
-        const res = await request(app).post("/");
+        const actual = await request(target).post("/");
 
-        expect(res.header["content-type"]).toBe("text/html; charset=utf-8");
-        expect(res.statusCode).toBe(404);
+        expect(actual.header["content-type"]).toBe("text/html; charset=utf-8");
+        expect(actual.statusCode).toBe(404);
     });
 });
 
