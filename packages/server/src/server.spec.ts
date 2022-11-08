@@ -112,17 +112,19 @@ describe("setupApp", () => {
 
         expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
         expect(res.statusCode).toBe(301);
-        expect(res.text).toBe(`<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Redirecting</title>
-</head>
-<body>
-<pre>Redirecting to <a href="/unexpected/non-existant/">/unexpected/non-existant/</a></pre>
-</body>
-</html>
-`);
+        expect(res.text).toMatchInlineSnapshot(`
+            "<!DOCTYPE html>
+            <html lang=\\"en\\">
+            <head>
+            <meta charset=\\"utf-8\\">
+            <title>Redirecting</title>
+            </head>
+            <body>
+            <pre>Redirecting to <a href=\\"/unexpected/non-existant/\\">/unexpected/non-existant/</a></pre>
+            </body>
+            </html>
+            "
+        `);
     });
 
     it("responds with status 404 w/ post to /", async () => {
