@@ -9,16 +9,11 @@
 
 ## v0.1.4
 
-> TBD
+> 2022-11-08
 
-### SPA capabilities
+### Routing
 
-- Feature :sparkles:: Wildcard paths not pointing to static files now map to the root.
-
-- Bugfix :pill::
-- Improvement :gift_heart::
-- Feature :sparkles::
-- Documentation :bookmark::
+- Feature :sparkles:: Wildcard paths not pointing to static files now redirect to the static root path.
 
 ## v0.1.3
 

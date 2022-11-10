@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-shared",
     "description": "Shared functionality for server/client communication",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "author": "Quatico Solutions AG",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
