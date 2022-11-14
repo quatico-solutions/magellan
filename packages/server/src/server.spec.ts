@@ -78,7 +78,7 @@ describe("setupApp", () => {
 
         expect(actual.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(actual.statusCode).toBe(200);
-        expect(unpackPayload(actual.body)).toEqual("Expected result");
+        expect(unpackPayload(actual.body)).toBe("Expected result");
     });
 
     it("responds with index page w/ staticDir and GET to /", async () => {

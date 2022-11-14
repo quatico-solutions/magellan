@@ -22,7 +22,7 @@ describe("createStaticRoute", () => {
         const res = await request(app).get("/index.html");
         expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
         expect(res.statusCode).toBe(200);
-        expect(res.text).toEqual("Hello World!");
+        expect(res.text).toBe("Hello World!");
     });
 
     it("responds to / with non-existing file", async () => {
