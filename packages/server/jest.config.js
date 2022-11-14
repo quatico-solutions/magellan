@@ -10,11 +10,6 @@ module.exports = {
     collectCoverageFrom: ["./src/**/*.{ts,tsx}"],
     coverageDirectory: "coverage",
     coveragePathIgnorePatterns: ["index.ts"],
-    globals: {
-        "ts-jest": {
-            tsconfig: "./tsconfig.test.json",
-        },
-    },
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     moduleNameMapper: {
         "@quatico/magellan-shared": "<rootDir>/../shared/src",
@@ -24,7 +19,21 @@ module.exports = {
     testRegex: "src/.*spec\\.(jsx?|tsx?)$",
     setupFilesAfterEnv: ["<rootDir>/../../jest.setup.ts"],
     transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
+        "^.+\\.(j|t)sx?$": [
+            "@swc/jest",
+            {
+                jsc: {
+                    parser: {
+                        syntax: "typescript",
+                    },
+                    transform: {
+                        react: {
+                            runtime: "automatic",
+                        },
+                    },
+                },
+            },
+        ],
     },
     resetMocks: true,
 };

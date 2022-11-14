@@ -4,9 +4,14 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { formdataFetch } from "../transport";
 import { expandConfig, getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { getDefaultConfiguration } from "./default-configuration";
+
+jest.mock("../transport", () => ({
+    formdataFetch: jest.fn(),
+}));
+
+import { formdataFetch } from "../transport";
 
 beforeEach(() => {
     // @ts-ignore

@@ -114,13 +114,13 @@ describe("setupApp", () => {
         expect(actual.statusCode).toBe(301);
         expect(actual.text).toMatchInlineSnapshot(`
             "<!DOCTYPE html>
-            <html lang=\\"en\\">
+            <html lang="en">
             <head>
-            <meta charset=\\"utf-8\\">
+            <meta charset="utf-8">
             <title>Redirecting</title>
             </head>
             <body>
-            <pre>Redirecting to <a href=\\"/unexpected/non-existant/\\">/unexpected/non-existant/</a></pre>
+            <pre>Redirecting to <a href="/unexpected/non-existant/">/unexpected/non-existant/</a></pre>
             </body>
             </html>
             "
