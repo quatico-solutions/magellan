@@ -12,13 +12,15 @@ import http from "http";
 import createError from "http-errors";
 import logger from "morgan";
 import multer from "multer";
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { wildcardMiddleware } from "./middlewares";
 import { loadModules } from "./module-loader";
 import { createFunctionRoute, createStaticRoute } from "./routes";
 import { Sdk } from "./sdk";
 
 import cors from "cors";
+import { createWriteStream } from "fs";
+import { TerminalStream } from "./TerminalStream";
 
 export interface ServerOptions {
     app?: Express;
@@ -61,7 +63,9 @@ export const setupApp = (options: ServerOptions): Application => {
             origin: "*",
         })
     );
-    app.use(logger("dev"));
+
+    registerLoggers(app);
+
     app.use(cookieParser());
 
     app.get(/.*/, [wildcardMiddleware(staticDir, staticRoute)]);
@@ -105,4 +109,37 @@ export const normalizePort = (port = "3000"): number => {
         // falls through
     }
     return 3000;
+};
+
+export const registerLoggers = (app: express.Express) => {
+    logger.token("funcName", req => {
+        return (req as any)?.body?.name ?? "unknown";
+    });
+    app.use(
+        logger(":remote-addr [:date[clf]] :method :status :res[content-length] ':funcName' - :response-time ms", {
+            skip: req => !/^\/api$/.test(req.baseUrl) && !/^\/api$/.test(req.url),
+            stream: createWriteStream(join(process.cwd(), "api-access.log"), { flags: "a" }),
+        })
+    );
+    app.use(
+        logger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+            skip: req => /^\/api$/.test(req.baseUrl) || /^\/api$/.test(req.url),
+            stream: createWriteStream(join(process.cwd(), "access.log"), { flags: "a" }),
+        })
+    );
+
+    const skipSuccess = (req: any, res: any) => res.statusCode < 400;
+    const skipError = (req: any, res: any) => res.statusCode >= 400;
+    app.use(
+        logger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+            skip: skipSuccess,
+            stream: createWriteStream(join(process.cwd(), "error.log"), { flags: "a" }),
+        })
+    );
+    app.use(
+        logger("combined", {
+            skip: skipError,
+            stream: new TerminalStream(),
+        })
+    );
 };

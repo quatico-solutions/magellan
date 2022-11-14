@@ -14,6 +14,7 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 ### New Features
 
+- Implement morgan based logging (access, API access and error logs)
 - Support --transpileOnly command line flag for `magellan compile`
 
 ### Chore
@@ -26,7 +27,8 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 ### New Features
 
 - service functions throwing errors now yield a rejection of the client promise with the error message.
-- service functions throwing errors now yield a console.error with the error stack on the client if the server is not in production mode.
+- service functions throwing errors now yield a console.error with the error stack on the client if the server is not in
+  production mode.
 
 ### Changed
 

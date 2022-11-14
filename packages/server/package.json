@@ -23,7 +23,7 @@
         "registry": "https://registry.npmjs.org"
     },
     "scripts": {
-        "clean": "rimraf lib coverage",
+        "clean": "rimraf lib coverage *.log",
         "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
         "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
