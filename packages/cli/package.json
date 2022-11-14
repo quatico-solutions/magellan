@@ -45,7 +45,7 @@
         "@quatico/websmith-api": "^0.2.2",
         "@quatico/websmith-cli": "^0.2.2",
         "@quatico/websmith-compiler": "^0.2.2",
-        "commander": "^8.3.0",
+        "commander": "^9.4.1",
         "ts-node": "10.7.0"
     },
     "devDependencies": {
