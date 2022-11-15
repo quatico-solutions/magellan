@@ -6,7 +6,7 @@
  */
 import { unpackPayload } from "@quatico/magellan-shared";
 import { writeFileSync } from "fs";
-import { join } from "path";
+import { resolve } from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
 import { handleError, normalizePort, serve, setupApp } from "./server";
@@ -84,7 +84,7 @@ describe("setupApp", () => {
     it("responds with index page w/ staticDir and GET to /", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
-        writeFileSync(join(staticDir, "index.html"), expected);
+        writeFileSync(resolve(staticDir, "index.html"), expected);
         const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,
@@ -101,7 +101,7 @@ describe("setupApp", () => {
     it("redirects to index page w/ staticDir and GET to non-existing wildcard route", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
-        writeFileSync(join(staticDir, "index.html"), expected);
+        writeFileSync(resolve(staticDir, "index.html"), expected);
         const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,

@@ -111,7 +111,7 @@ export const createFs = (actualFs: typeof fs): typeof fs => {
         mkdirp: memfs.mkdirp,
         mkdirpSync: memfs.mkdirpSync,
         exists: (path: PathLike, callback: (exists: boolean) => void): void =>
-            memfs.existsSync(path) ? memfs.exists(path, callback as any) : actualFs.exists(path, callback),
+            memfs.existsSync(path) ? memfs.exists(path, callback) : actualFs.exists(path, callback),
         existsSync: (path: PathLike): boolean => memfs.existsSync(path) || actualFs.existsSync(path),
         lstat: memfs.lstat,
         lstatSync: (path: PathLike): Stats => (memfs.existsSync(path) ? memfs.lstatSync(path) : actualFs.lstatSync(path)),

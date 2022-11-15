@@ -1,22 +1,32 @@
+/* eslint-disable jest/no-done-callback */
 import { writeFileSync } from "fs";
-import { join } from "path";
+import { resolve } from "path";
 import { wildcardMiddleware } from "./wildcard-middleware";
 
 describe("wildcardMiddleware", () => {
-    it("should rewrite the request url w/ url not matching a static file", async () => {
+    const staticDir = resolve(".", "data");
+    it("should rewrite the request url w/ url not matching a static file", done => {
         const target = { url: "/expected", baseUrl: "/" };
 
-        wildcardMiddleware(__dirname, "/redirected")(target as any, {} as any, () => {
-            expect(target).toEqual({ baseUrl: "/", url: "/redirected" });
+        wildcardMiddleware(staticDir, "/redirected")(target as any, {} as any, () => {
+            expect(target).toEqual({
+                baseUrl: "/",
+                url: "/redirected",
+            });
+            done();
         });
     });
 
-    it("should not rewrite the request url w/ url matching a static file", async () => {
+    it("should not rewrite the request url w/ url matching a static file", done => {
         const target = { url: "/expected.txt", baseUrl: "/" };
-        writeFileSync(join(__dirname, "expected.txt"), "expected");
+        writeFileSync(resolve(staticDir, "expected.txt"), "expected");
 
-        wildcardMiddleware(__dirname, "/unexpected")(target as any, {} as any, () => {
-            expect(target).toEqual({ baseUrl: "/", url: "/expected.txt" });
+        wildcardMiddleware(staticDir, "/unexpected")(target as any, {} as any, () => {
+            expect(target).toEqual({
+                baseUrl: "/",
+                url: "/expected.txt",
+            });
+            done();
         });
     });
 });

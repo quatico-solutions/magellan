@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { exists } from "fs";
+import { stat } from "fs";
 import { join } from "path";
 
 export const wildcardMiddleware = (staticDir: string, staticRoute: string) => (req: Request, res: Response, next: NextFunction) => {
@@ -7,8 +7,8 @@ export const wildcardMiddleware = (staticDir: string, staticRoute: string) => (r
     const cleanedFilePath = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
     const staticFilePath = join(staticDir, baseUrl, cleanedFilePath);
 
-    exists(staticFilePath, fileExists => {
-        if (!fileExists) {
+    stat(staticFilePath, (err, stats) => {
+        if (err || stats === undefined || !stats.isFile()) {
             req.url = staticRoute;
         }
         next();
