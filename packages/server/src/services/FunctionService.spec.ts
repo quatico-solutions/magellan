@@ -14,7 +14,7 @@ describe("invokeFunction", () => {
     beforeAll(() => {
         initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
     });
-    
+
     it("calls function with registered function", async () => {
         const target = jest.fn();
 

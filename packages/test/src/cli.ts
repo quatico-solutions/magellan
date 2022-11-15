@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import {executeCompileCommand} from "@quatico/magellan-cli";
-import {resolve} from "path";
+import { executeCompileCommand } from "@quatico/magellan-cli";
+import { resolve } from "path";
 
 type CompileCommand = {
     args?: string;
@@ -13,8 +13,8 @@ type CompileCommand = {
 };
 
 export class Cli {
-    public async executeCompile({command}: { command?: CompileCommand }): Promise<void> {
-        const {cwd = ".", args} = command ?? {};
+    public async executeCompile({ command }: { command?: CompileCommand }): Promise<void> {
+        const { cwd = ".", args } = command ?? {};
         executeCompileCommand(["compile", ...(args?.split(" ") ?? ""), "-p", `${resolve(cwd, "tsconfig.json")}`]);
     }
 }

@@ -14,11 +14,10 @@ import {
     addTransportIfAbsent,
     applyExecutionContext,
     setNamespace,
-    setTransport
+    setTransport,
 } from "./configuration";
 import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
 import { formdataFetch, transportRequest } from "./transport";
-
 
 export type DefaultSdkParameters = {
     functionService?: FunctionService;

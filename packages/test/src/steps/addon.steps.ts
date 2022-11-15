@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Given, Then, When} from "@cucumber/cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
 
 Given("a valid project with functions is configured", () => {});
 
