@@ -37,7 +37,7 @@ describe("createStaticRoute", () => {
             .field("data", JSON.stringify({input: "whatever"}));
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
-        expect(unpackPayload(res.body)).toEqual("Hello World!");
+        expect(unpackPayload(res.body)).toBe("Hello World!");
         expect(res.statusCode).toBe(200);
     });
 
@@ -62,9 +62,9 @@ describe("createStaticRoute", () => {
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         const {error, message} = unpackPayload(res.body) as { error: string; message: string };
-        expect(message).toEqual('Function request to "expected" failed.');
-        expect(error.toString()).toEqual("expected error message");
-        expect(res.error.toString()).toEqual("Error: cannot POST /api (500)");
+        expect(message).toBe('Function request to "expected" failed.');
+        expect(error.toString()).toBe("expected error message");
+        expect(res.error.toString()).toBe("Error: cannot POST /api (500)");
         expect(res.statusCode).toBe(500);
     });
 
@@ -82,8 +82,8 @@ describe("createStaticRoute", () => {
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(res.statusCode).toBe(500);
         const {error, message} = unpackPayload(res.body) as { error: string; message: string };
-        expect(message).toEqual('Function request to "unknown" failed.');
-        expect(error.toString()).toEqual('Cannot invoke function "unknown". Function is not registered.');
-        expect(res.error.toString()).toEqual("Error: cannot POST /api (500)");
+        expect(message).toBe('Function request to "unknown" failed.');
+        expect(error.toString()).toBe('Cannot invoke function "unknown". Function is not registered.');
+        expect(res.error.toString()).toBe("Error: cannot POST /api (500)");
     });
 });

@@ -8,6 +8,10 @@ import { formdataFetch } from "../transport";
 import { expandConfig, getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { getDefaultConfiguration } from "./default-configuration";
 
+jest.mock("../transport", () => ({
+    formdataFetch: jest.fn(),
+}));
+
 beforeEach(() => {
     // @ts-ignore
     global.__qsMagellanServerConfig__ = undefined;

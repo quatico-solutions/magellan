@@ -19,10 +19,10 @@ describe("createClientTransformer", () => {
         const actual = printer.printFile(transformed.transformed[0]);
 
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from \\"@quatico/magellan-client\\";
-            // @service({\\"target\\":\\"expected\\"})
+            "import { remoteInvoke } from "@quatico/magellan-client";
+            // @service({"target":"expected"})
             export const getDate = async () => {
-                return remoteInvoke({ name: \\"getDate\\", data: {}, namespace: \\"default\\" });
+                return remoteInvoke({ name: "getDate", data: {}, namespace: "default" });
             };
             "
         `);
@@ -39,10 +39,10 @@ describe("createClientTransformer", () => {
         const actual = printer.printFile(transformed.transformed[0]);
 
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from \\"@quatico/magellan-client\\";
+            "import { remoteInvoke } from "@quatico/magellan-client";
             // @service()
             export const getDate = async () => {
-                return remoteInvoke({ name: \\"getDate\\", data: {}, namespace: \\"default\\" });
+                return remoteInvoke({ name: "getDate", data: {}, namespace: "default" });
             };
             "
         `);

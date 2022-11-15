@@ -22,7 +22,7 @@ describe("createStaticRoute", () => {
         const res = await request(app).get("/index.html");
         expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
         expect(res.statusCode).toBe(200);
-        expect(res.text).toEqual("Hello World!");
+        expect(res.text).toBe("Hello World!");
     });
 
     it("responds to / with non-existing file", async () => {
@@ -33,9 +33,9 @@ describe("createStaticRoute", () => {
 
         expect(res.text).toMatchInlineSnapshot(`
             "<!DOCTYPE html>
-            <html lang=\\"en\\">
+            <html lang="en">
             <head>
-            <meta charset=\\"utf-8\\">
+            <meta charset="utf-8">
             <title>Error</title>
             </head>
             <body>

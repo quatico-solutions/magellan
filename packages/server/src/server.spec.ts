@@ -78,7 +78,7 @@ describe("setupApp", () => {
 
         expect(actual.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(actual.statusCode).toBe(200);
-        expect(unpackPayload(actual.body)).toEqual("Expected result");
+        expect(unpackPayload(actual.body)).toBe("Expected result");
     });
 
     it("responds with index page w/ staticDir and GET to /", async () => {
@@ -114,13 +114,13 @@ describe("setupApp", () => {
         expect(actual.statusCode).toBe(301);
         expect(actual.text).toMatchInlineSnapshot(`
             "<!DOCTYPE html>
-            <html lang=\\"en\\">
+            <html lang="en">
             <head>
-            <meta charset=\\"utf-8\\">
+            <meta charset="utf-8">
             <title>Redirecting</title>
             </head>
             <body>
-            <pre>Redirecting to <a href=\\"/unexpected/non-existant/\\">/unexpected/non-existant/</a></pre>
+            <pre>Redirecting to <a href="/unexpected/non-existant/">/unexpected/non-existant/</a></pre>
             </body>
             </html>
             "

@@ -8,5 +8,5 @@ import { formdataFetch } from "../transport";
 
 export default {
     namespaces: { default: { endpoint: "/api", transport: "default" } },
-    transports: { default: formdataFetch}
+    transports: { default: formdataFetch },
 };
