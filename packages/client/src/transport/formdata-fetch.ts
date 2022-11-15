@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
-import type { Context } from "../configuration";
+import type { Context } from ".";
 
 export const formdataFetch: TransportHandler = async (func: TransportFunction, ctx: Context): Promise<string> => {
     const { name, payload, namespace, endpoint } = func;

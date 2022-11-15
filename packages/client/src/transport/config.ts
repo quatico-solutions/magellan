@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { formdataFetch } from "../transport";
+import { formdataFetch } from "./formdata-fetch";
 import { Configuration } from "./Configuration";
 
 const config: Configuration = {

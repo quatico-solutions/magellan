@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { Context } from "../configuration";
-import { resolveNamespace } from "../configuration";
+import type { Context } from ".";
+import { resolveNamespace } from ".";
 import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
 
 export const transportRequest = async <O>(
