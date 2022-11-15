@@ -5,7 +5,8 @@
  ---------------------------------------------------------------------------------------------
 -->
 
-# Magellan for TypeScript
+# Magellan 
+[![CI](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml/badge.svg)](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml)  [![npm version](https://badge.fury.io/js/@quatico%2Fmagellan-cli.svg)](https://www.npmjs.com/search?q=%40quatico)
 
 The Magellan project provides compiler tooling and a runtime API for remote execution of
 service functions written in TypeScript.
