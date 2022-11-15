@@ -60,7 +60,7 @@
         "lerna": "~6.0.1",
         "license-check-and-add": "^4.0.5",
         "lint-staged": "^13.0.3",
-        "memfs": "^3.4.0",
+        "memfs": "^3.4.11",
         "nx": "14.4.3",
         "prettier": "1.19.1",
         "regenerator-runtime": "0.13.7",
