@@ -10,17 +10,26 @@ module.exports = {
     collectCoverageFrom: ["./src/**/*.{ts,tsx}"],
     coverageDirectory: "coverage",
     coveragePathIgnorePatterns: ["index.ts", "test/*"],
-    globals: {
-        "ts-jest": {
-            tsconfig: "./tsconfig.test.json",
-        },
-    },
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     testEnvironment: "node",
     testRegex: "(src|test)/.*spec\\.(jsx?|tsx?)$",
     setupFilesAfterEnv: ["<rootDir>/../../jest.setup.ts"],
     transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
+        "^.+\\.(js|jsx|ts|tsx)$": [
+            "@swc/jest",
+            {
+                jsc: {
+                    parser: {
+                        syntax: "typescript",
+                    },
+                    transform: {
+                        react: {
+                            runtime: "automatic",
+                        },
+                    },
+                },
+            },
+        ],
     },
     resetMocks: true,
 };

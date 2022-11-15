@@ -7,6 +7,14 @@
 
 # Releases
 
+## v0.1.5
+
+> TBA
+
+### TBD
+
+- Improvement :gift_heart:: magellan-server has tslib as production dependency to ease integration in custom servers.
+
 ## v0.1.4
 
 > 2022-11-08

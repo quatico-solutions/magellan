@@ -12,13 +12,13 @@ import http from "http";
 import createError from "http-errors";
 import logger from "morgan";
 import multer from "multer";
-import { join, resolve } from "path";
+import { resolve } from "path";
+import { wildcardMiddleware } from "./middlewares";
 import { loadModules } from "./module-loader";
 import { createFunctionRoute, createStaticRoute } from "./routes";
 import { Sdk } from "./sdk";
 
 import cors from "cors";
-import { existsSync } from "fs";
 
 export interface ServerOptions {
     app?: Express;
@@ -38,7 +38,7 @@ export const serve = (options: ServerOptions): void => {
     const app = setupApp(options);
     const server = options.server ?? http.createServer(app);
 
-    server.listen(port, () => console.debug(`magellan serve started on http://localhost:${port}`));
+    server.listen(port, () => console.info(`magellan serve started on http://localhost:${port}`));
 };
 
 export const setupApp = (options: ServerOptions): Application => {
@@ -64,16 +64,7 @@ export const setupApp = (options: ServerOptions): Application => {
     app.use(logger("dev"));
     app.use(cookieParser());
 
-    // Redirects static requests to the static route
-    app.get(/.*/, function (req, res, next) {
-        const { baseUrl, url } = req;
-        const cleanedFilePath = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
-        const staticFilePath = join(staticDir, baseUrl, cleanedFilePath);
-        if (!existsSync(staticFilePath)) {
-            req.url = staticRoute;
-        }
-        next();
-    });
+    app.get(/.*/, [wildcardMiddleware(staticDir, staticRoute)]);
 
     app.use(staticRoute, createStaticRoute(staticDir, staticRoute));
     app.use("/api", createFunctionRoute());

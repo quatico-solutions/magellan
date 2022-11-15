@@ -5,9 +5,13 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import {FunctionService} from "./FunctionService";
-import {transportRequest} from "../transport";
-import {addNamespace} from "../configuration";
+import { FunctionService } from "./FunctionService";
+import { transportRequest } from "../transport";
+import { addNamespace } from "../configuration";
+
+jest.mock("../transport", () => ({
+    formdataFetch: jest.fn(),
+}));
 
 describe("invokeFunction", () => {
     it("calls function with registered function", async () => {
@@ -15,7 +19,7 @@ describe("invokeFunction", () => {
 
         const testObj = new FunctionService().registerFunction("target", target);
 
-        await testObj.invokeFunction({name: "target", data: "expected"});
+        await testObj.invokeFunction({ name: "target", data: "expected" });
 
         expect(target).toHaveBeenCalledWith("expected");
     });
@@ -23,11 +27,11 @@ describe("invokeFunction", () => {
     it("requests remote execution with locally unregistered function", async () => {
         const target = jest.fn();
         const testObj = new FunctionService(target);
-        addNamespace("remote", {endpoint: "/api", transport: "default"});
+        addNamespace("remote", { endpoint: "/api", transport: "default" });
 
-        testObj.invokeFunction({name: "target", data: "expected", namespace: "remote"});
+        testObj.invokeFunction({ name: "target", data: "expected", namespace: "remote" });
 
-        expect(target).toHaveBeenCalledWith({name: "target", data: "expected", namespace: "remote"});
+        expect(target).toHaveBeenCalledWith({ name: "target", data: "expected", namespace: "remote" });
     });
 
     // TODO: This assumption no longer holds until a full function registration with name and namespace becomes available across frontend, node and
@@ -35,7 +39,7 @@ describe("invokeFunction", () => {
     it.skip("throws error with with unknown function", async () => {
         const testObj = new FunctionService();
 
-        expect(() => testObj.invokeFunction({name: "target", data: "expected"})).toThrow(
+        expect(() => testObj.invokeFunction({ name: "target", data: "expected" })).toThrow(
             new Error('Cannot invoke function "target". Function is not registered.')
         );
     });
@@ -55,8 +59,9 @@ describe("registerFunction", () => {
         const target = new Map();
         const expected = jest.fn().mockName("expected");
 
-        new FunctionService(transportRequest, target).registerFunction("expected", jest.fn().mockName("whatever"))
-                                                     .registerFunction("expected", expected);
+        new FunctionService(transportRequest, target)
+            .registerFunction("expected", jest.fn().mockName("whatever"))
+            .registerFunction("expected", expected);
 
         expect(target.get("expected")).toBe(expected);
     });

@@ -9,6 +9,7 @@ module.exports = {
         parallel: 1,
         paths: ["./features"],
         import: ["./lib"],
-        tags: "not @skip"
+        tags: "not @skip",
+        publishQuiet: true
     }
 };

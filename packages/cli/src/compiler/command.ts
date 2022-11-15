@@ -72,7 +72,7 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
 
             Object.entries(args)
                 .filter(([key]) => ["addonsDir", "config", "hostname", "port", "project", "targets"].includes(key))
-                .map(([key, value]) => {
+                .forEach(([key, value]) => {
                     cliArguments.push(`--${key}`, `${value}`);
                 });
 
