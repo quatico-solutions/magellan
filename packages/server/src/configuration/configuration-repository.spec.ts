@@ -4,17 +4,17 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { formdataFetch } from "../transport";
+import { TransportHandler } from "@quatico/magellan-shared";
+import { initDependencyContext } from "../services";
 import { expandConfig, getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { getDefaultConfiguration } from "./default-configuration";
 
-jest.mock("../transport", () => ({
-    formdataFetch: jest.fn(),
-}));
+const defaultTransportHandler: TransportHandler = jest.fn();
 
 beforeEach(() => {
     // @ts-ignore
     global.__qsMagellanServerConfig__ = undefined;
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler });
 });
 
 describe("initProjectConfiguration", () => {
@@ -34,7 +34,10 @@ describe("getDefaultConfig", () => {
     it("should return the minimal default configuration", () => {
         const actual = getDefaultConfiguration();
 
-        expect(actual).toEqual({ namespaces: { default: { endpoint: "/api", transport: "default" } }, transports: { default: formdataFetch } });
+        expect(actual).toEqual({
+            namespaces: { default: { endpoint: "/api", transport: "default" } },
+            transports: { default: defaultTransportHandler },
+        });
     });
 });
 
@@ -52,13 +55,19 @@ describe("expandConfig", () => {
     it("should expand config w/ missing transport", () => {
         const actual = expandConfig({ namespaces: { default: { endpoint: "/expected" } } });
 
-        expect(actual).toEqual({ namespaces: { default: { endpoint: "/expected", transport: "default" } }, transports: { default: formdataFetch } });
+        expect(actual).toEqual({
+            namespaces: { default: { endpoint: "/expected", transport: "default" } },
+            transports: { default: defaultTransportHandler },
+        });
     });
 
     it("should expand config w/ missing namespace", () => {
-        const actual = expandConfig({ transports: { default: formdataFetch } });
+        const actual = expandConfig({ transports: { default: defaultTransportHandler } });
 
-        expect(actual).toEqual({ namespaces: { default: { endpoint: "/api", transport: "default" } }, transports: { default: formdataFetch } });
+        expect(actual).toEqual({
+            namespaces: { default: { endpoint: "/api", transport: "default" } },
+            transports: { default: defaultTransportHandler },
+        });
     });
 
     it("should add default configuration w/ a non-default configuration", () => {
@@ -66,7 +75,7 @@ describe("expandConfig", () => {
 
         expect(actual).toEqual({
             namespaces: { default: { endpoint: "/api", transport: "default" }, fun: { endpoint: "/fun", transport: "default" } },
-            transports: { default: formdataFetch },
+            transports: { default: defaultTransportHandler },
         });
     });
 });

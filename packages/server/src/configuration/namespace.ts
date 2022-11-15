@@ -6,7 +6,7 @@
  */
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { assert } from "@quatico/magellan-shared";
-import { formdataFetch } from "../transport";
+import { getDependencyContext } from "../services";
 import { ServerConfig } from "./Configuration";
 import { getConfiguration, setConfiguration } from "./configuration-repository";
 import { ResolvedNamespace } from "./ResolvedNamespace";
@@ -50,7 +50,7 @@ export const setTransport = (name: string, handler: TransportHandler): void => {
 export const resolveNamespace = (namespace = "default", defaultEndpoint = "/api"): ResolvedNamespace => {
     const config = getConfiguration();
     const resolvedNamespace = config.namespaces[namespace] ?? { endpoint: defaultEndpoint, transport: "default" };
-    const resolvedTransport = config.transports[resolvedNamespace.transport || "default"] ?? formdataFetch;
+    const resolvedTransport = config.transports[resolvedNamespace.transport || "default"] ?? getDependencyContext().defaultTransportHandler;
     return { name: namespace, endpoint: resolvedNamespace.endpoint, transport: resolvedTransport };
 };
 

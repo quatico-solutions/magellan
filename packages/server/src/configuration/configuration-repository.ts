@@ -8,7 +8,7 @@
 /* eslint-disable no-var */
 import type { ExecutionContext, NamespaceMapping, TransportFunction } from "@quatico/magellan-shared";
 import { serialize, unpackObject } from "@quatico/magellan-shared";
-import { getFunctionService } from "../services";
+import { getDependencyContext, getFunctionService } from "../services";
 import { Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
@@ -31,7 +31,7 @@ export const setConfiguration = (config: Configuration): Configuration => {
 export const applyExecutionContext = (context: Partial<ExecutionContext>) => {
     const config = getConfiguration();
     const remappedTransport = async (func: TransportFunction): Promise<string> => {
-        const response = await getFunctionService().invokeFunction({
+        const response = await getFunctionService(getDependencyContext().defaultTransportRequest).invokeFunction({
             name: func.name,
             data: unpackObject(JSON.parse(func.payload)),
             namespace: func.namespace,

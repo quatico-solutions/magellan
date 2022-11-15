@@ -5,19 +5,20 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { FunctionService } from "./FunctionService";
-import { transportRequest } from "../transport";
 import { addNamespace } from "../configuration";
-
-jest.mock("../transport", () => ({
-    formdataFetch: jest.fn(),
-}));
+import { transportRequest } from "../transport";
+import { initDependencyContext } from "./DependencyContext";
+import { FunctionService } from "./FunctionService";
 
 describe("invokeFunction", () => {
+    beforeAll(() => {
+        initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
+    });
+    
     it("calls function with registered function", async () => {
         const target = jest.fn();
 
-        const testObj = new FunctionService().registerFunction("target", target);
+        const testObj = new FunctionService(jest.fn()).registerFunction("target", target);
 
         await testObj.invokeFunction({ name: "target", data: "expected" });
 
@@ -37,7 +38,7 @@ describe("invokeFunction", () => {
     // TODO: This assumption no longer holds until a full function registration with name and namespace becomes available across frontend, node and
     // java both for manually and automatically registered functions!
     it.skip("throws error with with unknown function", async () => {
-        const testObj = new FunctionService();
+        const testObj = new FunctionService(jest.fn());
 
         expect(() => testObj.invokeFunction({ name: "target", data: "expected" })).toThrow(
             new Error('Cannot invoke function "target". Function is not registered.')
@@ -67,10 +68,12 @@ describe("registerFunction", () => {
     });
 
     it("throws error with invalid function", () => {
-        expect(() => new FunctionService().registerFunction("expected", null as any)).toThrow(new Error('Function "expected" is not a function.'));
+        expect(() => new FunctionService(jest.fn()).registerFunction("expected", null as any)).toThrow(
+            new Error('Function "expected" is not a function.')
+        );
     });
 
     it("throws error with invalid function name", () => {
-        expect(() => new FunctionService().registerFunction("", jest.fn())).toThrow(new Error("Cannot register function without a name."));
+        expect(() => new FunctionService(jest.fn()).registerFunction("", jest.fn())).toThrow(new Error("Cannot register function without a name."));
     });
 });

@@ -4,8 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-export { getDependencyContext, initDependencyContext } from "./DependencyContext";
-export type { DependencyContext } from "./DependencyContext";
-export { externalFunctionInvoke } from "./external-invocation";
-export { FunctionService, getFunctionService } from "./FunctionService";
-export type { ServerFunction } from "./ServerFunction";
+import { RemoteFunction, Serialization } from "@quatico/magellan-shared";
+import type { Context } from "./Context";
+
+export type TransportRequest = <O>(func: RemoteFunction, ctx?: Context, serialization?: Serialization) => Promise<O>;

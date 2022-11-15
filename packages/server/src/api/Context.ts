@@ -4,9 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { formdataFetch } from "../transport";
+import { Headers } from "node-fetch";
 
-export default {
-    namespaces: { default: { endpoint: "/api", transport: "default" } },
-    transports: { default: formdataFetch },
-};
+export interface Context {
+    headers: Headers;
+}

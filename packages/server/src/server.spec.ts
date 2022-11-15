@@ -10,6 +10,7 @@ import { resolve } from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
 import { handleError, normalizePort, serve, setupApp } from "./server";
+import { initDependencyContext } from "./services";
 
 beforeAll(() => {
     function formDataMock() {
@@ -18,6 +19,7 @@ beforeAll(() => {
     }
     // @ts-ignore
     global.FormData = formDataMock;
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
 describe("serve", () => {

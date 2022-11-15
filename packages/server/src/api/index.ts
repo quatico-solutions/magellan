@@ -4,8 +4,6 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import {Headers} from "node-fetch";
 
-export interface Context {
-    headers: Headers;
-}
+export type { Context } from "./Context";
+export type { TransportRequest } from "./TransportRequest";

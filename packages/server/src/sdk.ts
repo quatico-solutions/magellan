@@ -6,6 +6,7 @@
  */
 
 import type { ExecutionContext, NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
+import { TransportRequest } from "./api";
 import {
     addNamespace,
     addNamespaceIfAbsent,
@@ -13,12 +14,30 @@ import {
     addTransportIfAbsent,
     applyExecutionContext,
     setNamespace,
-    setTransport,
+    setTransport
 } from "./configuration";
-import { FunctionService, getFunctionService, ServerFunction } from "./services";
+import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
+import { formdataFetch, transportRequest } from "./transport";
+
+
+export type DefaultSdkParameters = {
+    functionService?: FunctionService;
+    defaultTransportRequest?: TransportRequest;
+    defaultTransportHandler?: TransportHandler;
+};
 
 export class Sdk {
-    constructor(private service: FunctionService = getFunctionService()) {}
+    private service: FunctionService;
+
+    constructor(defaultParameters?: DefaultSdkParameters) {
+        const {
+            defaultTransportRequest = transportRequest,
+            defaultTransportHandler = formdataFetch,
+            functionService: service = getFunctionService(defaultTransportRequest),
+        } = defaultParameters ?? {};
+        initDependencyContext({ defaultTransportRequest, defaultTransportHandler });
+        this.service = service;
+    }
 
     public registerFunction<I, O>(name: string, fn: ServerFunction<I, O>): this {
         this.service.registerFunction(name, fn);

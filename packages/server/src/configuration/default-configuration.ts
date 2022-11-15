@@ -4,12 +4,14 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { formdataFetch } from "../transport";
-import config from "./config";
+import { getDependencyContext } from "../services";
 import { Configuration } from "./Configuration";
 
 export const getDefaultConfiguration = () => {
-    return completeConfig(config);
+    return completeConfig({
+        namespaces: { default: { endpoint: "/api", transport: "default" } },
+        transports: { default: getDependencyContext().defaultTransportHandler },
+    });
 };
 
 export const completeConfig = (config: Configuration): Configuration => {
@@ -20,6 +22,8 @@ export const completeConfig = (config: Configuration): Configuration => {
                 !mapping.endpoint ? { endpoint: "/api", transport: mapping.transport } : mapping,
             ])
         ),
-        transports: Object.fromEntries(Object.entries(config.transports ?? []).map(([name, transport]) => [name, transport ?? formdataFetch])),
+        transports: Object.fromEntries(
+            Object.entries(config.transports ?? []).map(([name, transport]) => [name, transport ?? getDependencyContext().defaultTransportHandler])
+        ),
     };
 };
