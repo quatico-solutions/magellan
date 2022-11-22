@@ -14,7 +14,7 @@ export const readE2eTestData = ({ name, dataType = "json" }: { name: string; dat
 
 export const resolvedTestDataPath = (packageName: string) => {
     const testSubPath = join("test", "__data__");
-    const path = resolve(join(".", testSubPath));
+    const path = resolve(testSubPath);
     return path.includes(join("qs-magellan", testSubPath))
         ? path.replace(join("qs-magellan", testSubPath), join("qs-magellan", "packages", packageName, testSubPath))
         : path;

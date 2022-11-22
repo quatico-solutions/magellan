@@ -6,7 +6,7 @@
  */
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { assert } from "@quatico/magellan-shared";
-import { formdataFetch } from ".";
+import { formdataFetch } from "./formdata-fetch";
 import { getConfiguration } from "./configuration-repository";
 import { ResolvedNamespace } from "./ResolvedNamespace";
 
