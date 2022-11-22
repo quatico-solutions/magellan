@@ -8,11 +8,13 @@
 import { packInput, serialize } from "@quatico/magellan-shared";
 import { Headers } from "node-fetch";
 import { addNamespace, addTransport, initProjectConfiguration } from "../configuration";
+import { initDependencyContext } from "../services";
 import { transportRequest } from "./transport-request";
 
 const transportHandler = jest.fn();
 
 beforeAll(() => {
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: transportHandler });
     addTransport("test", transportHandler);
     addNamespace("test", { endpoint: "/api", transport: "test" });
 });

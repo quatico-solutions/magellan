@@ -5,7 +5,12 @@
  * ---------------------------------------------------------------------------------------------
  */
 
+import { initDependencyContext } from "../services";
 import { completeConfig } from "./default-configuration";
+
+beforeAll(() => {
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
+});
 
 describe("completeConfig", () => {
     it("should complete a missing namespaces entry", () => {

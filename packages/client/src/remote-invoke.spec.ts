@@ -5,9 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { packInput, serialize } from "@quatico/magellan-shared";
-import { initProjectConfiguration } from "./configuration";
 import { remoteInvoke } from "./remote-invoke";
-import { formdataFetch } from "./transport";
+import { formdataFetch, initProjectConfiguration } from "./transport";
 
 let formAppend: jest.Mock;
 let formSet: jest.Mock;

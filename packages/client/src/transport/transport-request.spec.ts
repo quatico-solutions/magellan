@@ -6,7 +6,7 @@
  */
 
 import { packInput, serialize } from "@quatico/magellan-shared";
-import { initProjectConfiguration } from "../configuration";
+import { initProjectConfiguration } from "./configuration-repository";
 import { formdataFetch } from "./formdata-fetch";
 import { transportRequest } from "./transport-request";
 

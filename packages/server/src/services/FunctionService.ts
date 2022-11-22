@@ -5,11 +5,11 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { RemoteFunction } from "@quatico/magellan-shared";
-import { transportRequest } from "../transport";
+import { TransportRequest } from "../api";
 import { ServerFunction } from "./ServerFunction";
 
 export class FunctionService {
-    constructor(private transport = transportRequest, private functions: Map<string, ServerFunction> = new Map()) {}
+    constructor(private transport: TransportRequest, private functions: Map<string, ServerFunction> = new Map()) {}
 
     public registerFunction<I, O>(name: string, fn: ServerFunction<I, O>): this {
         if (!fn) {
@@ -35,4 +35,5 @@ declare global {
     var functionService: FunctionService;
 }
 
-export const getFunctionService = () => global.functionService ?? (global.functionService = new FunctionService());
+export const getFunctionService = (defaultTransportRequest: TransportRequest) =>
+    global.functionService ?? (global.functionService = new FunctionService(defaultTransportRequest));

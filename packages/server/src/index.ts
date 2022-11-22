@@ -5,7 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import type { Configuration, Context } from "./configuration";
+import type { Context } from "./api";
+import type { Configuration } from "./configuration";
 import {
     addNamespace,
     addNamespaceIfAbsent,

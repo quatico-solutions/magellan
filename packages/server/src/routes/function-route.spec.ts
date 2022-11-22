@@ -4,20 +4,22 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import {unpackPayload} from "@quatico/magellan-shared";
-import express, {Express} from "express";
+import { unpackPayload } from "@quatico/magellan-shared";
+import express, { Express } from "express";
 import multer from "multer";
 import request from "supertest";
-import {Sdk} from "../sdk";
-import {createFunctionRoute} from "./function-route";
+import { Sdk } from "../sdk";
+import { initDependencyContext } from "../services";
+import { createFunctionRoute } from "./function-route";
 
 beforeAll(() => {
     function formDataMock() {
-        return {append: jest.fn()};
+        return { append: jest.fn() };
     }
 
     // @ts-ignore access custom global object
     global.FormData = formDataMock;
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
 describe("createStaticRoute", () => {
@@ -34,7 +36,7 @@ describe("createStaticRoute", () => {
             .post("/api")
             .set("Accept", "application/json")
             .field("name", "expected")
-            .field("data", JSON.stringify({input: "whatever"}));
+            .field("data", JSON.stringify({ input: "whatever" }));
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(unpackPayload(res.body)).toBe("Hello World!");
@@ -58,10 +60,10 @@ describe("createStaticRoute", () => {
             .post("/api")
             .set("Accept", "application/json")
             .field("name", "expected")
-            .field("data", JSON.stringify({input: "whatever"}));
+            .field("data", JSON.stringify({ input: "whatever" }));
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
-        const {error, message} = unpackPayload(res.body) as { error: string; message: string };
+        const { error, message } = unpackPayload(res.body) as { error: string; message: string };
         expect(message).toBe('Function request to "expected" failed.');
         expect(error.toString()).toBe("expected error message");
         expect(res.error.toString()).toBe("Error: cannot POST /api (500)");
@@ -77,11 +79,11 @@ describe("createStaticRoute", () => {
             .post("/api")
             .set("Accept", "application/json")
             .field("name", "unknown")
-            .field("data", JSON.stringify({input: "whatever"}));
+            .field("data", JSON.stringify({ input: "whatever" }));
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         expect(res.statusCode).toBe(500);
-        const {error, message} = unpackPayload(res.body) as { error: string; message: string };
+        const { error, message } = unpackPayload(res.body) as { error: string; message: string };
         expect(message).toBe('Function request to "unknown" failed.');
         expect(error.toString()).toBe('Cannot invoke function "unknown". Function is not registered.');
         expect(res.error.toString()).toBe("Error: cannot POST /api (500)");

@@ -7,7 +7,7 @@
 
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { deserialize, serialize } from "@quatico/magellan-shared";
-import type { Configuration, Context } from "./configuration";
+import type { Configuration, Context } from "./transport";
 import {
     addNamespace,
     addNamespaceIfAbsent,
@@ -17,7 +17,7 @@ import {
     resolveNamespace,
     setNamespace,
     setTransport,
-} from "./configuration";
+} from "./transport";
 import { remoteInvoke } from "./remote-invoke";
 import { Sdk } from "./sdk";
 

@@ -4,12 +4,14 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import { initDependencyContext } from "../services";
 import { getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, setNamespace, setTransport } from "./namespace";
 
 const defaultTransport = jest.fn();
 
 beforeEach(() => {
+    initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: defaultTransport });
     initProjectConfiguration({ namespaces: { default: { endpoint: "/api", transport: "default" } }, transports: { default: defaultTransport } });
 });
 

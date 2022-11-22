@@ -4,9 +4,9 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { formdataFetch } from "../transport";
 import config from "./config";
 import { Configuration } from "./Configuration";
+import { formdataFetch } from "./formdata-fetch";
 
 export const getDefaultConfiguration = (): Configuration => {
     return completeConfig(config);

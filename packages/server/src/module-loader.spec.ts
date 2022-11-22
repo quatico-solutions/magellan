@@ -26,11 +26,7 @@ describe("loadModules", () => {
 
         loadModules(
             "./folder",
-            jest
-                .fn()
-                .mockReturnValueOnce({ zip: jest.fn() })
-                .mockReturnValueOnce({ zap: jest.fn() })
-                .mockReturnValueOnce({ zup: jest.fn() }) as any,
+            jest.fn().mockReturnValueOnce({ zip: jest.fn() }).mockReturnValueOnce({ zap: jest.fn() }).mockReturnValueOnce({ zup: jest.fn() }) as any,
             target
         );
 
