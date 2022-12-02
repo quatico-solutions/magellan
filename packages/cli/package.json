@@ -40,8 +40,8 @@
         "publish-npm": "npm publish --access public"
     },
     "dependencies": {
-        "@quatico/magellan-client": "^0.1.4",
-        "@quatico/magellan-server": "^0.1.4",
+        "@quatico/magellan-client": "0.1.4",
+        "@quatico/magellan-server": "0.1.4",
         "@quatico/websmith-api": "^0.2.2",
         "@quatico/websmith-cli": "^0.2.2",
         "@quatico/websmith-compiler": "^0.2.2",
