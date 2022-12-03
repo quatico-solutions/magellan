@@ -34,7 +34,7 @@
         "publish-npm": "npm publish --access public"
     },
     "dependencies": {
-        "@quatico/magellan-shared": "^0.1.4",
+        "@quatico/magellan-shared": "0.1.4",
         "ajv": "8.9.0",
         "cookie-parser": "~1.4.4",
         "cors": "2.8.5",

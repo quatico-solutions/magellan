@@ -26,6 +26,6 @@
         "install": "mvn dependency:tree"
     },
     "devDependencies": {
-        "@quatico/magellan-shared": "^0.1.4"
+        "@quatico/magellan-shared": "0.1.4"
     }
 }
