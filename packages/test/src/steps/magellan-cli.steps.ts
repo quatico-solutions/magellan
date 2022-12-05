@@ -1,13 +1,15 @@
+import { After, Before, Given, Then, When } from "@cucumber/cucumber";
+import assert from "assert";
 import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { basename, extname, isAbsolute, join, resolve } from "path";
 import { Cli } from "../cli";
-import { After, Before, Given, Then, When } from "@cucumber/cucumber";
-import assert from "assert";
 
-type CliOperation = "compile";
+type CliOperation = "compile" | "serve";
 let previousPath = ".";
 const targetDirectory = resolve("output", "project");
 const dataPath = resolve("test", "__data__");
+let remoteInvokeResult: unknown;
+let remoteInvokeError: unknown;
 let projectDirectory: string = targetDirectory;
 
 Given(/^valid TypeScript project directory was created$/, () => {
@@ -43,23 +45,60 @@ When(/^CLI command "(.*)" is called without arguments$/, async (cliOperation: Cl
     process.chdir(targetDirectory);
     // eslint-disable-next-line no-console
     console.warn(`Current working directory: ${process.cwd()}`);
-    return cliOperation === "compile" ? new Cli().executeCompile({}) : Promise.reject(`Unsupported cli operation ${cliOperation}`);
+    switch (cliOperation) {
+        case "compile":
+            return new Cli().executeCompile({});
+        case "serve":
+            return new Cli().executeServe({ command: { args: "-s ./lib/server ./lib/client " } });
+        default:
+            return Promise.reject(`Unsupported cli operation ${cliOperation}`);
+    }
 });
 
 When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation: CliOperation, args: string) => {
     process.chdir(targetDirectory);
-    return cliOperation === "compile"
-        ? new Cli().executeCompile({
-              command: {
-                  args: args !== "" ? args.replaceAll(/<projectDir>/g, targetDirectory) : undefined,
-                  cwd: resolve(targetDirectory),
-              },
-          })
-        : Promise.reject(`Unsupported cli operation ${cliOperation}`);
+
+    switch (cliOperation) {
+        case "compile":
+            return new Cli().executeCompile({
+                command: {
+                    args: args !== "" ? args.replaceAll(/<projectDir>/g, targetDirectory) : undefined,
+                    cwd: resolve(targetDirectory),
+                },
+            });
+        case "serve":
+            return new Cli().executeServe({
+                command: {
+                    // args must include at least "-s ./lib/server ./lib/client "
+                    args: args !== "" ? args.replaceAll(/<projectDir>/g, targetDirectory) : undefined,
+                    cwd: resolve(targetDirectory),
+                },
+            });
+        default:
+            return Promise.reject(`Unsupported cli operation ${cliOperation}`);
+    }
+});
+
+When("the function {string} is invoked", async function (functionName: string) {
+    // Write code here that turns the phrase above into concrete actions
+    try {
+        const module = await import(join(process.cwd(), "lib", "client", functionName));
+        remoteInvokeResult = await module[functionName]();
+    } catch (e) {
+        remoteInvokeError = e;
+    }
 });
 
 Then(/^directory "(.*)" contains file "(.*)"$/, (directory, fileName) => {
     assert.equal(existsSync(resolve(targetDirectory, directory, fileName)), true, `Directory ${directory} should contain file ${fileName}`);
+});
+
+Then("the promise is resolved with {string}.", function (result: string) {
+    assert.equal(JSON.parse(result), remoteInvokeResult);
+});
+
+Then("the promise is rejected with message {string}.", function (message: string) {
+    assert.equal(message, remoteInvokeError);
 });
 
 Before(() => {
