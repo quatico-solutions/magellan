@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { packInput, serialize } from "@quatico/magellan-shared";
+import { packInput } from "@quatico/magellan-shared";
 import { initProjectConfiguration } from "./configuration-repository";
 import { formdataFetch } from "./formdata-fetch";
 import { transportRequest } from "./transport-request";
@@ -33,7 +33,7 @@ describe("transportRequest", () => {
     });
 
     it("calls fetch passing serialized input parameters with simple object", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize(target) }));
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput(target) }));
         const target = { data: "whatever" };
 
         await transportRequest({ name: "whatever", data: target });
@@ -53,7 +53,7 @@ describe("transportRequest", () => {
 
     it("calls fetch using no input parameter w/o data property", async () => {
         const target = {};
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize(target) }));
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput(target) }));
 
         await transportRequest({ name: "whatever" });
 
@@ -72,7 +72,7 @@ describe("transportRequest", () => {
 
     it("calls deserialize passing result from fetch", async () => {
         global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => Buffer.from("expected") }));
-        const target = jest.fn();
+        const target = jest.fn().mockImplementation(value => value);
 
         await transportRequest(
             { name: "whatever", data: "whatever" },
@@ -87,7 +87,7 @@ describe("transportRequest", () => {
     });
 
     it("calls serialize passing result from fetch", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize("expected") }));
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("expected") }));
         const target = jest.fn();
 
         await transportRequest(
@@ -95,7 +95,7 @@ describe("transportRequest", () => {
             { headers: {} },
             {
                 serialize: target,
-                deserialize: jest.fn(),
+                deserialize: jest.fn().mockImplementation(value => value),
             }
         );
 
@@ -103,7 +103,7 @@ describe("transportRequest", () => {
     });
 
     it("calls fetch passing function name from input", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize("whatever") }));
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("whatever") }));
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/api" } },
             transports: { default: formdataFetch },
@@ -132,7 +132,7 @@ describe("transportRequest", () => {
     });
 
     it("calls fetch w/ baseUrl, servicePath", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize("whatever") }));
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("whatever") }));
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/expected/path/function" } },
             transports: { default: formdataFetch },

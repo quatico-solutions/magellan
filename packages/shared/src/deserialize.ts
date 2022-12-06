@@ -8,14 +8,12 @@
 import { ResponsePayload } from "./transport";
 import { isSerializedComplexType, SerializedComplexType, SerializedTypes } from "./types";
 
-export const deserialize = <O>(jsonData: string): O => {
-    const { data } = unpackObject(JSON.parse(jsonData)) as ResponsePayload;
-    return data as O;
+export const deserialize = <O>(jsonData: string): ResponsePayload<O> => {
+    return unpackObject(JSON.parse(jsonData)) as ResponsePayload<O>;
 };
 
-export const unpackPayload = <O = unknown>(payload: ResponsePayload): O => {
-    const { data } = unpackObject(payload) as ResponsePayload;
-    return data as O;
+export const unpackPayload = <O>(payload: unknown): ResponsePayload<O> => {
+    return unpackObject(payload) as ResponsePayload<O>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

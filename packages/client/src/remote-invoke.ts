@@ -4,8 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { RemoteFunction, Serialization } from "@quatico/magellan-shared";
-import { deserialize, packInput } from "@quatico/magellan-shared";
+import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
 import type { Context } from "./transport";
 import { transportRequest } from "./transport";
 

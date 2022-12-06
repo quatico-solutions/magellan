@@ -13,8 +13,9 @@ import {
     addTransport,
     addTransportIfAbsent,
     applyExecutionContext,
+    getConfiguration,
     setNamespace,
-    setTransport,
+    setTransport
 } from "./configuration";
 import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
 import { formdataFetch, transportRequest } from "./transport";
@@ -36,6 +37,11 @@ export class Sdk {
         } = defaultParameters ?? {};
         initDependencyContext({ defaultTransportRequest, defaultTransportHandler });
         this.service = service;
+    }
+
+    public init() {
+        // eslint-disable-next-line no-console
+        console.info(`Initialize Sdk with configuration: `, getConfiguration());
     }
 
     public registerFunction<I, O>(name: string, fn: ServerFunction<I, O>): this {

@@ -71,7 +71,7 @@ describe("remoteInvoke", () => {
 
     it("calls deserialize passing result from fetch", async () => {
         global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => Buffer.from("expected") }));
-        const target = jest.fn();
+        const target = jest.fn().mockImplementation(value => value);
 
         await remoteInvoke(
             { name: "whatever", data: "whatever" },
@@ -94,7 +94,7 @@ describe("remoteInvoke", () => {
             { headers: {} },
             {
                 serialize: target,
-                deserialize: jest.fn(),
+                deserialize: jest.fn().mockImplementation(value => value),
             }
         );
 

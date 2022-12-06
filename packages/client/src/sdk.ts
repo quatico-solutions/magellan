@@ -6,9 +6,13 @@
  */
 
 import { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, setNamespace, setTransport } from "./transport";
+import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, getConfiguration, setNamespace, setTransport } from "./transport";
 
 export class Sdk {
+    public init() {
+        // eslint-disable-next-line no-console
+        console.info(`Initialize Sdk with configuration: `, getConfiguration());
+    }
     public addNamespace(name: string, mapping: NamespaceMapping): this | never {
         addNamespace(name, mapping);
         return this;

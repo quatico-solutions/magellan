@@ -79,10 +79,17 @@ When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation
     }
 });
 
-When("the function {string} is invoked", async function (functionName: string) {
+When("the function {string} is invoked", { timeout: 60 * 1000 }, async function (functionName: string) {
     // Write code here that turns the phrase above into concrete actions
     try {
         const module = await import(join(process.cwd(), "lib", "client", functionName));
+        // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
+        // Also, because it is node that executes it, we must use the servers default transport on the frontend to have it use node-fetch!
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (global as any).__qsMagellanConfig__ = {
+            namespaces: { default: { endpoint: "http://localhost:3000/api" } },
+            transports: global.__qsMagellanServerConfig__.transports,
+        };
         remoteInvokeResult = await module[functionName]();
     } catch (e) {
         remoteInvokeError = e;

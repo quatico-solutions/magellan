@@ -27,7 +27,7 @@ export const createHeaders = ({ headers }: { headers: Record<string, string> } =
     return headers;
 };
 
-export const createFormData = ({ name, payload, namespace }: { name: string; payload: string; namespace: string }): FormData => {
+export const createFormData = ({ name, payload, namespace }: TransportFunction): FormData => {
     const formData = new FormData();
     formData.set("name", name);
     formData.set("data", payload);

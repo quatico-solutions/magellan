@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { packInput, serialize } from "@quatico/magellan-shared";
+import { serialize } from "@quatico/magellan-shared";
 import { addNamespace, addTransport, initProjectConfiguration } from "../configuration";
 import { initDependencyContext } from "../services";
 import { transportRequest } from "./transport-request";
@@ -36,7 +36,7 @@ describe("transportRequest", () => {
 
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
-            { endpoint: "/api", payload: packInput(target), name: "whatever", namespace: "test" },
+            { endpoint: "/api", payload: serialize(target), name: "whatever", namespace: "test" },
             { headers: {} }
         );
     });
@@ -49,14 +49,14 @@ describe("transportRequest", () => {
 
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
-            { endpoint: "/api", payload: packInput(target), name: "whatever", namespace: "test" },
+            { endpoint: "/api", payload: serialize(target), name: "whatever", namespace: "test" },
             { headers: {} }
         );
     });
 
     it("calls deserialize passing result from fetch", async () => {
-        transportHandler.mockReturnValue(Buffer.from("expected"));
-        const target = jest.fn();
+        transportHandler.mockReturnValue({ data: Buffer.from("expected") });
+        const target = jest.fn().mockImplementation(value => value);
 
         await transportRequest(
             { name: "whatever", data: "whatever", namespace: "test" },
@@ -67,11 +67,11 @@ describe("transportRequest", () => {
             }
         );
 
-        expect(target).toHaveBeenCalledWith(Buffer.from("expected"));
+        expect(target).toHaveBeenCalledWith({ data: Buffer.from("expected") });
     });
 
     it("calls serialize passing result from fetch", async () => {
-        transportHandler.mockReturnValue(serialize("expected"));
+        transportHandler.mockReturnValue({ data: serialize("expected") });
         const target = jest.fn();
 
         await transportRequest(
@@ -79,7 +79,7 @@ describe("transportRequest", () => {
             { headers: {} },
             {
                 serialize: target,
-                deserialize: jest.fn(),
+                deserialize: jest.fn().mockImplementation(value => value),
             }
         );
 
@@ -165,6 +165,6 @@ describe("transportRequest", () => {
 
         const actual = transportRequest({ name: "whatever", data: "whatever", namespace: "test" });
 
-        await expect(actual).rejects.toThrow('Cannot deserialize response from remote function: "whatever".');
+        await expect(actual).rejects.toThrow('Cannot deserialize response from invoke function: "whatever".');
     });
 });

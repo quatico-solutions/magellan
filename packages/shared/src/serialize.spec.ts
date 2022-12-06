@@ -6,7 +6,7 @@
  */
 
 import { readE2eTestData } from "../../../jest.setup";
-import { packInput, packObject, serialize } from "./serialize";
+import { packInput, packObject, serialize, serializeError } from "./serialize";
 import { ResponsePayload } from "./transport";
 
 describe("serialize", () => {
@@ -39,6 +39,15 @@ describe("serialize", () => {
                 })
             )
         );
+    });
+});
+describe("serializeError", () => {
+    it("serializes an error", () => {
+        const expected = { message: "expected message", error: "expected error" };
+
+        const actual = serializeError(expected);
+
+        expect(actual).toEqual(JSON.stringify({ error: expected }));
     });
 });
 

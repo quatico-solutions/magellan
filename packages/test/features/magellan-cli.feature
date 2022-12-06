@@ -41,7 +41,6 @@ Feature: Magellan CLI commands
             And directory "lib/server" contains file "foobar.js"
             And directory "lib/server" contains file "foobar.d.ts"
 
-    # @skip
     Scenario: Serve command is called with valid pure function project configuration
     This scenario should pass successfully to address https://github.com/quatico-solutions/magellan/issues/26
         Given valid TypeScript project directory was created
