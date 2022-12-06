@@ -5,13 +5,12 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
-import { Headers } from "node-fetch";
 import type { Context } from "../api";
 import { resolveNamespace } from "../configuration";
 
 export const transportRequest = async <O>(
     func: RemoteFunction,
-    ctx: Context = { headers: new Headers() },
+    ctx: Context = { headers: {} },
     serialization: Serialization = { serialize: packInput, deserialize }
 ): Promise<O> => {
     const { name, data = {}, namespace = "default" } = func;

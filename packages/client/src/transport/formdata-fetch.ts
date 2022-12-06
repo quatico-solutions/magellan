@@ -8,26 +8,22 @@ import { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
 import type { Context } from "./Context";
 
 export const formdataFetch: TransportHandler = async (func: TransportFunction, ctx: Context): Promise<string> => {
-    const { name, payload, namespace, endpoint } = func;
+    const { name, endpoint } = func;
 
     if (!name) {
         throw new Error('Cannot invoke remote function without "name" property.');
     }
 
     try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            body: createFormData({ name, payload, namespace }),
-            headers: createHeaders({ headers: ctx.headers }),
-        });
+        const response = await fetch(endpoint, { method: "POST", body: createFormData(func), headers: createHeaders({ headers: ctx.headers }) });
         return await response.text();
     } catch (err) {
         throw new Error(`Cannot invoke remote function: "${name}". Reason: "${err}".`);
     }
 };
 
-export const createHeaders = ({ headers }: { headers: Headers } = { headers: new Headers() }) => {
-    headers.set("Accept", "application/json");
+export const createHeaders = ({ headers }: { headers: Record<string, string> } = { headers: {} }) => {
+    headers["Accept"] = "application/json";
     return headers;
 };
 

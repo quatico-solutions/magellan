@@ -12,13 +12,9 @@ import { transportRequest } from "./transport-request";
 
 let formAppend: jest.Mock;
 let formSet: jest.Mock;
-let headerAppend: jest.Mock;
-let headerSet: jest.Mock;
 beforeAll(() => {
     formAppend = jest.fn();
     formSet = jest.fn();
-    headerAppend = jest.fn();
-    headerSet = jest.fn();
 
     function formDataMock() {
         // @ts-ignore
@@ -28,15 +24,6 @@ beforeAll(() => {
     }
     // @ts-ignore
     global.FormData = formDataMock;
-
-    function headerMock() {
-        // @ts-ignore
-        this.append = headerAppend;
-        // @ts-ignore
-        this.set = headerSet;
-    }
-    // @ts-ignore
-    global.Headers = headerMock;
 });
 
 describe("transportRequest", () => {
@@ -54,7 +41,7 @@ describe("transportRequest", () => {
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith(`/api`, {
             body: expect.any(FormData),
-            headers: expect.any(Headers),
+            headers: expect.anything(),
             method: "POST",
         });
 
@@ -73,7 +60,7 @@ describe("transportRequest", () => {
         expect(global.fetch).toHaveBeenCalledTimes(1);
         expect(global.fetch).toHaveBeenCalledWith(`/api`, {
             body: expect.any(FormData),
-            headers: expect.any(Headers),
+            headers: expect.anything(),
             method: "POST",
         });
 
@@ -89,7 +76,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: jest.fn(),
                 deserialize: target,
@@ -105,7 +92,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "expected" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: target,
                 deserialize: jest.fn(),
@@ -124,7 +111,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "expected", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: val => JSON.stringify(val),
                 deserialize: val => JSON.parse(val),
@@ -134,7 +121,7 @@ describe("transportRequest", () => {
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith(`http://expected-host:3000/api`, {
             body: expect.any(FormData),
-            headers: expect.any(Headers),
+            headers: expect.anything(),
             method: "POST",
         });
 
@@ -153,7 +140,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "target", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: val => JSON.stringify(val),
                 deserialize: val => JSON.parse(val),
@@ -163,7 +150,7 @@ describe("transportRequest", () => {
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith(`http://expected-host:3000/expected/path/function`, {
             body: expect.any(FormData),
-            headers: expect.any(Headers),
+            headers: expect.anything(),
             method: "POST",
         });
 
@@ -184,7 +171,7 @@ describe("transportRequest", () => {
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: () => {
                     throw new Error("expected");

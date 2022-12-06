@@ -6,7 +6,6 @@
  */
 
 import { packInput, serialize } from "@quatico/magellan-shared";
-import { Headers } from "node-fetch";
 import { addNamespace, addTransport, initProjectConfiguration } from "../configuration";
 import { initDependencyContext } from "../services";
 import { transportRequest } from "./transport-request";
@@ -38,7 +37,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "/api", payload: packInput(target), name: "whatever", namespace: "test" },
-            { headers: new Headers() }
+            { headers: {} }
         );
     });
 
@@ -51,7 +50,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "/api", payload: packInput(target), name: "whatever", namespace: "test" },
-            { headers: new Headers() }
+            { headers: {} }
         );
     });
 
@@ -61,7 +60,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "whatever", namespace: "test" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: jest.fn(),
                 deserialize: target,
@@ -77,7 +76,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "expected", namespace: "test" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: target,
                 deserialize: jest.fn(),
@@ -96,7 +95,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "expected", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: (val: unknown) => JSON.stringify(val),
                 deserialize: (val: string) => JSON.parse(val),
@@ -106,7 +105,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "http://expected-host:3000/api", payload: JSON.stringify("whatever"), name: "expected", namespace: "default" },
-            { headers: new Headers() }
+            { headers: {} }
         );
     });
 
@@ -119,7 +118,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "target", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: (val: unknown) => JSON.stringify(val),
                 deserialize: (val: string) => JSON.parse(val),
@@ -134,7 +133,7 @@ describe("transportRequest", () => {
                 name: "target",
                 namespace: "default",
             },
-            { headers: new Headers() }
+            { headers: {} }
         );
     });
 
@@ -149,7 +148,7 @@ describe("transportRequest", () => {
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },
-            { headers: new Headers() },
+            { headers: {} },
             {
                 serialize: () => {
                     throw new Error("expected");

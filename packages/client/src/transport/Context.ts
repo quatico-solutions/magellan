@@ -5,5 +5,5 @@
  * ---------------------------------------------------------------------------------------------
  */
 export interface Context {
-    headers: Headers;
+    headers: Record<string, string>;
 }

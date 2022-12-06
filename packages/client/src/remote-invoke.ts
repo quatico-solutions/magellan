@@ -11,7 +11,7 @@ import { transportRequest } from "./transport";
 
 export const remoteInvoke = async <O>(
     func: RemoteFunction,
-    ctx: Context = { headers: new Headers() },
+    ctx: Context = { headers: {} },
     serialization: Serialization = { serialize: packInput, deserialize }
 ): Promise<O> => {
     return transportRequest(func, ctx, serialization);
