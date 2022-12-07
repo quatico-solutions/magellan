@@ -1,5 +1,4 @@
-
 // @service()
-export const foobar  = async (echo: unknown) => {
+export const echo = async (echo: unknown) => {
     return echo;
-}
+};
