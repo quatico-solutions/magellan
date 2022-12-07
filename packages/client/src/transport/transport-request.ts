@@ -32,7 +32,11 @@ export const transportRequest = async <O>(
 
     try {
         const { data, error } = serialization.deserialize(result);
-        return error ? Promise.reject(error.error) : (data as O);
+        if (error?.error) {
+            // eslint-disable-next-line no-console
+            console.error(new Error(error.error));
+        }
+        return error ? Promise.reject(error.message) : (data as O);
     } catch (err) {
         throw new Error(`Cannot deserialize response from remote function: "${name}".`);
     }

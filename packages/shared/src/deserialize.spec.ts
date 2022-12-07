@@ -294,6 +294,6 @@ describe("unpackObject", () => {
     });
 });
 
-const wrapAsPayload = (data: unknown): ResponsePayload => {
-    return { data: data, getError: () => undefined };
+const wrapAsPayload = (data: unknown): ResponsePayload<unknown> => {
+    return { data: data };
 };

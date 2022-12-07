@@ -31,7 +31,11 @@ export const transportRequest = async <O>(
     try {
         const result = await transport({ name, payload, namespace, endpoint }, ctx);
         const { data, error } = serialization.deserialize(result);
-        return error ? Promise.reject(error.error) : (data as O);
+        if (error?.error) {
+            // eslint-disable-next-line no-console
+            console.error(`Function request to "${name}" failed with error ${error.error}`);
+        }
+        return error ? Promise.reject(error.message) : (data as O);
     } catch (err) {
         throw new Error(`Cannot deserialize response from invoke function: "${name}". Reason: "${err}".`);
     }

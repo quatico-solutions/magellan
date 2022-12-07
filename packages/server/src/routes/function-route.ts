@@ -30,11 +30,18 @@ export const createFunctionRoute = (sdk = new Sdk()) => {
                 );
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const error: any = err;
-                res.status(200).end(serializeError({ error: error.message ?? error.toString(), message: `Function request to "${name}" failed.` }));
+                const error = err as Error;
+                res.status(200).end(
+                    serializeError({
+                        message: `Function request to "${name}" failed.`,
+                        ...(!isProductionEnvironment() && error && { error: error.message ?? error.toString() }),
+                    })
+                );
             }
         }
     );
 
     return router;
 };
+
+const isProductionEnvironment = () => process.env.NODE_ENV === "production";
