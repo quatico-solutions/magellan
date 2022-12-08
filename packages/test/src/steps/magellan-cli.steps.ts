@@ -98,7 +98,6 @@ When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation
 });
 
 When("the function {string} is invoked", { timeout: 60 * 1000 }, async function (functionName: string) {
-    // Write code here that turns the phrase above into concrete actions
     try {
         const module = await import(join(process.cwd(), "lib", "client", functionName));
         // eslint-disable-next-line no-console
@@ -114,7 +113,6 @@ When("the function {string} is invoked", { timeout: 60 * 1000 }, async function 
 });
 
 When("the function {string} is invoked with {string}", { timeout: 60 * 1000 }, async function (functionName: string, data: string) {
-    // Write code here that turns the phrase above into concrete actions
     try {
         const module = await import(join(process.cwd(), "lib", "client", functionName));
         // eslint-disable-next-line no-console

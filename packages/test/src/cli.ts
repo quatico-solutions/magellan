@@ -15,11 +15,9 @@ type CompileCommand = {
 };
 
 export class Cli {
-    private compileCommandWorker?: Worker;
     private serveCommandWorker?: Worker;
 
     public cleanup() {
-        this.compileCommandWorker?.terminate();
         this.serveCommandWorker?.terminate();
     }
 
