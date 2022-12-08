@@ -15,6 +15,7 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 ### Added
 
 - @service functions throwing on the server ensure the client promise is rejected.
+- @service functions throwing will log the error with callstack on the client if the server is not in production mode.
 
 ### Changed
 
