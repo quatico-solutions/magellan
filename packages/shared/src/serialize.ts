@@ -5,9 +5,11 @@
  * ---------------------------------------------------------------------------------------------
  */
 
+import { ResponseError } from "./transport";
 import { SerializedTypes } from "./types";
 
 export const serialize = <I>(input: I): string => JSON.stringify(packObject({ data: input }));
+export const serializeError = (error: ResponseError): string => JSON.stringify({ error });
 
 export const packInput = <I>(input: I): string => JSON.stringify(packObject(input));
 

@@ -4,13 +4,13 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
 import type { Context } from "./Context";
 import { resolveNamespace } from "./namespace";
-import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
 
 export const transportRequest = async <O>(
     func: RemoteFunction,
-    ctx: Context = { headers: new Headers() },
+    ctx: Context = { headers: {} },
     serialization: Serialization = { serialize: packInput, deserialize }
 ): Promise<O> => {
     const { name, data = {}, namespace = "default" } = func;
@@ -31,7 +31,12 @@ export const transportRequest = async <O>(
     const result = await transport({ name, payload, namespace, endpoint }, ctx);
 
     try {
-        return serialization.deserialize(result);
+        const { data, error } = serialization.deserialize(result);
+        if (error?.error) {
+            // eslint-disable-next-line no-console
+            console.error(new Error(error.error));
+        }
+        return error ? Promise.reject(error.message) : (data as O);
     } catch (err) {
         throw new Error(`Cannot deserialize response from remote function: "${name}".`);
     }

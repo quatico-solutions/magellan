@@ -5,6 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-export interface Context {
-    headers: Record<string, string>;
-}
+export type ResponseError = {
+    message: string;
+    error?: string;
+};

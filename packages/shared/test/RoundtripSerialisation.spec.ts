@@ -14,7 +14,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toStrictEqual(expected);
+        expect(actual).toStrictEqual({ data: expected });
     });
 
     it("yields the identical object w/ an object with array", () => {
@@ -22,7 +22,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ an empty object", () => {
@@ -30,7 +30,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ a date", () => {
@@ -38,7 +38,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ a map", () => {
@@ -49,7 +49,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ a set", () => {
@@ -60,7 +60,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ an array", () => {
@@ -68,7 +68,7 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical object w/ a complex nested object", () => {
@@ -87,13 +87,13 @@ describe("Serialize-Deserialize equality", () => {
 
         const actual = deserialize(serialize(expected));
 
-        expect(actual).toEqual(expected);
+        expect(actual).toEqual({ data: expected });
     });
 
     it("yields the identical data w/ a deserialized-serialized java object", () => {
         const expected = JSON.stringify(wrapAsPayload(readE2eTestData({ name: "Person", dataType: "json" })));
 
-        const actual = serialize(deserialize(expected));
+        const actual = serialize(deserialize(expected).data);
 
         expect(actual).toStrictEqual(expected);
     });
@@ -106,34 +106,36 @@ describe("Java - Javascript serialisation-deserialisation equality", () => {
         const actual = deserialize(JSON.stringify(wrapAsPayload(expected)));
 
         expect(actual).toEqual({
-            address: {
-                city: "Musterhausen",
-                street: "Musterstrasse 9",
-                zip: "1234",
-            },
-            age: 22,
-            birthday: new Date(Date.UTC(1970, 3, 1)),
-            children: [
-                {
-                    address: null,
-                    age: 123,
-                    birthday: new Date(Date.UTC(1999, 3, 1)),
-                    children: [],
-                    friends: new Map(),
-                    height: 1.723,
-                    name: "chucky",
-                    surname: "cheese",
-                    tel: new Set(),
+            data: {
+                address: {
+                    city: "Musterhausen",
+                    street: "Musterstrasse 9",
+                    zip: "1234",
                 },
-            ],
-            height: 1.721,
-            name: "fanny",
-            surname: "may",
-            friends: new Map<string, unknown>([
-                ["bff", "chucky cheese"],
-                ["favorite", 3],
-            ]),
-            tel: new Set(["0791234567"]),
+                age: 22,
+                birthday: new Date(Date.UTC(1970, 3, 1)),
+                children: [
+                    {
+                        address: null,
+                        age: 123,
+                        birthday: new Date(Date.UTC(1999, 3, 1)),
+                        children: [],
+                        friends: new Map(),
+                        height: 1.723,
+                        name: "chucky",
+                        surname: "cheese",
+                        tel: new Set(),
+                    },
+                ],
+                height: 1.721,
+                name: "fanny",
+                surname: "may",
+                friends: new Map<string, unknown>([
+                    ["bff", "chucky cheese"],
+                    ["favorite", 3],
+                ]),
+                tel: new Set(["0791234567"]),
+            },
         });
     });
 
@@ -176,5 +178,5 @@ describe("Java - Javascript serialisation-deserialisation equality", () => {
 });
 
 const wrapAsPayload = (data: unknown): unknown => {
-    return { data: data };
+    return { data };
 };

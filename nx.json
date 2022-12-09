@@ -1,36 +1,18 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "clean",
-          "lint",
-          "build"
-        ],
-        "accessToken": "NjY3YjlhOTktZGE5Ny00ZGYxLWI1NzYtZTdhYTY3MGYxNTVjfHJlYWQtd3JpdGU="
-      }
-    }
-  },
-  "targetDefaults": {
-    "clean": {
-      "dependsOn": [
-        "^clean"
-      ]
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nrwl/nx-cloud",
+            "options": {
+                "cacheableOperations": ["lint", "test", "build", "test:e2e"],
+                "accessToken": "NjY3YjlhOTktZGE5Ny00ZGYxLWI1NzYtZTdhYTY3MGYxNTVjfHJlYWQtd3JpdGU="
+            }
+        }
     },
-    "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+    "targetDefaults": {
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": ["{projectRoot}/lib"]
+        }
     },
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/lib"
-      ]
-    }
-  },
-  "defaultBase": "develop"
+    "defaultBase": "develop"
 }

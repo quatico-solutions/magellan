@@ -16,10 +16,11 @@ import {
     initProjectConfiguration,
     resolveNamespace,
     setNamespace,
-    setTransport,
+    setTransport
 } from "./configuration";
 import { serve, ServerOptions } from "./server";
 import { externalFunctionInvoke, getFunctionService } from "./services";
+import { formdataFetch } from "./transport";
 
 export type { ServerOptions, Configuration, Context, NamespaceMapping, TransportHandler };
 export {
@@ -29,6 +30,7 @@ export {
     addTransportIfAbsent,
     applyExecutionContext,
     externalFunctionInvoke,
+    formdataFetch,
     getFunctionService,
     initProjectConfiguration,
     resolveNamespace,

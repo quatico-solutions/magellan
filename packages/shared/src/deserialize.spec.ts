@@ -27,16 +27,28 @@ describe("deserialize", () => {
 
         const actual = deserialize(JSON.stringify(wrapAsPayload(target)));
 
-        expect(actual).toEqual({
-            name: "chuck",
-            surname: "norris",
-            birthday: new Date(1970, 1, 1),
-            age: 666,
-            colors: ["red", "green"],
-            children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-            friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
-            phone: new Set(["0041791234567"]),
-        });
+        expect(actual).toEqual(
+            expect.objectContaining({
+                data: {
+                    name: "chuck",
+                    surname: "norris",
+                    birthday: new Date(1970, 1, 1),
+                    age: 666,
+                    colors: ["red", "green"],
+                    children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
+                    friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
+                    phone: new Set(["0041791234567"]),
+                },
+            })
+        );
+    });
+
+    it("yields the error from a response containing a server execution error", () => {
+        const target = { error: { message: "expected message", error: "expected error" } };
+
+        const actual = deserialize(JSON.stringify(target));
+
+        expect(actual).toEqual({ error: { message: "expected message", error: "expected error" } });
     });
 });
 
@@ -58,16 +70,28 @@ describe("unpackPayload", () => {
 
         const actual = unpackPayload(wrapAsPayload(target));
 
-        expect(actual).toEqual({
-            name: "chuck",
-            surname: "norris",
-            birthday: new Date(1970, 1, 1),
-            age: 666,
-            colors: ["red", "green"],
-            children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-            friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
-            phone: new Set(["0041791234567"]),
-        });
+        expect(actual).toEqual(
+            expect.objectContaining({
+                data: {
+                    name: "chuck",
+                    surname: "norris",
+                    birthday: new Date(1970, 1, 1),
+                    age: 666,
+                    colors: ["red", "green"],
+                    children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
+                    friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
+                    phone: new Set(["0041791234567"]),
+                },
+            })
+        );
+    });
+
+    it("yields the error from a response containing a server execution error", () => {
+        const target = { error: { message: "expected message", error: "expected error" } };
+
+        const actual = unpackPayload(target);
+
+        expect(actual).toEqual({ error: { message: "expected message", error: "expected error" } });
     });
 });
 
@@ -270,6 +294,6 @@ describe("unpackObject", () => {
     });
 });
 
-const wrapAsPayload = (data: unknown): ResponsePayload => {
+const wrapAsPayload = (data: unknown): ResponsePayload<unknown> => {
     return { data: data };
 };

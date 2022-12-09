@@ -10,7 +10,8 @@
                 "functionsDir": "./src/functions"
             },
             "options": {
-                "outDir": "./lib/client"
+                "outDir": "./lib/client",
+                "module": 1
             }
         },
         "server": {

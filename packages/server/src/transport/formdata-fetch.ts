@@ -6,7 +6,7 @@
  */
 import type { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
 import FormData from "form-data";
-import fetch, { Headers } from "node-fetch";
+import fetch from "node-fetch";
 import type { Context } from "../api";
 import { getConfiguration } from "../configuration";
 
@@ -33,8 +33,8 @@ export const completeEndpoint = (endpoint: string) => {
     return endpoint.startsWith("/") ? getHostpath(endpoint) : endpoint;
 };
 
-export const createHeaders = ({ headers }: { headers: Headers } = { headers: new Headers() }) => {
-    headers.set("Accept", "application/json");
+export const createHeaders = ({ headers }: { headers: Record<string, string> } = { headers: {} }) => {
+    headers["Accept"] = "application/json";
     return headers;
 };
 

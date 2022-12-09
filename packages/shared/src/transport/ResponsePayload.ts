@@ -4,6 +4,10 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-export type ResponsePayload = {
-    data: unknown;
+
+import { ResponseError } from "./ResponseError";
+
+export type ResponsePayload<O> = {
+    data?: O;
+    error?: ResponseError;
 };

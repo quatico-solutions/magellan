@@ -5,18 +5,19 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { RequestPayload, ResponsePayload } from "@quatico/magellan-shared";
-import { serialize, unpackObject } from "@quatico/magellan-shared";
+import { serialize, serializeError, unpackObject } from "@quatico/magellan-shared";
 import { Request as ExpressRequest, Response, Router } from "express";
 import { Sdk } from "../sdk";
 
 export const createFunctionRoute = (sdk = new Sdk()) => {
     const router = Router();
 
+    new Sdk().init();
     router.post(
         "/",
         async (
-            req: ExpressRequest<{ name: string }, ResponsePayload /* ResBody */, RequestPayload /* ReqBody */>,
-            res: Response<ResponsePayload>
+            req: ExpressRequest<{ name: string }, ResponsePayload<unknown> /* ResBody */, RequestPayload /* ReqBody */>,
+            res: Response<ResponsePayload<unknown>>
         ) => {
             const { name, data = "{}", namespace = "default" } = req.body;
             res.set("Content-Type", "application/json");
@@ -29,11 +30,18 @@ export const createFunctionRoute = (sdk = new Sdk()) => {
                 );
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const error: any = err;
-                res.status(500).end(serialize({ error: error.message ?? error.toString(), message: `Function request to "${name}" failed.` }));
+                const error = err as Error;
+                res.status(200).end(
+                    serializeError({
+                        message: `Function request to "${name}" failed.`,
+                        ...(!isProductionEnvironment() && error && { error: error.message ?? error.toString() }),
+                    })
+                );
             }
         }
     );
 
     return router;
 };
+
+const isProductionEnvironment = () => process.env.NODE_ENV === "production";
