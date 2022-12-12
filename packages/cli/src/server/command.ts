@@ -8,6 +8,7 @@
 import { serve, ServerOptions } from "@quatico/magellan-server";
 import { Command } from "commander";
 import { existsSync } from "fs";
+import { getVersion } from "../extract-version";
 import { createOptions, getServerModuleDir } from "./options";
 
 export const addServeCommand = (parent = new Command(), serveFn: (options: ServerOptions) => void = serve): Command => {
@@ -24,6 +25,8 @@ export const addServeCommand = (parent = new Command(), serveFn: (options: Serve
         .option("-p, --port <port>", "port for the standalone HTTP server", num => parseInt(num, 10), 3000)
         .option("-d, --debug", "enable the output of debug information", false)
         .action((staticDir: string, args: Partial<ServerOptions>, command: Command) => {
+            // eslint-disable-next-line no-console
+            console.info(`Magellan version ${getVersion()}`);
             const serverModuleDir = getServerModuleDir(args);
             if (typeof serverModuleDir !== "string") {
                 // eslint-disable-next-line no-console

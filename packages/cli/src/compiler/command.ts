@@ -10,6 +10,7 @@ import { addCompileCommand as addWebsmithCompileCommand } from "@quatico/websmit
 import { Compiler } from "@quatico/websmith-compiler";
 import { Command } from "commander";
 import parseArgs from "minimist";
+import { getVersion } from "../extract-version";
 import { CliArguments } from "./CliArguments";
 
 export const addCompileCommand = (parent = new Command(), compiler?: Compiler) => {
@@ -49,6 +50,8 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
             }
         })
         .action((args: CliArguments, command: Command) => {
+            // eslint-disable-next-line no-console
+            console.info(`Magellan version ${getVersion()}`);
             if (command.args) {
                 const unknownArgs = command.args.filter(arg => !command.getOptionValueSource(arg));
                 if (unknownArgs?.length > 0) {
