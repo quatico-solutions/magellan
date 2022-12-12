@@ -30,3 +30,5 @@ packages/test/test-source
 !.idea/prettier.xml
 !.idea/vcs.xml
 
+# GENERATED
+cucumber-report.html

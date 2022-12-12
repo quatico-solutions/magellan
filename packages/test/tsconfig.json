@@ -2,43 +2,13 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./lib",
-        "lib": [
-            "ES2021",
-            "dom"
-        ],
-        "types": [
-            "node"
-        ],
+        "lib": ["ES2021", "dom"],
+        "types": ["node"],
         "target": "ES2021",
         "module": "CommonJS",
         "noEmit": false,
-        "moduleResolution": "node",
-        "baseUrl": "./"
-        /* Base directory to resolve non-absolute module names. */,
-        "paths": {
-            "@quatico/magellan-shared": [
-                "../shared/src"
-            ],
-            "@quatico/magellan-client": [
-                "../client/src"
-            ],
-            "@quatico/magellan-server": [
-                "../server/src"
-            ],
-            "@quatico/magellan-cli": [
-                "../cli/src"
-            ]
-        }
-        /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+        "moduleResolution": "node"
     },
-    "exclude": [
-        "node_modules",
-        "lib",
-        "src/**/*.spec.ts",
-        "src/**/*.test.ts"
-    ],
-    "include": [
-        "@types",
-        "src"
-    ]
+    "exclude": ["node_modules", "lib", "src/**/*.spec.ts", "src/**/*.test.ts"],
+    "include": ["@types", "src"]
 }

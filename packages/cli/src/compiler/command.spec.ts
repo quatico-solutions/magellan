@@ -6,8 +6,8 @@
  */
 /* eslint-disable no-console */
 import { WarnMessage } from "@quatico/websmith-api";
-import { createOptions } from "@quatico/websmith-cli";
-import { Compiler, CompilerOptions, NoReporter } from "@quatico/websmith-compiler";
+import { createOptions } from "@quatico/websmith-compiler";
+import { Compiler, CompilerOptions, NoReporter } from "@quatico/websmith-core";
 import { Command } from "commander";
 import { writeFileSync } from "fs";
 import { resolve } from "path";

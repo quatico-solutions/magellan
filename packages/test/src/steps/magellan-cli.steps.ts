@@ -1,4 +1,5 @@
 import { After, Before, Given, Then, When } from "@cucumber/cucumber";
+import { formdataFetch } from "@quatico/magellan-server";
 import assert from "assert";
 import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { basename, extname, isAbsolute, join, resolve } from "path";
@@ -47,26 +48,36 @@ Given("node environment is {string}", (env: string) => {
     process.env.NODE_ENV = env;
 });
 
-When(/^CLI command "(.*)" is called without arguments$/, { timeout: 120 * 1000 }, async (cliOperation: CliOperation) => {
-    process.chdir(targetDirectory);
-    cli = cli || new Cli();
-    switch (cliOperation) {
-        case "compile":
-            return cli.executeCompile({});
-        case "serve": {
-            const { config } = await cli.executeServe({ command: { args: "-s ./lib/server ./lib/client " } });
-            // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
-            // Also, because it is node that executes it, we must use the servers default transport on the frontend to have it use node-fetch!
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global as any).__qsMagellanConfig__ = config;
-            break;
+When(
+    /^CLI command "(.*)" is called without arguments$/,
+    // { timeout: 60 * 1000 },
+    async (cliOperation: CliOperation) => {
+        process.chdir(targetDirectory);
+        cli = cli || new Cli();
+        switch (cliOperation) {
+            case "compile":
+                return cli.executeCompile({});
+            case "serve": {
+                await cli.executeServe({
+                    command: { args: `-s ${join(targetDirectory, "lib", "server")} ${join(targetDirectory, "lib", "client")}` },
+                });
+                // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
+                // Also, because it is node that executes it, we must use the servers default transport on the frontend to have it use node-fetch!
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (global as any).__qsMagellanConfig__ = {
+                    // we need to tell the frontend function execution on what host it is running.
+                    namespaces: { default: { endpoint: "http://localhost:3000/api" } },
+                    transports: { default: formdataFetch },
+                };
+                break;
+            }
+            default:
+                return Promise.reject(`Unsupported cli operation ${cliOperation}`);
         }
-        default:
-            return Promise.reject(`Unsupported cli operation ${cliOperation}`);
     }
-});
+);
 
-When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation: CliOperation, args: string) => {
+When(/^CLI command "(.*)" is called with arguments {string}$/, async (cliOperation: CliOperation, args: string) => {
     process.chdir(targetDirectory);
 
     cli = cli || new Cli();
@@ -79,17 +90,24 @@ When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation
                 },
             });
         case "serve": {
-            const { config } = await cli.executeServe({
+            await cli.executeServe({
                 command: {
                     // args must include at least "-s ./lib/server ./lib/client "
-                    args: args !== "" ? args.replaceAll(/<projectDir>/g, targetDirectory) : undefined,
+                    args:
+                        args !== ""
+                            ? args.replaceAll(/<projectDir>/g, targetDirectory)
+                            : `-s ${join(targetDirectory, "lib", "server")} ${join(targetDirectory, "lib", "client")}`,
                     cwd: resolve(targetDirectory),
                 },
             });
             // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
             // Also, because it is node that executes it, we must use the servers default transport on the frontend to have it use node-fetch!
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (global as any).__qsMagellanConfig__ = config;
+            (global as any).__qsMagellanConfig__ = {
+                // we need to tell the frontend function execution on what host it is running.
+                namespaces: { default: { endpoint: "http://localhost:3000/api" } },
+                transports: { default: formdataFetch },
+            };
             break;
         }
         default:
@@ -97,35 +115,43 @@ When(/^CLI command "(.*)" is called with arguments "(.*)"$/, async (cliOperation
     }
 });
 
-When("the function {string} is invoked", { timeout: 60 * 1000 }, async function (functionName: string) {
-    try {
-        const module = await import(join(process.cwd(), "lib", "client", functionName));
-        // eslint-disable-next-line no-console
-        const errorConsole = console.error;
-        // eslint-disable-next-line no-console
-        console.error = error => (remoteInvokeConsoleError = error);
-        remoteInvokeResult = await module[functionName]();
-        // eslint-disable-next-line no-console
-        console.error = errorConsole;
-    } catch (e) {
-        remoteInvokeError = e;
+When(
+    "the function {string} is invoked",
+    // { timeout: 60 * 1000 },
+    async function (functionName: string) {
+        try {
+            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            // eslint-disable-next-line no-console
+            const errorConsole = console.error;
+            // eslint-disable-next-line no-console
+            console.error = error => (remoteInvokeConsoleError = error);
+            remoteInvokeResult = await module[functionName]();
+            // eslint-disable-next-line no-console
+            console.error = errorConsole;
+        } catch (e) {
+            remoteInvokeError = e;
+        }
     }
-});
+);
 
-When("the function {string} is invoked with {string}", { timeout: 60 * 1000 }, async function (functionName: string, data: string) {
-    try {
-        const module = await import(join(process.cwd(), "lib", "client", functionName));
-        // eslint-disable-next-line no-console
-        const errorConsole = console.error;
-        // eslint-disable-next-line no-console
-        console.error = error => (remoteInvokeConsoleError = error);
-        remoteInvokeResult = await module[functionName](JSON.parse(data));
-        // eslint-disable-next-line no-console
-        console.error = errorConsole;
-    } catch (e) {
-        remoteInvokeError = e;
+When(
+    "the function {string} is invoked with {string}",
+    //  { timeout: 60 * 1000 },
+    async function (functionName: string, data: string) {
+        try {
+            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            // eslint-disable-next-line no-console
+            const errorConsole = console.error;
+            // eslint-disable-next-line no-console
+            console.error = error => (remoteInvokeConsoleError = error);
+            remoteInvokeResult = await module[functionName](JSON.parse(data));
+            // eslint-disable-next-line no-console
+            console.error = errorConsole;
+        } catch (e) {
+            remoteInvokeError = e;
+        }
     }
-});
+);
 
 Then(/^directory "(.*)" contains file "(.*)"$/, (directory, fileName) => {
     assert.equal(existsSync(resolve(targetDirectory, directory, fileName)), true, `Directory ${directory} should contain file ${fileName}`);
@@ -157,7 +183,7 @@ Before(() => {
     remoteInvokeResult = undefined;
 });
 
-After(() => {
+After(async () => {
+    await cli?.cleanup();
     rmSync(resolve(targetDirectory, ".."), { recursive: true, force: true });
-    cli?.cleanup();
 });
