@@ -12,6 +12,7 @@ import { Command } from "commander";
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import ts from "typescript";
+import { getVersion } from "../extract-version";
 import { addCompileCommand } from "./command";
 
 class CompilerTestClass extends Compiler {
@@ -127,6 +128,17 @@ describe("addCompileCommand", () => {
             },
         });
         expect(target.testOptions!.targets).toEqual(["client", "server"]);
+    });
+
+    it("should output the cli version", () => {
+        const target = jest.fn();
+        console.info = target;
+
+        addCompileCommand(new Command(), new CompilerTestClass(createOptions({}), system)).parse(["compile"], {
+            from: "user",
+        });
+
+        expect(target).toHaveBeenCalledWith(`Magellan version ${getVersion()}`);
     });
 
     it("should set project option  w/ --project cli argument", () => {

@@ -6,10 +6,12 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { Command } from "commander";
-import { addServeCommand } from "./server";
 import { addCompileCommand } from "./compiler";
+import { getVersion } from "./extract-version";
+import { addServeCommand } from "./server";
 
 const command = new Command();
 addCompileCommand(command);
 addServeCommand(command);
+command.addHelpText("beforeAll", `Magellan version ${getVersion()}`);
 command.parse(process.argv);

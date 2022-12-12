@@ -5,9 +5,10 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable no-console */
-import { mkdirSync } from "fs";
-import { addServeCommand } from "./command";
 import { Command } from "commander";
+import { mkdirSync } from "fs";
+import { getVersion } from "../extract-version";
+import { addServeCommand } from "./command";
 
 describe("addServeCommand", () => {
     it("should set the default options w/ valid functionScriptPath", () => {
@@ -22,6 +23,16 @@ describe("addServeCommand", () => {
             port: 3000,
             staticDir: "./resources",
         });
+    });
+
+    it("should output the cli version", () => {
+        setupFolders("./resources", "./server-esm");
+        const target = jest.fn();
+        console.info = target;
+
+        addServeCommand(new Command(), jest.fn()).parse(["serve", "./resource", "-s", "./server-esm"], { from: "user" });
+
+        expect(target).toHaveBeenCalledWith(`Magellan version ${getVersion()}`);
     });
 
     it("should show the command help w/o staticDir", () => {
