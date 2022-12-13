@@ -27,13 +27,13 @@ export class Cli {
     public async executeServe({ command }: { command?: CompileCommand }): Promise<void> {
         const { args } = command ?? {};
         this.serverRunner = this.serverRunner || new ServerRunner();
+        // eslint-disable-next-line no-console
+        console.info(`\nExecute Debug ServerRunner: ${!!process.env["TEST_DEBUG_OUTPUT"]}`);
         await this.serverRunner.executeServe({
             command: {
-                scriptPath: join(__dirname, "..","..", "cli", "lib", "cli.js"),
+                scriptPath: join(__dirname, "..", "..", "cli", "lib", "cli.js"),
                 args,
-
-                // ENABLE THIS TO GET MORE VERBOSE LOGGING SHOULD YOU REACH AN IMPASS DURING BDD DEVELOPMENT
-                // debugOutput: true,
+                ...(!!process.env["TEST_DEBUG_OUTPUT"] && { debugOutput: true }),
             },
         });
     }

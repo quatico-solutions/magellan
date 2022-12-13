@@ -22,12 +22,14 @@
         "watch": "tsc --watch",
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --color --watch",
-        "test:e2e": "./node_modules/.bin/cucumber-js"
+        "test:e2e": "./node_modules/.bin/cucumber-js",
+        "test:e2e:debug": "cross-env-shell TEST_DEBUG_OUTPUT=0 'yarn test:e2e'"
     },
     "devDependencies": {
         "@types/node": "^16.0.0",
         "@typescript-eslint/eslint-plugin": "^5.42.1",
         "@typescript-eslint/parser": "^5.42.1",
+        "cross-env":"7.0.3",
         "eslint": "^8.27.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-import-resolver-alias": "^1.1.2",
