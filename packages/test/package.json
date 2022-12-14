@@ -23,7 +23,7 @@
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --color --watch",
         "test:e2e": "./node_modules/.bin/cucumber-js",
-        "test:e2e:debug": "cross-env-shell TEST_DEBUG_OUTPUT=0 'yarn test:e2e'"
+        "debug:e2e": "cross-env-shell TEST_DEBUG_OUTPUT=0 'yarn test:e2e'"
     },
     "devDependencies": {
         "@types/node": "^16.0.0",
