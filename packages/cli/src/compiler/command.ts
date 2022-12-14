@@ -6,8 +6,8 @@
  */
 
 /* eslint-disable no-console */
-import { addCompileCommand as addWebsmithCompileCommand } from "@quatico/websmith-cli";
-import { Compiler } from "@quatico/websmith-compiler";
+import { addCompileCommand as addWebsmithCompileCommand } from "@quatico/websmith-compiler";
+import { Compiler } from "@quatico/websmith-core";
 import { Command } from "commander";
 import parseArgs from "minimist";
 import { getVersion } from "../extract-version";

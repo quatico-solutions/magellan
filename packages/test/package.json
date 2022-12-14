@@ -22,12 +22,14 @@
         "watch": "tsc --watch",
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --color --watch",
-        "test:e2e": "./node_modules/.bin/cucumber-js"
+        "test:e2e": "./node_modules/.bin/cucumber-js",
+        "debug:e2e": "cross-env-shell TEST_DEBUG_OUTPUT=0 'yarn test:e2e'"
     },
     "devDependencies": {
         "@types/node": "^16.0.0",
         "@typescript-eslint/eslint-plugin": "^5.42.1",
         "@typescript-eslint/parser": "^5.42.1",
+        "cross-env":"7.0.3",
         "eslint": "^8.27.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-import-resolver-alias": "^1.1.2",
@@ -35,17 +37,15 @@
         "eslint-plugin-jest": "^27.1.5",
         "eslint-plugin-prettier": "^4.2.1",
         "eslint-plugin-testing-library": "^5.9.1",
-        "memfs": "~3.4.11",
+        "memfs": "3.4.x",
         "prettier": "^2.7.1",
-        "rimraf": "^3.0.2"
-    },
-    "dependencies": {
+        "rimraf": "^3.0.2",
         "@cucumber/cucumber": "^8.7.0",
         "@quatico/magellan-cli": "0.1.4",
         "@quatico/magellan-client": "0.1.4",
         "@quatico/magellan-server": "0.1.4",
         "@quatico/magellan-shared": "0.1.4",
-        "typescript": "~4.7.4"
+        "typescript": "4.7.x"
     },
     "engines": {
         "node": ">=16.x",

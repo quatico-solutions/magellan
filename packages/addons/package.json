@@ -55,8 +55,8 @@
     "dependencies": {
         "@quatico/magellan-client": "0.1.4",
         "@quatico/magellan-server": "0.1.4",
-        "@quatico/websmith-api": "^0.2.2",
-        "typescript": "^4.6.3"
+        "@quatico/websmith-api": "0.3.4",
+        "typescript": "4.7.x"
     },
     "engines": {
         "node": ">=16.x",
