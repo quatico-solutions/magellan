@@ -31,10 +31,12 @@ export const createFunctionRoute = (sdk = new Sdk()) => {
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const error = err as Error;
+                // eslint-disable-next-line no-console
+                console.error(`received error ${error.message} with stack`, error.stack);
                 res.status(200).end(
                     serializeError({
-                        message: `Function request to "${name}" failed.`,
-                        ...(!isProductionEnvironment() && error && { error: error.message ?? error.toString() }),
+                        message: error.message,
+                        ...(!isProductionEnvironment() && error && { error: `${error.message}\n${error.stack}` }),
                     })
                 );
             }
