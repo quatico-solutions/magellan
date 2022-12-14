@@ -49,8 +49,9 @@ Feature: Magellan CLI commands
         And node environment is "development"
         When CLI command "serve" is called without arguments
         And the function "foobar" is invoked
-        Then the promise is rejected with message "Function request to \"foobar\" failed.".
+        Then the promise is rejected with message "This should have been replaced".
         And writes console error "This should have been replaced".
+        And writes console error "packages/test/output/project/lib/server/foobar.js:6:11)".
 
     Scenario: Serve command is called with error throwing function in production environment
         Given valid TypeScript project directory was created
@@ -60,7 +61,7 @@ Feature: Magellan CLI commands
         And node environment is "production"
         When CLI command "serve" is called without arguments
         And the function "foobar" is invoked
-        Then the promise is rejected with message "Function request to \"foobar\" failed.".
+        Then the promise is rejected with message "This should have been replaced".
         # And writes no console error. # Temporally disabled until websmith-compiler no longer floods the error console with ts missing files from the Typescript libraries
 
     Scenario: Serve command is called with valid pure function project configuration

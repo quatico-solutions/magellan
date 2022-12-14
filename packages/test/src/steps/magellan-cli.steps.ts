@@ -177,7 +177,7 @@ Before(() => {
     rmSync(resolve(targetDirectory, ".."), { recursive: true, force: true });
     // eslint-disable-next-line no-console
     console.warn = () => undefined;
-
+    previousPath = ".";
     remoteInvokeConsoleError = undefined;
     remoteInvokeError = undefined;
     remoteInvokeResult = undefined;
