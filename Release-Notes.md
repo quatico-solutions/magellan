@@ -12,16 +12,21 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 ## [Unreleased]
 
-### Improvements
+### New Features
 
-- TBA
+- Support --transpileOnly command line flag for `magellan compile`
+
+### Chore
+
+- Update to websmith v0.3.5 addressing the undesirable error output.
+- Separate lint and lint:fix: pre-commit hooks now fix linting; CI only validates that the linting rules are followed.
 
 ## [0.2.0] - 2022-12-14
 
-### Added
+### New Features
 
-- @service functions throwing errors now yield a rejection of the client promise with the error message.
-- @service functions throwing errors now yield a console.error with the error stack on the client if the server is not in production mode.
+- service functions throwing errors now yield a rejection of the client promise with the error message.
+- service functions throwing errors now yield a console.error with the error stack on the client if the server is not in production mode.
 
 ### Changed
 
@@ -31,7 +36,7 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 SPA Routing
 
-### Added
+### New Features
 
 - Wildcard paths not pointing to static files now redirect to the static root path.
 
@@ -39,7 +44,7 @@ SPA Routing
 
 Additional supported serializations
 
-### Added
+### New Features
 
 - Implements date transport support for LocalDate and LocalDateTime.
 
@@ -51,7 +56,7 @@ Additional supported serializations
 
 Initial Release
 
-### Added
+### New Features
 
 - (Almost) invisible transport layer between browser and JVM
 - Effortless configuration of service endpoints
