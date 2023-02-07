@@ -4,14 +4,14 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import ts from "typescript";
+import * as ts from "typescript";
 import {
     getDecoration,
     isNodeExported,
     isTransformable,
     TransformationArguments,
     transformInvocableArrow,
-    transformInvocableFunction,
+    transformInvocableFunction
 } from "../magellan-shared";
 import { ServiceDecoratorData } from "../magellan-shared/node-helpers";
 

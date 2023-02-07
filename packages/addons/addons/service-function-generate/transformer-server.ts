@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable no-console */
-import ts from "typescript";
+import * as ts from "typescript";
 import {
     getDecoration,
     getFunctionName,
@@ -16,7 +16,7 @@ import {
     transformInvocableArrow,
     transformInvocableFunction,
     transformLocalServerArrow,
-    transformLocalServerFunction,
+    transformLocalServerFunction
 } from "../magellan-shared";
 import { ServiceDecoratorData } from "../magellan-shared/node-helpers";
 

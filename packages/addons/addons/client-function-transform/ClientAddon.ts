@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import ts from "typescript";
 import { AddonContext, TargetConfig } from "@quatico/websmith-api";
+import * as ts from "typescript";
 import { isTsAddonApplicable } from "../magellan-shared/addon-helpers";
 import { MagellanConfig } from "../magellan-shared/magellan-config";
 import { createClientTransformer } from "./transformer-client";

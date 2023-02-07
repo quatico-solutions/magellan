@@ -11,7 +11,7 @@ import { Compiler, CompilerOptions, NoReporter } from "@quatico/websmith-core";
 import { Command } from "commander";
 import { writeFileSync } from "fs";
 import { resolve } from "path";
-import ts from "typescript";
+import * as ts from "typescript";
 import { getVersion } from "../extract-version";
 import { addCompileCommand } from "./command";
 

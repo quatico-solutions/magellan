@@ -4,8 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import ts from "typescript";
 import { TargetConfig } from "@quatico/websmith-api";
+import * as ts from "typescript";
 
 export interface MagellanConfig extends TargetConfig {
     functionsDir: string;
