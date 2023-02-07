@@ -43,9 +43,9 @@
     "dependencies": {
         "@quatico/magellan-client": "^0.2.0",
         "@quatico/magellan-server": "^0.2.0",
-        "@quatico/websmith-api": "0.3.4",
-        "@quatico/websmith-compiler": "0.3.4",
-        "@quatico/websmith-core": "0.3.4",
+        "@quatico/websmith-api": "0.3.5",
+        "@quatico/websmith-compiler": "0.3.5",
+        "@quatico/websmith-core": "0.3.5",
         "commander": "^9.4.1",
         "minimist": "1.2.7",
         "ts-node": "^10.9.1",
