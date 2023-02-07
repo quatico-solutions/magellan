@@ -1,0 +1,20 @@
+{
+    "cSpell.words": [
+        "addon",
+        "addons",
+        "barfoo",
+        "json",
+        "websmith"
+    ],
+    "jest.jestCommandLine": "node_modules/.bin/jest",
+    "javascript.suggest.autoImports": true,
+    "javascript.autoClosingTags": true,
+    "javascript.updateImportsOnFileMove.enabled": "prompt",
+    "typescript.suggest.autoImports": true,
+    "typescript.autoClosingTags": true,
+    "typescript.updateImportsOnFileMove.enabled": "prompt",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
+}
