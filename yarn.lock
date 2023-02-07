@@ -1766,31 +1766,32 @@
   dependencies:
     esquery "^1.0.1"
 
-"@quatico/websmith-api@0.3.4", "@quatico/websmith-api@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.npmjs.org/@quatico/websmith-api/-/websmith-api-0.3.4.tgz#1037ae0cccb4df8cc8881c2ef7e4ec9b4df43189"
-  integrity sha512-v/iqWpnQywHRxdVQ058XtanrwhWjWntuJsS69AEuLQPdvzX/ND7nd/YCCqkiDsm3Z65sh19AYWFuURawlBm72A==
+"@quatico/websmith-api@0.3.5", "@quatico/websmith-api@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.npmjs.org/@quatico/websmith-api/-/websmith-api-0.3.5.tgz#a54f5fc86ff5c65a482125c850a53d6c17b450e9"
+  integrity sha512-CF5h6+ImN5Yu7kwowXG+iFfEHbIep+H0Y/UOCJy44fssojJVsRm3L8YAWz12sIC3XQrRH6EhxRLkRg2VcLuCJA==
   dependencies:
     typescript "~4.6.4"
 
-"@quatico/websmith-compiler@0.3.4":
-  version "0.3.4"
-  resolved "https://registry.npmjs.org/@quatico/websmith-compiler/-/websmith-compiler-0.3.4.tgz#0eb2c448fbdc64ba9fc17358b9691f0f06d7ef5e"
-  integrity sha512-95fT5SzIzUnOqU5BvWGQu4BP/GBPgdxTha8IPyuAt5J/qhzGvHefAiGUp9j0QpfP/UdZQdJVAt3CVKgKvZqg4g==
+"@quatico/websmith-compiler@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.npmjs.org/@quatico/websmith-compiler/-/websmith-compiler-0.3.5.tgz#b3494713ee23f42ee0ae27e0278c65ed2e6c8c41"
+  integrity sha512-jg5pVtkMBwoO9dZvQLul/T2zovQqzGunnfKUuXXjaq/iz+I5ALiXdfpvdFzl9qAy9ui51Tc62gXT22g+Sl/Gng==
   dependencies:
-    "@quatico/websmith-api" "^0.3.4"
+    "@quatico/websmith-api" "^0.3.5"
+    "@quatico/websmith-core" "^0.3.5"
     commander "^9.4.1"
     minimist "^1.2.6"
     ts-node "^10.9.1"
     tslib "2.4.1"
     typescript "~4.6.4"
 
-"@quatico/websmith-core@0.3.4", "@quatico/websmith-core@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.npmjs.org/@quatico/websmith-core/-/websmith-core-0.3.4.tgz#a730de346512428f76f3a085edf4212e870c5bd8"
-  integrity sha512-yaP6pNI445Fsko9Pt8d+epxGMpdRgir9JSnq1qMUOA6Uk5L+gPoDFjJyuPTkO/j7V+l73k2JcLj2oPQsameXBQ==
+"@quatico/websmith-core@0.3.5", "@quatico/websmith-core@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.npmjs.org/@quatico/websmith-core/-/websmith-core-0.3.5.tgz#99fb6682e375f0e19bc64679278dff86ad0a1324"
+  integrity sha512-KKA+ItijuBWWgKGDWoesqUlNF3dJQmnrhiq8X/bmnTVonvGgrMZxNgp4oeoW7ryQNcFuFVJIBPtSTudkH9FXIQ==
   dependencies:
-    "@quatico/websmith-api" "^0.3.4"
+    "@quatico/websmith-api" "^0.3.5"
     create-hash "1.2.0"
     lodash "^4.17.21"
     path "0.12.7"
