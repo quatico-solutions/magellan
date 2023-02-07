@@ -25,7 +25,8 @@
     },
     "scripts": {
         "clean": "rimraf lib coverage",
-        "lint": "eslint \"{src,test}/**/*.{js,ts,tsx}\" --fix --color",
+        "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
+        "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
         "watch": "tsc --watch",
         "test": "jest --color --verbose --coverage",

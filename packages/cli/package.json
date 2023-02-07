@@ -28,7 +28,8 @@
     },
     "scripts": {
         "clean": "rimraf lib bin coverage",
-        "lint": "eslint \"{src,test}/**/*.{js,ts,tsx}\" --fix --color",
+        "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
+        "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc && yarn bundle",
         "watch": "tsc --watch",
         "bundle": "esbuild src/cli.ts --bundle  --outfile=bin/magellan.js --target=node16 --platform=node --minify --tree-shaking=true --external:typescript",

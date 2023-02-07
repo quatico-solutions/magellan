@@ -31,6 +31,7 @@
   "scripts": {
     "clean": "nx run-many --target=clean",
     "lint": "nx run-many --target=lint",
+    "lint:fix": "nx run-many --target=lint",
     "build": "nx run-many --target=build",
     "watch": "nx run-many --target=watch --parallel=10",
     "test": "nx run-many --target=test",

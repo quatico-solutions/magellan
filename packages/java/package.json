@@ -18,6 +18,7 @@
     "scripts": {
         "clean": "mvn clean",
         "lint": "mvn process-sources -B -o",
+        "lint:fix": "mvn process-sources -B -o",
         "build": "mvn install -DskipTests -Dcheckstyle.skip -B",
         "test": "mvn test -B -Dcheckstyle.skip",
         "test:update": "mvn test -Dcheckstyle.skip",
