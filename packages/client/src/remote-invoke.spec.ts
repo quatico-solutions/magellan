@@ -103,7 +103,10 @@ describe("remoteInvoke", () => {
 
     it("calls fetch passing function name from input", async () => {
         global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => serialize("whatever") }));
-        initProjectConfiguration({ namespaces: { default: { endpoint: "http://expected-host:3000/api" } }, transports: { default: formdataFetch } });
+        initProjectConfiguration({
+            namespaces: { default: { endpoint: "http://expected-host:3000/api" } },
+            transports: { default: formdataFetch },
+        });
 
         await remoteInvoke(
             { name: "expected", data: "whatever" },
@@ -162,23 +165,6 @@ describe("remoteInvoke", () => {
         await expect(actual).rejects.toThrow('Cannot invoke remote function without "name" property.');
     });
 
-    it("throws meaningful error with error thrown by serialize", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
-
-        const actual = remoteInvoke(
-            { name: "foobar", data: "whatever" },
-            { headers: {} },
-            {
-                serialize: () => {
-                    throw new Error("expected");
-                },
-                deserialize: jest.fn(),
-            }
-        );
-
-        await expect(actual).rejects.toThrow('Cannot serialize input parameter for remote function: "foobar".');
-    });
-
     it("throws meaningful error with error thrown by fetch", async () => {
         global.fetch = jest.fn().mockImplementation(() => {
             throw new Error("whatever");
@@ -201,13 +187,30 @@ describe("remoteInvoke", () => {
         await expect(actual).rejects.toThrow('Cannot invoke remote function: "foobar". Reason: "Error: whatever".');
     });
 
-    it("yields meaningful error with error in deserialize", async () => {
+    it("yield rejection with request failing serialization", async () => {
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
+
+        const actual = remoteInvoke(
+            { name: "foobar", data: "whatever" },
+            { headers: {} },
+            {
+                serialize: () => {
+                    throw new Error("expected");
+                },
+                deserialize: jest.fn(),
+            }
+        );
+
+        await expect(actual).rejects.toBe("Serialization failed");
+    });
+
+    it("yields rejection with response failing deserialization", async () => {
         global.fetch = jest.fn().mockImplementation(() => ({
             text: () => "malformed JSON",
         }));
 
         const actual = remoteInvoke({ name: "whatever", data: "whatever" });
 
-        await expect(actual).rejects.toThrow('Cannot deserialize response from remote function: "whatever".');
+        await expect(actual).rejects.toBe("Deserialization failed");
     });
 });
