@@ -9,7 +9,7 @@ import { writeFileSync } from "fs";
 import { resolve } from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
-import { handleError, normalizePort, serve, setupApp } from "./server";
+import { configureMagellanRoutes, handleError, normalizePort, serve, setupApp } from "./server";
 import { initDependencyContext } from "./services";
 
 beforeAll(() => {
@@ -17,6 +17,7 @@ beforeAll(() => {
         // @ts-ignore
         this.append = jest.fn();
     }
+
     // @ts-ignore
     global.FormData = formDataMock;
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
@@ -50,7 +51,11 @@ describe("serve", () => {
     it("calls listen passing port on server", () => {
         const target = { listen: jest.fn() } as any;
 
-        serve({ app: { get: jest.fn(), set: jest.fn(), use: jest.fn() }, server: target, requireFn: jest.fn().mockReturnValue({}) as any } as any);
+        serve({
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
+            server: target,
+            requireFn: jest.fn().mockReturnValue({}) as any,
+        } as any);
 
         expect(target.listen).toHaveBeenCalledWith(3000, expect.any(Function));
     });
@@ -142,6 +147,47 @@ describe("setupApp", () => {
     });
 });
 
+describe("configureMagellanRoutes", () => {
+    it("configures the wildcare middleware route", () => {
+        const target = {
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
+            staticDir: resolve(__dirname, "static"),
+            staticRoute: "/",
+            apiRoute: "/api",
+        } as any;
+
+        configureMagellanRoutes(target);
+
+        expect(target.app.get).toHaveBeenCalledWith(/.*/, [expect.any(Function)]);
+    });
+
+    it("configures the static route", () => {
+        const target = {
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
+            staticDir: resolve(__dirname, "static"),
+            staticRoute: "/",
+            apiRoute: "/api",
+        } as any;
+
+        configureMagellanRoutes(target);
+
+        expect(target.app.use).toHaveBeenNthCalledWith(1, target.staticRoute, expect.any(Function));
+    });
+
+    it("configures the api route", () => {
+        const target = {
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
+            staticDir: resolve(__dirname, "static"),
+            staticRoute: "/",
+            apiRoute: "/api",
+        } as any;
+
+        configureMagellanRoutes(target);
+
+        expect(target.app.use).toHaveBeenNthCalledWith(2, target.apiRoute, expect.any(Function));
+    });
+});
+
 describe("handleError", () => {
     it("yields error message with error", () => {
         const target = { locals: {}, status: jest.fn(), render: jest.fn() } as any;
@@ -162,7 +208,15 @@ describe("handleError", () => {
     it("calls status passing error status with error status", () => {
         const target = { locals: {}, status: jest.fn(), render: jest.fn() } as any;
 
-        handleError({ message: "expected message", status: 404 }, { app: { get: jest.fn() } } as any, target, () => undefined);
+        handleError(
+            {
+                message: "expected message",
+                status: 404,
+            },
+            { app: { get: jest.fn() } } as any,
+            target,
+            () => undefined
+        );
 
         expect(target.status).toHaveBeenCalledWith(404);
     });

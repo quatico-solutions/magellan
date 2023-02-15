@@ -7,18 +7,16 @@
 /* eslint-disable no-console */
 
 import cookieParser from "cookie-parser";
-import express, { Application, ErrorRequestHandler, Express, NextFunction, Request, Response } from "express";
+import cors from "cors";
+import express, { ErrorRequestHandler, Express, NextFunction, Request, Response } from "express";
 import http from "http";
 import createError from "http-errors";
-import logger from "morgan";
 import multer from "multer";
 import { resolve } from "path";
 import { wildcardMiddleware } from "./middlewares";
 import { loadModules } from "./module-loader";
 import { createFunctionRoute, createStaticRoute } from "./routes";
 import { Sdk } from "./sdk";
-
-import cors from "cors";
 
 export interface ServerOptions {
     app?: Express;
@@ -36,51 +34,77 @@ export const serve = (options: ServerOptions): void => {
     const { port = normalizePort(process.env.PORT) } = options;
 
     const app = setupApp(options);
-    const server = options.server ?? http.createServer(app);
+    setupMagellanModules(options);
+    startServer({ app, port, server: options.server });
+};
 
+export const startServer = ({ app, port, server = http.createServer(app) }: { app: express.Express; port: number; server?: http.Server }) => {
     server.listen(port, () => console.info(`magellan serve started on http://localhost:${port}`));
 };
 
-export const setupApp = (options: ServerOptions): Application => {
+export const setupApp = (options: ServerOptions): express.Express => {
     const {
-        app = express(),
-        serverModuleDir: moduleDir = resolve(process.env.MODULE_DIR ?? "."),
+        app = options.app ?? express(),
         port = normalizePort(process.env.PORT),
-        requireFn = require,
-        sdk = new Sdk(),
         staticRoute = "/",
         staticDir = resolve(process.cwd(), process.env.STATIC_DIR ?? "."),
     } = options;
 
     app.set("port", port);
-    app.use(express.json());
-    app.use(multer().any());
-
     app.use(
         cors({
             origin: "*",
         })
     );
-    app.use(logger("dev"));
-    app.use(cookieParser());
 
-    app.get(/.*/, [wildcardMiddleware(staticDir, staticRoute)]);
+    configureRequestMiddlewares({ app });
+    configureMagellanRoutes({ app, staticDir, staticRoute, apiRoute: "/api" });
 
-    app.use(staticRoute, createStaticRoute(staticDir, staticRoute));
-    app.use("/api", createFunctionRoute());
+    configureErrorHandling({ app });
+    return app;
+};
 
+export const setupMagellanModules = (options: ServerOptions) => {
+    const { serverModuleDir: moduleDir = resolve(process.env.MODULE_DIR ?? "."), requireFn = require, sdk = new Sdk() } = options;
+    refreshModules({ moduleDir, requireFn, sdk });
+};
+
+const refreshModules = ({ moduleDir, requireFn, sdk }: { moduleDir: string; requireFn: NodeRequire; sdk: Sdk }) => {
+    if (moduleDir) {
+        loadModules(moduleDir, requireFn, sdk);
+    }
+};
+
+export const configureErrorHandling = ({ app }: { app: express.Express }) => {
     // catch 404 and forward to error handler
     app.use((req: Request, res: Response, next: NextFunction) => {
         next(createError(404, `Cannot ${req.method} "${req.path}". No resource found.`));
     });
 
     app.use(handleError);
+};
 
-    if (moduleDir) {
-        loadModules(moduleDir, requireFn, sdk);
-    }
+export const configureRequestMiddlewares = ({ app }: { app: express.Express }) => {
+    // Configure express application/json processing
+    app.use(express.json());
+    // Configure multipart/form-data processing
+    app.use(multer().any());
 
-    return app;
+    // Configure cookie parsing
+    app.use(cookieParser());
+};
+
+type MagellanRouteConfiguration = {
+    app: express.Express;
+    staticDir: string;
+    staticRoute: string;
+    apiRoute: string;
+};
+
+export const configureMagellanRoutes = ({ app, staticDir, staticRoute, apiRoute }: MagellanRouteConfiguration) => {
+    app.get(/.*/, [wildcardMiddleware(staticDir, staticRoute)]);
+    app.use(staticRoute, createStaticRoute(staticDir, staticRoute));
+    app.use(apiRoute, createFunctionRoute());
 };
 
 export const handleError: ErrorRequestHandler = (err, req, res) => {
