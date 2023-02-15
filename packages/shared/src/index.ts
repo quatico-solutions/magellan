@@ -5,7 +5,6 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { ExecutionContext } from "./context";
 import { deserialize, unpackObject, unpackPayload } from "./deserialize";
 import { packInput, packObject, serialize, serializeError } from "./serialize";
 import type {
@@ -15,18 +14,10 @@ import type {
     ResponsePayload,
     Serialization,
     TransportFunction,
-    TransportHandler
+    TransportHandler,
 } from "./transport";
 import { assert } from "./utils";
 
-export type {
-    ExecutionContext,
-    NamespaceMapping,
-    RemoteFunction,
-    RequestPayload,
-    ResponsePayload,
-    Serialization,
-    TransportFunction,
-    TransportHandler,
-};
+export * from "./context";
+export type { NamespaceMapping, RemoteFunction, RequestPayload, ResponsePayload, Serialization, TransportFunction, TransportHandler };
 export { assert, deserialize, packInput, packObject, serialize, unpackObject, unpackPayload, serializeError };

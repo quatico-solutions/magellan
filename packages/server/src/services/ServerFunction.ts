@@ -5,4 +5,6 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type ServerFunction<I = any, O = any> = (input: I) => Promise<O | undefined>;
+import { Context } from "@quatico/magellan-shared";
+
+export type ServerFunction<I = any, O = any> = (input: I, ctx?: Context) => Promise<O | undefined>;

@@ -4,6 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import { Context } from "./Context";
 import { ExecutionContext } from "./ExecutionContext";
 
-export type { ExecutionContext };
+export type { Context, ExecutionContext };
