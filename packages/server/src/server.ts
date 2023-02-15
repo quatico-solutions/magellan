@@ -102,6 +102,8 @@ type MagellanRouteConfiguration = {
 };
 
 export const configureMagellanRoutes = ({ app, staticDir, staticRoute, apiRoute }: MagellanRouteConfiguration) => {
+    // We want and need to do the SPA wildcard resolution first to facilitate rewrites for static file requests at this stage.
+    // TODO: Expose static assets under a route different from "/" to exclude it in the SPA wildcard filtering.
     app.get(/.*/, [wildcardMiddleware(staticDir, staticRoute)]);
     app.use(staticRoute, createStaticRoute(staticDir, staticRoute));
     app.use(apiRoute, createFunctionRoute());
