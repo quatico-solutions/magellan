@@ -16,6 +16,10 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 - Serialization and deserialization errors during transport-request handling reject the promise.
 
+### Bugfixes
+
+- Removes unnecessary dependency to maven-flatten-plugin in serialization package.
+
 ## [0.2.1] - 2023-02-07
 
 ### New Features
