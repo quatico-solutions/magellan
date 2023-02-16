@@ -1,7 +1,7 @@
 <!--
- ---------------------------------------------------------------------------------------------
-   Copyright (c) Quatico Solutions AG. All rights reserved.
-   Licensed under the MIT License. See LICENSE in the project root for license information.
+---------------------------------------------------------------------------------------------
+Copyright (c) Quatico Solutions AG. All rights reserved.
+Licensed under the MIT License. See LICENSE in the project root for license information.
  ---------------------------------------------------------------------------------------------
 -->
 <!-- markdownlint-disable MD024 -->
@@ -20,6 +20,16 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 ### New Features
 
+- Serialization and deserialization errors during transport-request handling reject the promise.
+
+### Bugfixes
+
+- Removes unnecessary dependency to maven-flatten-plugin in serialization package.
+
+## [0.2.1] - 2023-02-07
+
+### New Features
+
 - Support --transpileOnly command line flag for `magellan compile`
 
 ### Chore
@@ -32,7 +42,8 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 ### New Features
 
 - service functions throwing errors now yield a rejection of the client promise with the error message.
-- service functions throwing errors now yield a console.error with the error stack on the client if the server is not in production mode.
+- service functions throwing errors now yield a console.error with the error stack on the client if the server is not in
+  production mode.
 
 ### Changed
 
