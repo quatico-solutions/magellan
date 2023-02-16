@@ -16,9 +16,10 @@ import {
     initProjectConfiguration,
     resolveNamespace,
     setNamespace,
-    setTransport
+    setTransport,
 } from "./configuration";
-import { serve, ServerOptions } from "./server";
+import type { ServerOptions } from "./server";
+import { configureMagellanRoutes, configureRequestMiddlewares, serve, setupMagellanModules, startServer } from "./server";
 import { externalFunctionInvoke, getFunctionService } from "./services";
 import { formdataFetch } from "./transport";
 
@@ -29,6 +30,8 @@ export {
     addTransport,
     addTransportIfAbsent,
     applyExecutionContext,
+    configureMagellanRoutes,
+    configureRequestMiddlewares,
     externalFunctionInvoke,
     formdataFetch,
     getFunctionService,
@@ -37,4 +40,6 @@ export {
     serve,
     setNamespace,
     setTransport,
+    setupMagellanModules,
+    startServer,
 };

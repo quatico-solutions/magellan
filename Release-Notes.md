@@ -10,7 +10,13 @@ Licensed under the MIT License. See LICENSE in the project root for license info
 
 Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/) format.
 
-## [Unreleased]
+## [Unrelease]
+
+### Improvements
+
+- Exposing additional server api aspects to enable custom express server usage with Magellan
+
+## [0.2.1] - 2023-02-07
 
 ### New Features
 
