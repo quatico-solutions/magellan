@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.quatico.magellan</groupId>
         <artifactId>java</artifactId>
@@ -13,7 +13,9 @@
     <groupId>com.quatico.magellan</groupId>
     <artifactId>serialization</artifactId>
     <name>${project.organization.name} :: Magellan Serialization</name>
-    <description>Magellan Serialization Module representing the Java Counterpart confirming to the same JSON input/output as the Magellan TypeScript packages.</description>
+    <description>Magellan Serialization Module representing the Java Counterpart confirming to the same JSON
+        input/output as the Magellan TypeScript packages.
+    </description>
 
     <properties>
         <maven.deploy.skip>false</maven.deploy.skip>
@@ -30,11 +32,6 @@
         </repository>
     </distributionManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>flatten-maven-plugin</artifactId>
-            <version>1.2.7</version>
-        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -89,7 +86,7 @@
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.2.7</version>
                 <configuration>
-                   <flattenMode>ossrh</flattenMode> 
+                    <flattenMode>ossrh</flattenMode>
                 </configuration>
                 <executions>
                     <execution>
