@@ -22,6 +22,7 @@ beforeAll(() => {
         // @ts-ignore
         this.set = formSet;
     }
+
     // @ts-ignore
     global.FormData = formDataMock;
 });
@@ -166,23 +167,6 @@ describe("transportRequest", () => {
         await expect(actual).rejects.toThrow('Cannot invoke remote function without "name" property.');
     });
 
-    it("throws meaningful error with error thrown by serialize", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
-
-        const actual = transportRequest(
-            { name: "foobar", data: "whatever" },
-            { headers: {} },
-            {
-                serialize: () => {
-                    throw new Error("expected");
-                },
-                deserialize: jest.fn(),
-            }
-        );
-
-        await expect(actual).rejects.toThrow('Cannot serialize input parameter for remote function: "foobar".');
-    });
-
     it("throws meaningful error with error thrown by fetch", async () => {
         global.fetch = jest.fn().mockImplementation(() => {
             throw new Error("whatever");
@@ -205,13 +189,30 @@ describe("transportRequest", () => {
         await expect(actual).rejects.toThrow('Cannot invoke remote function: "foobar". Reason: "Error: whatever".');
     });
 
-    it("yields meaningful error with error in deserialize", async () => {
+    it("yield rejection with request with invalid format", async () => {
+        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
+
+        const actual = transportRequest(
+            { name: "foobar", data: "whatever" },
+            { headers: {} },
+            {
+                serialize: () => {
+                    throw new Error("expected");
+                },
+                deserialize: jest.fn(),
+            }
+        );
+
+        await expect(actual).rejects.toBe("Serialization failed");
+    });
+
+    it("yields rejection with response with invalid format", async () => {
         global.fetch = jest.fn().mockImplementation(() => ({
             text: () => "malformed JSON",
         }));
 
         const actual = transportRequest({ name: "whatever", data: "whatever" });
 
-        await expect(actual).rejects.toThrow('Cannot deserialize response from remote function: "whatever".');
+        await expect(actual).rejects.toBe("Deserialization failed");
     });
 });

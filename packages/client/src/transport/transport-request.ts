@@ -23,7 +23,9 @@ export const transportRequest = async <O>(
     try {
         payload = serialization.serialize(data);
     } catch (err) {
-        throw new Error(`Cannot serialize input parameter for remote function: "${name}".`);
+        // eslint-disable-next-line no-console
+        process.env.NODE_ENV === "development" && console.error(`Cannot serialize input parameter for remote function: "${name}".`);
+        return Promise.reject("Serialization failed");
     }
 
     const { endpoint, transport } = resolveNamespace(namespace);
@@ -38,6 +40,8 @@ export const transportRequest = async <O>(
         }
         return error ? Promise.reject(error.message) : (data as O);
     } catch (err) {
-        throw new Error(`Cannot deserialize response from remote function: "${name}".`);
+        // eslint-disable-next-line no-console
+        process.env.NODE_ENV === "development" && console.error(`Cannot deserialize response from remote function: "${name}".`);
+        return Promise.reject("Deserialization failed");
     }
 };

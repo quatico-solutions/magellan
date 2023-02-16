@@ -22,3 +22,7 @@ describe.skip("externalFunctionInvoke", () => {
         }).rejects.toThrow("function error: 'error during function invocation: Function not defined'");
     });
 });
+
+describe("external invocation proxy", () => {
+    it("succeeds", () => undefined);
+});
