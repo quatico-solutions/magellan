@@ -12,10 +12,6 @@ import { getDependencyContext, getFunctionService } from "../services";
 import { Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
-declare global {
-    var __qsMagellanServerConfig__: Configuration;
-}
-
 export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
     return setConfiguration(expandConfig(projectConfiguration));
 };

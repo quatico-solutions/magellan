@@ -14,10 +14,6 @@ export type DependencyContext = {
     defaultTransportHandler: TransportHandler;
 };
 
-declare global {
-    var __qsMagellanDI__: DependencyContext;
-}
-
 export const initDependencyContext = (diContext: DependencyContext) => {
     global.__qsMagellanDI__ = diContext;
 };
