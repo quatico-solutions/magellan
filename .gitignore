@@ -14,6 +14,7 @@ packages/test/test-source
 *.log
 *.iws
 .DS_Store
+tsconfig.tsbuildinfo
 .env.local
 .env.development.local
 .env.test.local

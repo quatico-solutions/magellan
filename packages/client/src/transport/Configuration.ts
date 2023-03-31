@@ -9,4 +9,6 @@ import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-share
 export type Configuration = {
     namespaces: Record<string, NamespaceMapping>;
     transports: Record<string, TransportHandler>;
+    lastMerged?: Configuration;
+    merge?: boolean;
 };
