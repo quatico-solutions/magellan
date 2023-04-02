@@ -14,6 +14,17 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/
 
 ### TBA
 
+## [0.3.0]
+
+### New Features
+
+- Support for `merge: true` in `@quatico/magellan-client/transport/config.js` to merge the configuration with the
+  existing configuration of a previous magellan-client frontend instead of replacing it.
+
+### Improvement
+
+- Updates @quatico/magellan-client documentation to current transport configuration.
+
 ## [0.2.2] - 2023-02-26
 
 ### Improvements
