@@ -10,6 +10,7 @@
         "src/**/*.spec.tsx"
     ],
     "include": [
-        "src"
+        "src",
+        "types"
     ]
 }

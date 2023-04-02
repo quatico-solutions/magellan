@@ -10,10 +10,6 @@ import { NamespaceMapping } from "@quatico/magellan-shared";
 import { Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
-declare global {
-    var __qsMagellanConfig__: Configuration;
-}
-
 export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
     return persistConfig(expandConfig(projectConfiguration));
 };

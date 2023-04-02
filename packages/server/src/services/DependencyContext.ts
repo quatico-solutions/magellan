@@ -7,16 +7,12 @@
 
 /* eslint-disable no-var */
 import { TransportHandler } from "..";
-import { TransportRequest } from "../api/TransportRequest";
+import { TransportRequest } from "../api";
 
 export type DependencyContext = {
     defaultTransportRequest: TransportRequest;
     defaultTransportHandler: TransportHandler;
 };
-
-declare global {
-    var __qsMagellanDI__: DependencyContext;
-}
 
 export const initDependencyContext = (diContext: DependencyContext) => {
     global.__qsMagellanDI__ = diContext;
