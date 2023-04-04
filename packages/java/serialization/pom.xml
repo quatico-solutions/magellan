@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.quatico.magellan</groupId>
         <artifactId>java</artifactId>
-        <version>0.2.2</version>
+        <version>0.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>0.2.2</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
     <groupId>com.quatico.magellan</groupId>
     <artifactId>serialization</artifactId>
