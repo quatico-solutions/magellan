@@ -7,7 +7,7 @@
 
 /* eslint-disable no-var */
 import { TransportHandler } from "..";
-import { TransportRequest } from "../api";
+import type { TransportRequest } from "../api";
 
 export type DependencyContext = {
     defaultTransportRequest: TransportRequest;
