@@ -1,5 +1,5 @@
-export {};
-import { Configuration } from "../src";
+export { };
+    import type { Configuration } from "../src";
 
 declare global {
     // eslint-disable-next-line no-var

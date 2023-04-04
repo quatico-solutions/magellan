@@ -1,8 +1,8 @@
 /* eslint-disable no-var */
-import { DependencyContext } from "../src/services";
-import { Configuration } from "../src";
+import type { Configuration } from "../src";
+import type { DependencyContext } from "../src/services";
 
-export {};
+export { };
 
 declare global {
     var __qsMagellanServerConfig__: Configuration;
