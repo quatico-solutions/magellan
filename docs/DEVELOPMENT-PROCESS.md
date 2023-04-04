@@ -16,8 +16,8 @@
 6. [Create a draft pull request](https://github.com/quatico-solutions/magellan/pulls) for the release branch and wait for its build to pass.
 7. Update the package versions using `npm run prepare-release` and choose version `0.3.1`
 8. Wait for the Github Action [Create release and publish](https://github.com/quatico-solutions/magellan/actions/workflows/release-and-publish.yml) to finish.
-9. Merge the release back into develop.
-10. Prepare Java for the next release: `mvn -DgenerateBackupPoms=false versions:set -DnewVersion=0.3.2-SNAPSHOT` and commit as `E Start next release`
+9. Prepare Java for the next release: `mvn -DgenerateBackupPoms=false versions:set -DnewVersion=0.3.2-SNAPSHOT && mvn verify` and commit as `E Start next release`
+10. Merge the release back into develop.
 
 ## FAQ
 
