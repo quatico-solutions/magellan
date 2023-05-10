@@ -6,6 +6,5 @@
  */
 export { getDependencyContext, initDependencyContext } from "./DependencyContext";
 export type { DependencyContext } from "./DependencyContext";
-export { externalFunctionInvoke } from "./external-invocation";
 export { FunctionService, getFunctionService } from "./FunctionService";
 export type { ServerFunction } from "./ServerFunction";
