@@ -12,6 +12,16 @@
         "build": {
             "dependsOn": ["^build"],
             "outputs": ["{projectRoot}/lib"]
+        },
+        "dist": {
+            "dependsOn": [
+                "^dist"
+            ]
+        },
+        "publish-npm": {
+            "dependsOn": [
+                "^publish-npm"
+            ]
         }
     },
     "defaultBase": "develop"
