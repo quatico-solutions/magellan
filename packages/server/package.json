@@ -36,7 +36,6 @@
     },
     "dependencies": {
         "@quatico/magellan-shared": "^0.3.0",
-        "ajv": "8.9.0",
         "cookie-parser": "1.4.x",
         "cors": "2.8.5",
         "express": "4.18.x",
