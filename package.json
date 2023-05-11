@@ -39,7 +39,7 @@
         "test:watch": "nx run-many --target=test:watch --parallel=10",
         "test:update": "nx run-many --target=test:update",
         "test:e2e": "nx run-many --target=test:e2e",
-        "dist": "yarn clean --skip-nx-cache && yarn lint && yarn test --skip-nx-cache && cross-env-shell NODE_ENV=production \"yarn build\" --skip-nx-cache && yarn test:e2e --skip-nx-cache",
+        "dist": "nx run-many --target=dist --skip-nx-cache",
         "prepare-release": "yarn dist && yarn lerna version --force-publish",
         "prepare-prerelease": "yarn dist && yarn lerna version prerelease -y --force-publish",
         "publish-npm": "lerna run --stream publish-npm",

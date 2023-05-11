@@ -20,6 +20,7 @@
         "lint": "mvn process-sources -B -o",
         "lint:fix": "mvn process-sources -B -o",
         "build": "mvn install -DskipTests -Dcheckstyle.skip -B",
+        "dist": "yarn clean && yarn test && yarn build && yarn test:e2e",
         "test": "mvn test -B -Dcheckstyle.skip",
         "test:update": "mvn test -Dcheckstyle.skip",
         "test:e2e": "mvn test -Pe2e -B -Dcheckstyle.skip",

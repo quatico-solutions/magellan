@@ -28,6 +28,7 @@
         "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
         "watch": "tsc --watch",
+        "dist": "yarn clean && yarn test && cross-env-shell NODE_ENV=production \"yarn build\"",
         "test": "jest --verbose --coverage --color",
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --watch",
