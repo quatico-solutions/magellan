@@ -32,7 +32,7 @@ export const createClientTransformer = ({ libPath, functionsDir }: Transformatio
                 }
 
                 if (ts.isImportDeclaration(node)) {
-                    return undefined;
+                    return node;
                 }
 
                 if (!isTransformable(node)) {
@@ -41,7 +41,7 @@ export const createClientTransformer = ({ libPath, functionsDir }: Transformatio
 
                 const decorations = getDecoration(sf, node, DECORATOR_NAME);
                 if (!isNodeExported(node) || !decorations) {
-                    return undefined;
+                    return node;
                 }
 
                 const [transformedNode, isServiceFunction] = transformNode(node, sf, decorations);
@@ -49,7 +49,7 @@ export const createClientTransformer = ({ libPath, functionsDir }: Transformatio
                 return transformedNode ?? node;
             };
 
-            sf = ts.visitNode(sf, visitor);
+            sf = ts.visitNode(sf, visitor, ts.isSourceFile);
             if (hasServiceFunctions) {
                 if (!hasInvokeImport(sf, libPath, NAMED_IMPORTS)) {
                     sf = ts.factory.updateSourceFile(sf, [getImportInvoke(libPath, NAMED_IMPORTS), ...sf.statements]);
@@ -94,7 +94,6 @@ export const hasInvokeImport = (sf: ts.SourceFile, libPath: string, namedImports
 
 export const getImportInvoke = (libPath: string, namedImports: string[]): ts.Statement => {
     return ts.factory.createImportDeclaration(
-        undefined,
         undefined,
         ts.factory.createImportClause(
             false,

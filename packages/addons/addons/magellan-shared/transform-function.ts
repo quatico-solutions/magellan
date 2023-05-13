@@ -111,7 +111,6 @@ export const transformInvocableFunction = (
     const parameters = getObjectLiteralsOfNode(node);
     return factory.updateFunctionDeclaration(
         node,
-        node.decorators,
         node.modifiers,
         node.asteriskToken,
         node.name,
@@ -133,7 +132,6 @@ export const transformLocalServerFunction = (node: ts.Node): ts.Node => {
     const newParameters = createObjectifiedParameter(node);
     return factory.updateFunctionDeclaration(
         node,
-        node.decorators,
         node.modifiers,
         node.asteriskToken,
         node.name,
@@ -178,9 +176,13 @@ const createObjectifiedParameter = (node: ts.Node): ts.ParameterDeclaration[] =>
         parameters?.map(p => factory.createBindingElement(undefined, undefined, factory.createIdentifier(p.name.getText()), undefined)) ?? []
     );
     const typeLiteral = factory.createTypeLiteralNode(
-        parameters?.map(p => factory.createPropertySignature(p.modifiers, p.name.getText(), p.questionToken, p.type))
+        parameters?.map(p => factory.createPropertySignature(
+            // TODO: API clash ModifierLike[] (new) vs. Modifier[] (old)
+            p.modifiers as any, 
+            p.name.getText(), 
+            p.questionToken, p.type))
     );
-    return [factory.createParameterDeclaration(undefined, undefined, undefined, bindingPattern, undefined, typeLiteral, undefined)];
+    return [factory.createParameterDeclaration(undefined, undefined, bindingPattern, undefined, typeLiteral, undefined)];
 };
 
 /**

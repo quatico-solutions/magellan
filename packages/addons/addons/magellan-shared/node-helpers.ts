@@ -100,7 +100,6 @@ export const getFunctionName = (node: ts.VariableStatement | ts.FunctionDeclarat
 export const createInvokeImport = (libPath: string, namedImports: string[]): ts.Statement => {
     return factory.createImportDeclaration(
         undefined,
-        undefined,
         factory.createImportClause(
             false,
             undefined,
