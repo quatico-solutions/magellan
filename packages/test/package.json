@@ -47,10 +47,10 @@
         "memfs": "3.4.x",
         "prettier": "^2.8.8",
         "rimraf": "^5.0.0",
-        "typescript": "4.7.x"
+        "typescript": "5.0.x"
     },
     "engines": {
-        "node": "=16 || =18",
-        "yarn": "=1.22.x"
+        "node": "16 || 18",
+        "yarn": "1.22.x"
     }
 }

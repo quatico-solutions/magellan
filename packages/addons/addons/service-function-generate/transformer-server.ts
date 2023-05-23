@@ -52,7 +52,7 @@ export const createServerTransformer = ({ functionsDir }: TransformationArgument
                 return ts.visitEachChild(node, visitor, ctx);
             };
 
-            return ts.visitNode(sf, visitor);
+            return ts.visitNode(sf, visitor, ts.isSourceFile);
         };
     };
     return platformTransformerFactory;
