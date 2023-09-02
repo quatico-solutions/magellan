@@ -8,7 +8,7 @@ import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/
 import type { Context } from "./Context";
 import { resolveNamespace } from "./namespace";
 
-export const transportRequest = async <O>(
+export const transportRequest = async <O = void>(
     func: RemoteFunction,
     ctx: Context = { headers: {} },
     serialization: Serialization = { serialize: packInput, deserialize }
