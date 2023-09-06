@@ -15,13 +15,15 @@ export const transformInvocableArrow = (
 ): ts.Node => {
     // FIXME: For fully correct behavior, this should be done on a per node.declarationList.declarations to work correctly with statements that
     //          contain multiple variable statements instead of just one. This also applies to the server arrow function.
-    return ts.isVariableStatement(node) ? transformArrowVariableStatement(
-        node,
-        getDescendantsOfKind<ts.ArrowFunction>(node, ts.SyntaxKind.ArrowFunction),
-        sf,
-        decorations,
-        invocationFuncName
-    ) : node;
+    return ts.isVariableStatement(node)
+        ? transformArrowVariableStatement(
+              node,
+              getDescendantsOfKind<ts.ArrowFunction>(node, ts.SyntaxKind.ArrowFunction),
+              sf,
+              decorations,
+              invocationFuncName
+          )
+        : node;
 };
 
 const transformArrowVariableStatement = (
@@ -32,7 +34,7 @@ const transformArrowVariableStatement = (
     invocationFuncName = "remoteInvoke"
 ): ts.VariableStatement => {
     return arrow && ts.isArrowFunction(arrow)
-        ?  function(){
+        ? (function () {
               const declaration = node.declarationList.declarations[0];
               return factory.updateVariableStatement(
                   node,
@@ -55,8 +57,8 @@ const transformArrowVariableStatement = (
                       ),
                       ...node.declarationList.declarations.slice(1),
                   ])
-              )
-          }()
+              );
+          })()
         : node;
 };
 
@@ -176,17 +178,21 @@ const createObjectifiedParameter = (node: ts.Node): ts.ParameterDeclaration[] =>
         parameters?.map(p => factory.createBindingElement(undefined, undefined, factory.createIdentifier(p.name.getText()), undefined)) ?? []
     );
     const typeLiteral = factory.createTypeLiteralNode(
-        parameters?.map(p => factory.createPropertySignature(
-            // TODO: API clash ModifierLike[] (new) vs. Modifier[] (old)
-            p.modifiers as any, 
-            p.name.getText(), 
-            p.questionToken, p.type))
+        parameters?.map(p =>
+            factory.createPropertySignature(
+                // TODO: API clash ModifierLike[] (new) vs. Modifier[] (old)
+                p.modifiers as any,
+                p.name.getText(),
+                p.questionToken,
+                p.type
+            )
+        )
     );
     return [factory.createParameterDeclaration(undefined, undefined, bindingPattern, undefined, typeLiteral, undefined)];
 };
 
 /**
- * Creates the remoteInvoke expression for a given function with the RemoteFunction<O> interface input.
+ * Creates the remoteInvoke expression for a given function with the RemoteFunction interface input.
  * $invocationName$({name: name, data: funcArgs })
  * @param invocationName Name of the invocation function
  * @param name Name of the function for which the remoteInvokation is created.

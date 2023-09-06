@@ -1,19 +1,18 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.3.0",
+    "version": "0.4.5",
     "author": "Quatico Solutions AG",
     "license": "SEE LICENSE IN LICENSE",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/quatico-solutions/magellan.git"
+        "url": "git+https://apps.quatico.com/repo/scm/quamag/qs-magella.git"
     },
     "bugs": {
-        "url": "https://github.com/quatico-solutions/magellan/issues"
+        "url": "https://apps.quatico.com/jira/secure/RapidBoard.jspa?rapidView=423&projectKey=QUAMAG"
     },
-    "homepage": "https://github.com/quatico-solutions/magellan#readme",
     "files": [
         "LICENSE",
         "README.md",
@@ -22,9 +21,6 @@
     ],
     "bin": {
         "magellan": "./bin/magellan.js"
-    },
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org"
     },
     "scripts": {
         "clean": "rimraf lib bin coverage",
@@ -36,14 +32,14 @@
         "dist": "yarn clean && yarn test && cross-env-shell NODE_ENV=production \"yarn build\"",
         "dev:compile": "ts-node src/index.ts compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
         "dev:serve": "ts-node src/index.ts serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
-        "test": "jest --color --verbose --coverage",
-        "test:watch": "jest --color --watch",
+        "test": "jest --coverage",
+        "test:watch": "jest --watch",
         "test:update-snapshots": "yarn test -u",
-        "publish-npm": "npm publish --access public"
+        "publish-npm": "npm publish"
     },
     "dependencies": {
-        "@quatico/magellan-client": "^0.3.0",
-        "@quatico/magellan-server": "^0.3.0",
+        "@quatico/magellan-client": "^0.4.5",
+        "@quatico/magellan-server": "^0.4.5",
         "@quatico/websmith-api": "0.4.0",
         "@quatico/websmith-compiler": "0.4.0",
         "@quatico/websmith-core": "0.4.0",
