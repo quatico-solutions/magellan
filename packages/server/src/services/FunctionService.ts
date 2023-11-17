@@ -25,7 +25,7 @@ export class FunctionService {
 
     public invokeFunction<O>({ name, data, namespace = "default" }: RemoteFunction): Promise<O> {
         const func = this.functions.get(name);
-        return func ? func(data) : this.transport({ name, data, namespace });
+        return func ? func(data) : this.transport<O>({ name, data, namespace });
     }
 }
 
