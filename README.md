@@ -237,7 +237,7 @@ export const greetMe = async (name: string): Promise<string> => {
 
 ### 4.3 Update the Application to connect to the server
 
-create-react-app requires us to run the Magellan server in parallel to the react-scripts server, so we need to to configure the location where the server is running.
+create-react-app requires us to run the Magellan server in parallel to the react-scripts server, so we need to configure the location where the server is running.
 To do so, we need to add the following code to `src/App.tsx`
 
 ```diff
