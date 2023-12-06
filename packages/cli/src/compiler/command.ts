@@ -80,7 +80,7 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
                 });
 
             cliArguments = addRequiredTargetsIfMissing(cliArguments);
-            addWebsmithCompileCommand(new Command() as any, compiler).parse(cliArguments, { from: "user" });
+            addWebsmithCompileCommand(new Command() as any, compiler as any).parse(cliArguments, { from: "user" });
         });
     return parent;
 };

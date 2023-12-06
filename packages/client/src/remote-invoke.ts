@@ -8,10 +8,10 @@ import { deserialize, packInput, RemoteFunction, Serialization } from "@quatico/
 import type { Context } from "./transport";
 import { transportRequest } from "./transport";
 
-export const remoteInvoke = async <O>(
+export const remoteInvoke = async <O = void>(
     func: RemoteFunction,
     ctx: Context = { headers: {} },
     serialization: Serialization = { serialize: packInput, deserialize }
 ): Promise<O> => {
-    return transportRequest(func, ctx, serialization);
+    return transportRequest<O>(func, ctx, serialization);
 };

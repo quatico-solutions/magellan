@@ -1,41 +1,37 @@
 {
     "name": "@quatico/magellan-client",
     "description": "Client library for proxies generated with @quatico/websmith-compiler",
-    "version": "0.3.0",
+    "version": "0.5.3",
     "author": "Quatico Solutions AG",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/quatico-solutions/magellan.git"
+        "url": "git+https://apps.quatico.com/repo/scm/quamag/qs-magellan.git"
     },
     "bugs": {
-        "url": "https://github.com/quatico-solutions/magellan/issues"
+        "url": "https://apps.quatico.com/jira/secure/RapidBoard.jspa?rapidView=423&projectKey=QUAMAG"
     },
-    "homepage": "https://github.com/quatico-solutions/magellan#readme",
     "files": [
         "LICENSE",
         "README.md",
         "lib"
     ],
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org"
-    },
     "scripts": {
         "clean": "rimraf lib coverage",
         "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
         "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
         "watch": "tsc --watch",
-        "dist": "yarn clean && yarn test && cross-env-shell NODE_ENV=production \"yarn build\"",
-        "test": "jest --color --verbose --coverage",
-        "test:watch": "jest --color --watch",
+        "dist": "cross-env-shell NODE_ENV=production \"yarn clean && yarn test && yarn build\"",
+        "test": "jest --coverage",
+        "test:watch": "jest --watch",
         "test:update-snapshots": "yarn test -u",
-        "publish-npm": "npm publish --access public"
+        "publish-npm": "npm publish"
     },
     "dependencies": {
-        "@quatico/magellan-shared": "^0.3.0"
+        "@quatico/magellan-shared": "^0.5.3"
     },
     "devDependencies": {
         "@swc/core": "^1.3.57",
