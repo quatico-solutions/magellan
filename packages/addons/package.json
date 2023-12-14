@@ -1,6 +1,6 @@
 {
     "name": "@quatico/magellan-addons",
-    "version": "0.3.0",
+    "version": "0.5.4",
     "description": "A example library for the websmith compiler",
     "author": "Quatico Solutions AG",
     "license": "SEE LICENSE IN LICENSE",
@@ -8,31 +8,27 @@
     "types": "./lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/quatico-solutions/magellan.git"
+        "url": "git+https://apps.quatico.com/repo/scm/quamag/qs-magellan.git"
     },
     "bugs": {
-        "url": "https://github.com/quatico-solutions/magellan/issues"
+        "url": "https://apps.quatico.com/jira/secure/RapidBoard.jspa?rapidView=423&projectKey=QUAMAG"
     },
-    "homepage": "https://github.com/quatico-solutions/magellan#readme",
     "files": [
         "LICENSE",
         "README.md",
         "lib"
     ],
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org"
-    },
     "scripts": {
         "clean": "rimraf lib dist bin coverage output.yaml",
         "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
         "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
         "watch": "tsc --watch",
-        "dist": "yarn clean && yarn test && cross-env-shell NODE_ENV=production \"yarn build\"",
-        "test": "jest --verbose --coverage --color",
+        "dist": "cross-env-shell NODE_ENV=production \"yarn clean && yarn test && yarn build\"",
+        "test": "jest --coverage",
         "test:update-snapshots": "yarn test -u",
         "test:watch": "jest --watch",
-        "publish-npm": "npm publish --access public"
+        "publish-npm": "npm publish"
     },
     "devDependencies": {
         "@swc/core": "^1.3.57",
@@ -55,8 +51,8 @@
         "ts-jest": "^29.1.0"
     },
     "dependencies": {
-        "@quatico/magellan-client": "^0.3.0",
-        "@quatico/magellan-server": "^0.3.0",
+        "@quatico/magellan-client": "^0.5.4",
+        "@quatico/magellan-server": "^0.5.4",
         "@quatico/websmith-api": "0.4.0",
         "typescript": "5.0.x"
     },

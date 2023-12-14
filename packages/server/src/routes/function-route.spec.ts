@@ -45,6 +45,8 @@ describe("createStaticRoute", () => {
     });
 
     it("responds to /api with registered function that throws error and includes error field in non-production", async () => {
+        process.env.NODE_ENV = "development";
+
         app.use(
             "/api",
             createFunctionRoute(
