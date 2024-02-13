@@ -15,7 +15,7 @@ import {
     applyExecutionContext,
     getConfiguration,
     setNamespace,
-    setTransport
+    setTransport,
 } from "./configuration";
 import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
 import { formdataFetch, transportRequest } from "./transport";
@@ -55,7 +55,7 @@ export class Sdk {
     }
 
     public invokeFunction<I, O>(name: string, data: I, namespace = "default"): Promise<O> {
-        return this.service.invokeFunction({ name, data, namespace });
+        return this.service.invokeFunction<O>({ name, data, namespace });
     }
 
     public addNamespace(name: string, mapping: NamespaceMapping): this | never {

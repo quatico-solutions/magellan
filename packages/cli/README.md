@@ -42,7 +42,7 @@ Do the following to move the invocation of your code to the server:
 1. Add a comment with an @service annotation to the function, e.g., `// @service()`
 1. Move the new ES6 module file into the dedicated folder, e.g., `./src/functions`
 1. Call the compiler, e.g., `magellan compile ./src/functions`. This will output
-    1. the client results into our tsconfigs outDir, e. g.
+    1. The client results should go into the TS outDir, e.g.
 
     ```json
     {
@@ -120,7 +120,7 @@ magellan serve --help
 For example, a custom configuration could look as follows:
 
 ```sh
-magellan compile --project ./tsconfig.json --serverModuleDir ./server-esm --hostname http://dockerhost --port 8080 --debug
+magellan compile --project ./tsconfig.json --hostname http://dockerhost --port 8080 --debug
 --watch ./src/functions
 
 magellan serve ./lib --serverModuleDir ./server-esm

@@ -5,7 +5,8 @@
  ---------------------------------------------------------------------------------------------
 -->
 
-# Magellan 
+# Magellan
+
 [![CI](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml/badge.svg)](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml)  [![npm version](https://badge.fury.io/js/@quatico%2Fmagellan-cli.svg)](https://www.npmjs.com/search?q=%40quatico)
 
 The Magellan project provides compiler tooling and a runtime API for remote execution of
@@ -61,8 +62,8 @@ Add an example function that returns a greeting `src/services/greet-me.ts`:
 
 ```typescript
 export const greetMe = async (name: string): Promise<string> => {
-    // In the browser, accessing process.arch cause an error.
-    return `Hello ${name}, great to see you on ${ typeof window === "undefined" ? `${process.arch} server`: "browser"}!`;
+    // In the browser, accessing process.arch causes an error.
+    return `Hello ${name}, great to see you I'm Magellan running on "${ typeof window === "undefined" ? `${process.arch}" server`: "browser"}!`;
 }
 ```
 
@@ -71,7 +72,9 @@ export const greetMe = async (name: string): Promise<string> => {
 Update `src/App.tsx` to use the greeting service and show the greeting to the visitor.
 
 ```diff
++ import { useEffect, useState } from "react";
 import logo from './logo.svg';
++ import { greetMe } from "./services/greet-me";
 
 import './App.css';
 
@@ -139,6 +142,7 @@ Update the `package.json` to use [react-app-rewired](https://www.npmjs.com/packa
 
 ```diff
 {
+    ...
     "scripts": {
 -       "start": "react-scripts start",
 +       "start": "react-app-rewired start",
@@ -148,8 +152,9 @@ Update the `package.json` to use [react-app-rewired](https://www.npmjs.com/packa
 +       "test": "react-app-rewired test",
         "eject": "react-scripts eject",
 +       "compile": "magellan compile",
-+       "serve": "magellan serve ./lib/client --serverModuleDir ./lib/server -p 3001"
-    }
++       "serve": "magellan serve ./lib/client --serverModuleDir ./lib/server --port 3001"
+    },
+    ...
 }
 ```
 
@@ -158,6 +163,7 @@ Update `tsconfig.json` to enable TypeScript to generate output
 ```diff
 {
     "compilerOptions": {
+        ...
 -       "noEmit": true,
 +       "outDir": "./lib/client",
     }
