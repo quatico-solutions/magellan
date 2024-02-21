@@ -1,42 +1,35 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.3.0",
+    "version": "0.6.1",
     "author": "Quatico Solutions AG",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/quatico-solutions/magellan.git"
+        "url": "https://github.com/quatico-solutions/magellan"
     },
-    "bugs": {
-        "url": "https://github.com/quatico-solutions/magellan/issues"
-    },
-    "homepage": "https://github.com/quatico-solutions/magellan#readme",
     "files": [
         "LICENSE",
         "README.md",
         "lib"
     ],
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org"
-    },
     "scripts": {
         "clean": "rimraf lib coverage",
         "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
         "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
         "build": "tsc",
         "watch": "tsc --watch",
-        "dist": "yarn clean && yarn test && cross-env-shell NODE_ENV=production \"yarn build\"",
+        "dist": "cross-env-shell NODE_ENV=production \"yarn clean && yarn test && yarn build\"",
         "dev": "ts-node src/cli/index.ts serve ../../../qs-magellan-sandbox/packages/react/lib ../../../qs-magellan-sandbox/packages/react/server-esm",
-        "test": "jest --color --verbose --coverage",
-        "test:watch": "jest --color --watch",
+        "test": "jest --coverage",
+        "test:watch": "jest --watch",
         "test:update-snapshots": "yarn test -u",
-        "publish-npm": "npm publish --access public"
+        "publish-npm": "npm publish"
     },
     "dependencies": {
-        "@quatico/magellan-shared": "^0.3.0",
+        "@quatico/magellan-shared": "^0.6.1",
         "cookie-parser": "1.4.x",
         "cors": "2.8.5",
         "express": "4.18.x",
