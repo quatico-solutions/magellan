@@ -34,8 +34,13 @@ describe("transportRequest", () => {
     });
 
     it("calls fetch passing serialized input parameters with simple object", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput(target) }));
         const target = { data: "whatever" };
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            text: () => Promise.resolve(packInput(target)),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await transportRequest({ name: "whatever", data: target });
 
@@ -54,7 +59,12 @@ describe("transportRequest", () => {
 
     it("calls fetch using no input parameter w/o data property", async () => {
         const target = {};
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput(target) }));
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            text: () => Promise.resolve(packInput(target)),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await transportRequest({ name: "whatever" });
 
@@ -72,7 +82,14 @@ describe("transportRequest", () => {
     });
 
     it("calls deserialize passing result from fetch", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => Buffer.from("expected") }));
+        const value = Buffer.from("expected");
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            // @ts-ignore
+            text: () => Promise.resolve(value),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
         const target = jest.fn().mockImplementation(value => value);
 
         await transportRequest(
@@ -84,15 +101,21 @@ describe("transportRequest", () => {
             }
         );
 
-        expect(target).toHaveBeenCalledWith(Buffer.from("expected"));
+        expect(target).toHaveBeenCalledWith(value);
     });
 
     it("calls serialize passing result from fetch", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("expected") }));
+        const value = "expected";
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            text: () => Promise.resolve(packInput(value)),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
         const target = jest.fn();
 
         await transportRequest(
-            { name: "whatever", data: "expected" },
+            { name: "whatever", data: value },
             { headers: {} },
             {
                 serialize: target,
@@ -100,18 +123,24 @@ describe("transportRequest", () => {
             }
         );
 
-        expect(target).toHaveBeenCalledWith("expected");
+        expect(target).toHaveBeenCalledWith(value);
     });
 
     it("calls fetch passing function name from input", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("whatever") }));
+        const value = "whatever";
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            text: () => Promise.resolve(packInput(value)),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/api" } },
             transports: { default: formdataFetch },
         });
 
         await transportRequest(
-            { name: "expected", data: "whatever" },
+            { name: "expected", data: value },
             { headers: {} },
             {
                 serialize: val => JSON.stringify(val),
@@ -128,19 +157,25 @@ describe("transportRequest", () => {
 
         expect(formSet).toHaveBeenCalledTimes(3);
         expect(formSet).toHaveBeenNthCalledWith(1, "name", "expected");
-        expect(formSet).toHaveBeenNthCalledWith(2, "data", JSON.stringify("whatever"));
+        expect(formSet).toHaveBeenNthCalledWith(2, "data", JSON.stringify(value));
         expect(formSet).toHaveBeenNthCalledWith(3, "namespace", "default");
     });
 
     it("calls fetch w/ baseUrl, servicePath", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => packInput("whatever") }));
+        const value = "whatever";
+        const mockResponse: Partial<Response> = {
+            status: 200,
+            ok: true,
+            text: () => Promise.resolve(packInput(value)),
+        };
+        global.fetch = jest.fn().mockResolvedValue(mockResponse);
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/expected/path/function" } },
             transports: { default: formdataFetch },
         });
 
         await transportRequest(
-            { name: "target", data: "whatever" },
+            { name: "target", data: value },
             { headers: {} },
             {
                 serialize: val => JSON.stringify(val),
@@ -157,7 +192,7 @@ describe("transportRequest", () => {
 
         expect(formSet).toHaveBeenCalledTimes(3);
         expect(formSet).toHaveBeenNthCalledWith(1, "name", "target");
-        expect(formSet).toHaveBeenNthCalledWith(2, "data", JSON.stringify("whatever"));
+        expect(formSet).toHaveBeenNthCalledWith(2, "data", JSON.stringify(value));
         expect(formSet).toHaveBeenNthCalledWith(3, "namespace", "default");
     });
 
@@ -179,6 +214,8 @@ describe("transportRequest", () => {
 
     it("throws meaningful error with error thrown by response data access", async () => {
         global.fetch = jest.fn().mockImplementation(() => ({
+            ok: true,
+            status: 200,
             text: () => {
                 throw new Error("whatever");
             },
@@ -208,11 +245,35 @@ describe("transportRequest", () => {
 
     it("yields rejection with response with invalid format", async () => {
         global.fetch = jest.fn().mockImplementation(() => ({
+            ok: true,
+            status: 200,
             text: () => "malformed JSON",
         }));
 
         const actual = transportRequest({ name: "whatever", data: "whatever" });
 
         await expect(actual).rejects.toBe("Deserialization failed");
+    });
+
+    it("yields rejection with response with ok flag, status and statusText set", async () => {
+        global.fetch = jest.fn().mockImplementation(() => ({
+            ok: false,
+            status: 404,
+            statusText: "not found",
+        }));
+
+        const actual = transportRequest({ name: "whatever", data: "whatever" });
+
+        await expect(actual).rejects.toStrictEqual({ message: "not found", status: 404 });
+    });
+
+    it("yields rejection with response with undefined ok flag", async () => {
+        global.fetch = jest.fn().mockImplementation(() => ({
+            status: 500,
+        }));
+
+        const actual = transportRequest({ name: "whatever", data: "whatever" });
+
+        await expect(actual).rejects.toStrictEqual({ message: "", status: 500 });
     });
 });

@@ -5,8 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable no-var */
-import { TransportHandler } from "..";
+import type { TransportHandler } from "@quatico/magellan-shared";
 import type { TransportRequest } from "../api";
 
 export type DependencyContext = {
