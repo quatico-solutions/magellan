@@ -16,7 +16,7 @@ import {
     transformInvocableArrow,
     transformInvocableFunction,
     transformLocalServerArrow,
-    transformLocalServerFunction
+    transformLocalServerFunction,
 } from "../magellan-shared";
 import { ServiceDecoratorData } from "../magellan-shared/node-helpers";
 
