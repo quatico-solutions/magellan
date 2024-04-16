@@ -9,12 +9,12 @@ export interface CliArguments {
     addonsDir: string;
     config?: string;
     debug: boolean;
-    // functionsDir: string;
+    // functionsDir: string;        MOVED to addConfig
     hostname: string;
     port: number;
     project: string;
-    // serverModuleDir: string;
-    // sourceMap?: boolean;
+    // serverModuleDir: string;     MOVED to serve
+    // sourceMap?: boolean;         REMOVED
     targets: string;
     watch: boolean;
 }
