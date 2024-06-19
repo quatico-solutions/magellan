@@ -5,4 +5,4 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type ServerFunction<I = any, O = any> = (input: I) => Promise<O | undefined>;
+export type ServerFunction<I = any, O = any> = (input: I) => Promise<O | void>;

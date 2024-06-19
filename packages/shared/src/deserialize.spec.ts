@@ -128,6 +128,14 @@ describe("unpackObject", () => {
         expect(actual).toEqual(expected);
     });
 
+    it("unpacks w/ a bigint", () => {
+        const expected = BigInt("9223372036854775807");
+
+        const actual = unpackObject({ __type__: "bigint", value: "9223372036854775807" });
+
+        expect(actual).toEqual(expected);
+    });
+
     it("unpacks w/ a map", () => {
         const values: [string, number][] = [
             ["1", 1],

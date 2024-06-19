@@ -1,3 +1,9 @@
+<!--
+ ---------------------------------------------------------------------------------------------
+   Copyright (c) Quatico Solutions AG. All rights reserved.
+   Licensed under the MIT License. See LICENSE in the project root for license information.
+ ---------------------------------------------------------------------------------------------
+-->
 # Response and error propagation of service functions from server to client
 
 magellan supports automatic error propagation from the server executed version of a @service annoted function to the client.
