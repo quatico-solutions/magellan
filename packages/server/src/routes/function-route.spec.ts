@@ -45,6 +45,8 @@ describe("createStaticRoute", () => {
     });
 
     it("responds to /api with registered function that throws error and includes error field in non-production", async () => {
+        process.env.NODE_ENV = "development";
+
         app.use(
             "/api",
             createFunctionRoute(
@@ -67,10 +69,7 @@ describe("createStaticRoute", () => {
         const payload = unpackPayload(res.body);
         expect(payload.error).toEqual({
             message: "expected error message",
-            error: expect.stringContaining(
-                "Error: expected error message\n" +
-                `    at ${join(__dirname, "function-route.spec.ts")}`
-            ),
+            error: expect.stringContaining("Error: expected error message\n" + `    at ${join(__dirname, "function-route.spec.ts")}`),
         });
         expect(res.statusCode).toBe(200);
     });
@@ -97,7 +96,7 @@ describe("createStaticRoute", () => {
 
         expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
         const payload = unpackPayload(res.body);
-        expect(payload.error).toEqual({ message: 'expected error message' });
+        expect(payload.error).toEqual({ message: "expected error message" });
         expect(res.statusCode).toBe(200);
     });
 

@@ -16,6 +16,9 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
 
     try {
         const response = await fetch(endpoint, { method: "POST", body: createFormData(func), headers: createHeaders({ headers: ctx.headers }) });
+        if (!response.ok) {
+            return Promise.reject({ status: response.status, message: response?.statusText || "" });
+        }
         return await response.text();
     } catch (err) {
         throw new Error(`Cannot invoke remote function: "${name}". Reason: "${err}".`);

@@ -6,7 +6,7 @@
  */
 
 import { ResponsePayload } from "./transport";
-import { isSerializedComplexType, SerializedComplexType, SerializedTypes } from "./types";
+import { isSerializedComplexType, SerializedTypes } from "./types";
 
 export const deserialize = <O>(jsonData: string): ResponsePayload<O> => {
     return unpackObject(JSON.parse(jsonData)) as ResponsePayload<O>;
@@ -18,15 +18,19 @@ export const unpackPayload = <O>(payload: unknown): ResponsePayload<O> => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const unpackObject = (value: any): unknown => {
-    const complexType = value as SerializedComplexType;
-
-    if (isSerializedComplexType(complexType)) {
+    if (isSerializedComplexType(value)) {
+        const complexType = value;
+        if (complexType.__type__ === SerializedTypes.BigInt) {
+            return BigInt(complexType.value);
+        }
         if (complexType.__type__ === SerializedTypes.Date) {
             return new Date(complexType.value);
-        } else if (complexType.__type__ === SerializedTypes.Map) {
+        }
+        if (complexType.__type__ === SerializedTypes.Map) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return complexType.value ? new Map(Object.entries(complexType.value).map((it: any) => [it.at(0), unpackObject(it.at(1))])) : new Map();
-        } else if (complexType.__type__ === SerializedTypes.Set) {
+        }
+        if (complexType.__type__ === SerializedTypes.Set) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return complexType.value ? new Set(complexType.value.map((it: any) => unpackObject(it))) : new Set();
         }
@@ -47,11 +51,10 @@ export const unpackObject = (value: any): unknown => {
 const deserializeObject = (value: any) => {
     const map = new Map<PropertyKey, unknown>();
     Object.entries(value).forEach(it => {
-        const innerType = it.at(1) as SerializedComplexType;
         const key = it.at(0) as PropertyKey;
         const val = it.at(1);
-        if (isSerializedComplexType(innerType) || val instanceof Object) {
-            map.set(key, unpackObject(innerType));
+        if (isSerializedComplexType(val) || val instanceof Object) {
+            map.set(key, unpackObject(val));
         } else if (val instanceof Array) {
             map.set(
                 key,
