@@ -10,6 +10,9 @@ import { formdataFetch } from "./formdata-fetch";
 import { getConfiguration } from "./configuration-repository";
 import { ResolvedNamespace } from "./ResolvedNamespace";
 
+const DEFAULT_NAMESPACE = "default";
+const DEFAULT_TRANSPORT = "default";
+
 export const addNamespace = (namespace: string, mapping: NamespaceMapping): void | never => {
     const config = getConfiguration();
     assert(!config.namespaces[namespace], `Namespace "${namespace}" already registered.`);
@@ -32,7 +35,6 @@ export const addTransport = (name: string, handler: TransportHandler): void | ne
     const config = getConfiguration();
     config.transports = config.transports || {};
     assert(!config.transports[name], `Transport "${name}" already registered.`);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     config.transports[name] = handler;
 };
 
@@ -40,7 +42,6 @@ export const addTransportIfAbsent = (name: string, handler: TransportHandler): v
     const config = getConfiguration();
     config.transports = config.transports || {};
     if (!config.transports[name]) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         config.transports[name] = handler;
     }
 };
@@ -51,9 +52,17 @@ export const setTransport = (name: string, handler: TransportHandler): void => {
     config.transports[name] = handler;
 };
 
-export const resolveNamespace = (namespace = "default", defaultEndpoint = "/api"): ResolvedNamespace => {
+export const resolveNamespace = (namespace = DEFAULT_NAMESPACE, defaultEndpoint = "/api"): ResolvedNamespace => {
     const config = getConfiguration();
-    const resolvedNamespace = config.namespaces[namespace] ?? { endpoint: defaultEndpoint, transport: "default" };
-    const resolvedTransport = config.transports[resolvedNamespace.transport || "default"] ?? formdataFetch;
+    if (namespace === DEFAULT_NAMESPACE) {
+        return {
+            name: namespace,
+            endpoint: config.namespaces[DEFAULT_NAMESPACE].endpoint ?? defaultEndpoint,
+            transport: config.transports[DEFAULT_TRANSPORT] ?? formdataFetch,
+        };
+    }
+    const resolvedNamespace = config.namespaces[namespace];
+    assert(!!resolvedNamespace, `Failed to resolve namespace "${namespace}". No configuration found.`);
+    const resolvedTransport = config.transports[resolvedNamespace.transport || DEFAULT_TRANSPORT] ?? formdataFetch;
     return { name: namespace, endpoint: resolvedNamespace.endpoint, transport: resolvedTransport };
 };

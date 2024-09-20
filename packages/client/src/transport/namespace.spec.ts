@@ -4,13 +4,18 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { getConfiguration, initProjectConfiguration } from "./configuration-repository";
-import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, setNamespace, setTransport } from "./namespace";
+import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, resolveNamespace, setNamespace, setTransport } from "./namespace";
+import { ResolvedNamespace } from "./ResolvedNamespace";
 
 const defaultTransport = jest.fn();
 
 beforeEach(() => {
-    initProjectConfiguration({ namespaces: { default: { endpoint: "/api", transport: "default" } }, transports: { default: defaultTransport } });
+    initProjectConfiguration({
+        namespaces: { default: { endpoint: "/api", transport: "default" } },
+        transports: { default: defaultTransport },
+    });
 });
 
 describe("addNamespace", () => {
@@ -128,5 +133,55 @@ describe("setTransport", () => {
             default: defaultTransport,
             expected: expected,
         });
+    });
+});
+
+describe("resolveNamespace", () => {
+    it("should resolve 'default' namespace with default config", () => {
+        const expected: ResolvedNamespace = {
+            name: "default",
+            endpoint: "/api",
+            transport: defaultTransport,
+        };
+
+        const actual = resolveNamespace();
+
+        expect(actual).toEqual(expected);
+    });
+
+    it("should resolve 'expected' namespace with expected config", () => {
+        const expectedTransport: TransportHandler = jest.fn();
+        const expectedNamespace: NamespaceMapping = { endpoint: "/expected", transport: "expected" };
+        const expected: ResolvedNamespace = {
+            name: "expected",
+            endpoint: expectedNamespace.endpoint,
+            transport: expectedTransport,
+        };
+
+        addTransport("expected", expectedTransport);
+        addNamespace("expected", expectedNamespace);
+
+        const actual = resolveNamespace("expected");
+
+        expect(actual).toEqual(expected);
+    });
+
+    it("should resolve 'expected' namespace with default config", () => {
+        const expectedNamespace: NamespaceMapping = { endpoint: "/expected" };
+        const expected: ResolvedNamespace = {
+            name: "expected",
+            endpoint: expectedNamespace.endpoint,
+            transport: defaultTransport,
+        };
+
+        addNamespace("expected", expectedNamespace);
+
+        const actual = resolveNamespace("expected");
+
+        expect(actual).toEqual(expected);
+    });
+
+    it("should throw if no configuration is found", () => {
+        expect(() => resolveNamespace("test")).toThrow(new Error('Failed to resolve namespace "test". No configuration found.'));
     });
 });

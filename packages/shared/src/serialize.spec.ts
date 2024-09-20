@@ -113,6 +113,29 @@ describe("packObject", () => {
         expect(actual).toEqual({});
     });
 
+    it("packs w/ a bigint", () => {
+        const input = BigInt("9223372036854775807");
+
+        const actual = packObject(input);
+
+        expect(actual).toEqual({
+            __type__: "bigint",
+            value: "9223372036854775807",
+        });
+    });
+
+    it("packs w/ a bigint literal", () => {
+        // @ts-expect-error TS2737: BigInt literals are not available when targeting lower than ES2020.
+        const input = 9223372036854775807n;
+
+        const actual = packObject(input);
+
+        expect(actual).toEqual({
+            __type__: "bigint",
+            value: "9223372036854775807",
+        });
+    });
+
     it("packs w/ a date", () => {
         const expected = new Date(Date.UTC(2021, 11, 31));
 
