@@ -27,11 +27,14 @@ export const packObject = (value: unknown): unknown => {
     if (value instanceof Map) {
         return {
             __type__: SerializedTypes.Map,
-            value: value.size < 1 ? null : Object.fromEntries(Array.from(value.entries()).map(it => [it.at(0), packObject(it.at(1))])),
+            value: value.size < 1 ? {} : Object.fromEntries(Array.from(value.entries()).map(it => [it.at(0), packObject(it.at(1))])),
         };
     }
     if (value instanceof Set) {
-        return { __type__: SerializedTypes.Set, value: value.size < 1 ? null : Array.from(value.values()).map(it => packObject(it)) };
+        return {
+            __type__: SerializedTypes.Set,
+            value: value.size < 1 ? [] : Array.from(value.values()).map(it => packObject(it)),
+        };
     }
     if (value instanceof Object) {
         const fields = Object.entries(value).map(it => [it.at(0), packObject(it.at(1))]);

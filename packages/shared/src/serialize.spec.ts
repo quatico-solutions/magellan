@@ -193,6 +193,19 @@ describe("packObject", () => {
         });
     });
 
+    it("packs w/ an object with an empty map", () => {
+        const expected = { persons: new Map() };
+
+        const actual = packObject(expected);
+
+        expect(actual).toEqual({
+            persons: {
+                __type__: "map",
+                value: {},
+            },
+        });
+    });
+
     it("packs w/ an object with a set of objects", () => {
         const expected = {
             days: new Set([{ day: "monday" }, { day: "tuesday" }]),
@@ -204,6 +217,21 @@ describe("packObject", () => {
             days: {
                 __type__: "set",
                 value: [{ day: "monday" }, { day: "tuesday" }],
+            },
+        });
+    });
+
+    it("packs w/ an object with an empty set", () => {
+        const expected = {
+            days: new Set(),
+        };
+
+        const actual = packObject(expected);
+
+        expect(actual).toEqual({
+            days: {
+                __type__: "set",
+                value: [],
             },
         });
     });

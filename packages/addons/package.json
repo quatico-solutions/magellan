@@ -1,6 +1,6 @@
 {
     "name": "@quatico/magellan-addons",
-    "version": "0.10.0-SNAPSHOT.0",
+    "version": "0.10.1",
     "description": "A example library for the websmith compiler",
     "author": "Quatico Solutions AG",
     "license": "SEE LICENSE IN LICENSE",
@@ -48,8 +48,8 @@
         "ts-jest": "^29.1.0"
     },
     "dependencies": {
-        "@quatico/magellan-client": "^0.10.0-SNAPSHOT.0",
-        "@quatico/magellan-server": "^0.10.0-SNAPSHOT.0",
+        "@quatico/magellan-client": "^0.10.1",
+        "@quatico/magellan-server": "^0.10.1",
         "@quatico/websmith-api": "0.4.0",
         "typescript": "5.0.x"
     },
