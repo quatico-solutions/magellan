@@ -48,16 +48,6 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          cache: "maven"
-          java-version: "8.0.332+9"
-          distribution: "temurin"
-
-      - name: Install MAVEN dependencies
-        run: mvn dependency:resolve -B -U
-
       - name: lint
         run: yarn lint
 

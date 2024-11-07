@@ -46,22 +46,6 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
-      - name: Set up JDK for Maven Deployment 
-        uses: actions/setup-java@v3
-        with:
-          cache: maven
-          java-version: "8.0.332+9"
-          distribution: "temurin"
-          server-id: ossrh
-          server-username: MVN_USERNAME
-          server-password: MVN_PASSWORD
-        env:
-          MVN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MVN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-
-      - name: Install MAVEN dependencies
-        run: mvn dependency:resolve -B -U
-
       - name: lint
         run: yarn lint
 
@@ -73,35 +57,3 @@ jobs:
 
       - name: E2E tests
         run: yarn test:e2e
-
-      - name: Extract release notes
-        id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v1
-        with:
-          changelog_file: Release-Notes.md
-          
-      - name: Import GPG Key
-        uses: crazy-max/ghaction-import-gpg@v1
-        env:
-           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: publish maven packages
-        run: mvn --batch-mode deploy -Prelease
-        env:
-          MVN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MVN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-
-      - name: publish npm packages
-        run: yarn publish-npm
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - name: create release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          body: ${{ steps.extract-release-notes.outputs.release_notes }}
-        env:
-          # The workflow permissions of the project must be updated to 'Workflows have read and write permissions in the repository for all scopes'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
