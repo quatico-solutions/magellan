@@ -1,0 +1,27 @@
+{
+    "addonsDir": "./node_modules/@quatico/magellan-addons/lib",
+    "targets": {
+        "client": {
+            "writeFile": false,
+            "addons": [
+                "client-function-transform"
+            ],
+            "config": {
+                "functionsDir": "./src/services"
+            }
+        },
+        "server": {
+            "writeFile": true,
+            "addons": [
+                "service-function-generate"
+            ],
+            "config": {
+                "functionsDir": "./src/services"
+            },
+            "options": {
+                "outDir": "./lib/server",
+                "module": 1
+            }
+        }
+    }
+}

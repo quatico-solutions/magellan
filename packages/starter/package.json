@@ -1,0 +1,42 @@
+{
+    "name": "@quatico/create-magellan-starter",
+    "description": "A starter project for creating a React application with Magellan",
+    "version": "0.11.2",
+    "author": "Quatico Solutions AG",
+    "main": "bin/create-magellan.cjs",
+    "bin": "bin/create-magellan.cjs",
+    "type": "module",
+    "license": "SEE LICENSE IN LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/quatico-solutions/magellan"
+    },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "bin"
+    ],
+    "scripts": {
+        "clean": "rimraf bin coverage",
+        "bundle": "esbuild ./src/main.ts --bundle --outfile=bin/create-magellan.cjs --target=node16 --platform=node --tree-shaking=true --external:typescript --minify",
+        "type-check": "tsc",
+        "dist": "yarn run clean && yarn run type-check && yarn run bundle && yarn run copy:template",
+        "prepack": "yarn run dist",
+        "test:scaffolding": "node ./bin/create-magellan.cjs",
+        "copy:template": "cp -r ./templates ./bin/templates",
+        "publish-npm": "npm publish --access public"
+    },
+    "dependencies": {
+        "@clack/prompts": "^0.7.0"
+    },
+    "devDependencies": {
+        "@types/node": "16",
+        "esbuild": "^0.24.0",
+        "rimraf": "^5.0.0",
+        "typescript": "5.0.x"
+    },
+    "engines": {
+        "node": "16 || 18",
+        "yarn": "1.22.x"
+    }
+}

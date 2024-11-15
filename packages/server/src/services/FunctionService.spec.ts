@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { addNamespace } from "../configuration";
+import { setNamespace } from "../configuration";
 import { transportRequest } from "../transport";
 import { initDependencyContext } from "./DependencyContext";
 import { FunctionService } from "./FunctionService";
@@ -28,7 +28,7 @@ describe("invokeFunction", () => {
     it("requests remote execution with locally unregistered function", async () => {
         const target = jest.fn();
         const testObj = new FunctionService(target);
-        addNamespace("remote", { endpoint: "/api", transport: "default" });
+        setNamespace("remote", { endpoint: "/api", transport: "default" });
 
         testObj.invokeFunction({ name: "target", data: "expected", namespace: "remote" });
 

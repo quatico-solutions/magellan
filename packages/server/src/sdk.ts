@@ -5,18 +5,9 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import type { ExecutionContext, NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
+import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { TransportRequest } from "./api";
-import {
-    addNamespace,
-    addNamespaceIfAbsent,
-    addTransport,
-    addTransportIfAbsent,
-    applyExecutionContext,
-    getConfiguration,
-    setNamespace,
-    setTransport,
-} from "./configuration";
+import { getConfiguration, setNamespace, setTransport } from "./configuration";
 import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
 import { formdataFetch, transportRequest } from "./transport";
 
@@ -49,37 +40,12 @@ export class Sdk {
         return this;
     }
 
-    public applyExecutionContext(context: Partial<ExecutionContext>): this {
-        applyExecutionContext(context);
-        return this;
-    }
-
     public invokeFunction<I, O>(name: string, data: I, namespace = "default"): Promise<O> {
         return this.service.invokeFunction<O>({ name, data, namespace });
     }
 
-    public addNamespace(name: string, mapping: NamespaceMapping): this | never {
-        addNamespace(name, mapping);
-        return this;
-    }
-
-    public addNamespaceIfAbsent(name: string, mapping: NamespaceMapping): this | never {
-        addNamespaceIfAbsent(name, mapping);
-        return this;
-    }
-
     public setNamespace(name: string, mapping: NamespaceMapping): this | never {
         setNamespace(name, mapping);
-        return this;
-    }
-
-    public addTransport(name: string, transport: TransportHandler): this | never {
-        addTransport(name, transport);
-        return this;
-    }
-
-    public addTransportIfAbsent(name: string, transport: TransportHandler): this | never {
-        addTransportIfAbsent(name, transport);
         return this;
     }
 

@@ -6,7 +6,7 @@
  */
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { getConfiguration, initProjectConfiguration } from "./configuration-repository";
-import { addNamespace, addNamespaceIfAbsent, addTransport, addTransportIfAbsent, resolveNamespace, setNamespace, setTransport } from "./namespace";
+import { resolveNamespace, setNamespace, setTransport } from "./namespace";
 import { ResolvedNamespace } from "./ResolvedNamespace";
 
 const defaultTransport = jest.fn();
@@ -15,44 +15,6 @@ beforeEach(() => {
     initProjectConfiguration({
         namespaces: { default: { endpoint: "/api", transport: "default" } },
         transports: { default: defaultTransport },
-    });
-});
-
-describe("addNamespace", () => {
-    it("should add namespace if it does not exist", () => {
-        const expected = { endpoint: "/expected", transport: "expected" };
-
-        addNamespace("expected", expected);
-
-        expect(getConfiguration().namespaces).toEqual({
-            default: { endpoint: "/api", transport: "default" },
-            expected: expected,
-        });
-    });
-
-    it("should throw error when namespace is added that already exists", () => {
-        expect(() => addNamespace("default", { endpoint: "/expected", transport: "expected" })).toThrow(
-            new Error('Namespace "default" already registered.')
-        );
-    });
-});
-
-describe("addNamespaceIfAbsent", () => {
-    it("should add namespace if it does not exist", () => {
-        const expected = { endpoint: "/expected", transport: "expected" };
-
-        addNamespaceIfAbsent("expected", expected);
-
-        expect(getConfiguration().namespaces).toEqual({
-            default: { endpoint: "/api", transport: "default" },
-            expected: expected,
-        });
-    });
-
-    it("should not add or alter namespace if it exists", () => {
-        addNamespaceIfAbsent("default", { endpoint: "/expected", transport: "expected" });
-
-        expect(getConfiguration().namespaces).toEqual({ default: { endpoint: "/api", transport: "default" } });
     });
 });
 
@@ -74,44 +36,6 @@ describe("setNamespace", () => {
             default: { endpoint: "/api", transport: "default" },
             expected: expected,
         });
-    });
-});
-
-describe("addTransport", () => {
-    it("should add transport if it does not exist", () => {
-        const expected = jest.fn();
-
-        addTransport("expected", expected);
-
-        expect(getConfiguration().transports).toEqual({
-            default: defaultTransport,
-            expected: expected,
-        });
-    });
-
-    it("should throw error when transport is added that already exists", () => {
-        expect(() => addTransport("default", jest.fn())).toThrow(new Error('Transport "default" already registered.'));
-    });
-});
-
-describe("addTransportIfAbsent", () => {
-    it("should add transport if it does not exist", () => {
-        const expected = jest.fn();
-
-        addTransportIfAbsent("expected", expected);
-
-        expect(getConfiguration().transports).toEqual({
-            default: defaultTransport,
-            expected: expected,
-        });
-    });
-
-    it("should not add or alter transport if it exists", () => {
-        const target = jest.fn();
-
-        addTransportIfAbsent("default", target);
-
-        expect(getConfiguration().transports).toEqual({ default: defaultTransport });
     });
 });
 
@@ -158,8 +82,8 @@ describe("resolveNamespace", () => {
             transport: expectedTransport,
         };
 
-        addTransport("expected", expectedTransport);
-        addNamespace("expected", expectedNamespace);
+        setTransport("expected", expectedTransport);
+        setNamespace("expected", expectedNamespace);
 
         const actual = resolveNamespace("expected");
 
@@ -174,7 +98,7 @@ describe("resolveNamespace", () => {
             transport: defaultTransport,
         };
 
-        addNamespace("expected", expectedNamespace);
+        setNamespace("expected", expectedNamespace);
 
         const actual = resolveNamespace("expected");
 

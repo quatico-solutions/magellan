@@ -12,9 +12,28 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.11.2] - 2024-11-15
+
+### Added
+
+-   Created a new package `@quatico/magellan-starter` containing templates for different frontend frameworks. The package contains a binary `create-magellan` that guides the user through the process of scaffolding the template in a directory of choice. Currently, the following templates are available:
+    -   `react-typescript-webpack`: a simple React application using Typescript and Webpack
+
+## [0.11.0] - 2024-11-15
+
+### Fixed
+
+-   `formdata-fetch`: improved endpoint validation for absolute and relative urls. Invalid URLs now throw an exception.
+
+### Changed
+
+-   **Breaking Change**: The functions `addTransport` and `addTransportIfAbsent` have been removed from the public API. Please use `setTransport` instead. `setTransport` will replace the transport handler if it already exists, or add it if it does not.
+-   **Breaking Change**: The functions `addNamespace` and `addNamespaceIfAbsent` have been removed from the public API. Please use `setNamespace` instead. `setNamespace` will replace the namespace mapping if it already exists, or add it if it does not.
+-   **Breaking Change**: The function `applyExecutionContext` has been removed from the public API.
+
 ## [0.10.0] - 2024-09-20
 
-## Fixed
+### Fixed
 
 -   Fixes `resolveNamespace` with custom namespace input returning default namespace and transport if custom namespace could not be resolved. The function now throws an error that the configuration for the custom namespace could not be found.
 

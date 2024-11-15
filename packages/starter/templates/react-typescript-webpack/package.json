@@ -1,0 +1,56 @@
+{
+    "name": "magellan-demo-react-typescript-webpack",
+    "version": "1.0.0",
+    "dependencies": {
+        "@quatico/magellan-client": "latest",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "@quatico/magellan-addons": "latest",
+        "@quatico/magellan-cli": "latest",
+        "@quatico/websmith-webpack": "0.4.1",
+        "@types/node": "^18",
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
+        "@types/webpack": "^5.28.5",
+        "concurrently": "^9.1.0",
+        "css-loader": "^7.1.2",
+        "html-webpack-plugin": "^5.6.3",
+        "mini-css-extract-plugin": "^2.9.2",
+        "postcss": "^8.4.49",
+        "postcss-loader": "^8.1.1",
+        "postcss-preset-env": "^10.1.0",
+        "sass": "^1.80.7",
+        "sass-loader": "^16.0.3",
+        "style-loader": "^4.0.0",
+        "ts-loader": "^9.5.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.6.3",
+        "webpack": "^5.96.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.1.0"
+    },
+    "scripts": {
+        "start": "concurrently \"pnpm run start:frontend:with-magellan\" \"pnpm run start:backend\"",
+        "start:frontend:with-magellan": "pnpm run start:frontend --env WITH_MAGELLAN",
+        "start:frontend": "webpack serve --mode development --progress --hot --config ./webpack.config.mjs",
+        "start:backend": "magellan compile && magellan serve ./lib/client --serverModuleDir ./lib/server --port 3001"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "engines": {
+        "node": ">=18",
+        "pnpm": ">=9"
+    }
+}

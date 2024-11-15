@@ -6,9 +6,7 @@
  */
 
 /* eslint-disable no-var */
-import type { ExecutionContext, NamespaceMapping, TransportFunction } from "@quatico/magellan-shared";
-import { serialize, unpackObject } from "@quatico/magellan-shared";
-import { getDependencyContext, getFunctionService } from "../services";
+import type { NamespaceMapping } from "@quatico/magellan-shared";
 import { Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
@@ -22,28 +20,6 @@ export const getConfiguration = (): Configuration => {
 
 export const setConfiguration = (config: Configuration): Configuration => {
     return (global.__qsMagellanServerConfig__ = config);
-};
-
-export const applyExecutionContext = (context: Partial<ExecutionContext>) => {
-    const config = getConfiguration();
-    const remappedTransport = async (func: TransportFunction): Promise<string> => {
-        const response = await getFunctionService(getDependencyContext().defaultTransportRequest).invokeFunction({
-            name: func.name,
-            data: unpackObject(JSON.parse(func.payload)),
-            namespace: func.namespace,
-        });
-        return Promise.resolve(serialize(response));
-    };
-    config.transports = Object.fromEntries(Object.entries(config.transports).map(([name]) => [name, remappedTransport]));
-    if (context.window) {
-        context.window.__qsMagellanConfig__ = config;
-        context.window.__qsMagellanServerConfig__ = config;
-        return;
-    }
-    if (context.global) {
-        context.global.__qsMagellanConfig__ = config;
-        context.global.__qsMagellanServerConfig__ = config;
-    }
 };
 
 export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {

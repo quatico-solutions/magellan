@@ -44,46 +44,6 @@ describe("invokeFunction", () => {
     });
 });
 
-describe("addNamespace", () => {
-    it("should register namespace w/ non existing namespace", () => {
-        const testObj = new TestSdk();
-
-        testObj.addNamespace("expected", { endpoint: "/expected", transport: "expected" });
-
-        expect(testObj.getNamespaces()["expected"]).toEqual({ endpoint: "/expected", transport: "expected" });
-    });
-
-    it("throws error w/ existing namespace", () => {
-        const testObj = new TestSdk();
-        testObj.addNamespace("expected", { endpoint: "/expected", transport: "expected" });
-
-        expect(() => testObj.addNamespace("expected", { endpoint: "/expected", transport: "expected" })).toThrow(
-            `Namespace "expected" already registered.`
-        );
-    });
-});
-
-describe("addNamespaceIfAbsent", () => {
-    it("should register namespace w/ non existing namespace", () => {
-        const testObj = new TestSdk();
-        const expected = { endpoint: "/expected", transport: "expected" };
-
-        testObj.addNamespaceIfAbsent("expected", expected);
-
-        expect(testObj.getNamespaces()["expected"]).toEqual(expected);
-    });
-
-    it("should not alter original namespace w/ existing namespace", () => {
-        const testObj = new TestSdk();
-        const expected = { endpoint: "/expected", transport: "expected" };
-        testObj.addNamespaceIfAbsent("expected", expected);
-
-        testObj.addNamespaceIfAbsent("expected", {} as any);
-
-        expect(testObj.getNamespaces()["expected"]).toEqual(expected);
-    });
-});
-
 describe("setNamespace", () => {
     it("should register namespace w/o existing namespace", () => {
         const testObj = new TestSdk();
@@ -95,50 +55,11 @@ describe("setNamespace", () => {
 
     it("should replace namespace w/ existing namespace", () => {
         const testObj = new TestSdk();
-        testObj.addNamespace("expected", { endpoint: "/someEndpoint", transport: "unexpectedTransport" });
+        testObj.getNamespaces()["expected"] = { endpoint: "/someEndpoint", transport: "unexpectedTransport" };
 
         testObj.setNamespace("expected", { endpoint: "/expected", transport: "expected" });
 
         expect(testObj.getNamespaces()["expected"]).toEqual({ endpoint: "/expected", transport: "expected" });
-    });
-});
-
-describe("addTransport", () => {
-    it("should register transport w/ non existing transport", () => {
-        const testObj = new TestSdk();
-        const expected = jest.fn();
-
-        testObj.addTransport("expected", expected);
-
-        expect(testObj.getTransports()["expected"]).toEqual(expected);
-    });
-
-    it("throws error w/ existing transport", () => {
-        const testObj = new TestSdk();
-        testObj.addTransport("expected", jest.fn());
-
-        expect(() => testObj.addTransport("expected", jest.fn())).toThrow(`Transport "expected" already registered.`);
-    });
-});
-
-describe("addTransportIfAbsent", () => {
-    it("should register transport w/ non existing transport", () => {
-        const testObj = new TestSdk();
-        const expected = jest.fn();
-
-        testObj.addTransportIfAbsent("expected", expected);
-
-        expect(testObj.getTransports()["expected"]).toEqual(expected);
-    });
-
-    it("should not alter original transport w/ existing transport", () => {
-        const testObj = new TestSdk();
-        const expected = jest.fn();
-        testObj.addTransportIfAbsent("expected", expected);
-
-        testObj.addTransportIfAbsent("expected", jest.fn());
-
-        expect(testObj.getTransports()["expected"]).toEqual(expected);
     });
 });
 
@@ -155,7 +76,7 @@ describe("setTransport", () => {
     it("should replace transport w/ existing transport", () => {
         const testObj = new TestSdk();
         const expected = jest.fn();
-        testObj.addTransport("expected", jest.fn());
+        testObj.getTransports()["expected"] = jest.fn();
 
         testObj.setTransport("expected", expected);
 

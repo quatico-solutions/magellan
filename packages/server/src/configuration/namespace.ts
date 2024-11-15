@@ -5,45 +5,25 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import { assert } from "@quatico/magellan-shared";
 import { getDependencyContext } from "../services";
-import { ServerConfig } from "./Configuration";
-import { getConfiguration, setConfiguration } from "./configuration-repository";
+import { getConfiguration } from "./configuration-repository";
 import { ResolvedNamespace } from "./ResolvedNamespace";
-
-export const addNamespace = (namespace: string, mapping: NamespaceMapping): void | never => {
-    const config = getConfiguration();
-    assert(!config.namespaces[namespace], `Namespace "${namespace}" already registered.`);
-    config.namespaces[namespace] = mapping;
-};
-
-export const addNamespaceIfAbsent = (namespace: string, mapping: NamespaceMapping): void => {
-    const config = getConfiguration();
-    if (!config.namespaces[namespace]) {
-        config.namespaces[namespace] = mapping;
-    }
-};
 
 export const setNamespace = (namespace: string, mapping: NamespaceMapping): void => {
     const config = getConfiguration();
-    config.namespaces[namespace] = mapping;
-};
-
-export const addTransport = (name: string, handler: TransportHandler): void | never => {
-    const config = getConfiguration();
-    assert(!config.transports[name], `Transport "${name}" already registered.`);
-    config.transports[name] = handler;
-};
-
-export const addTransportIfAbsent = (name: string, handler: TransportHandler): void => {
-    const config = getConfiguration();
-    if (!config.transports[name]) {
-        config.transports[name] = handler;
+    if (config.namespaces[namespace]) {
+        // eslint-disable-next-line no-console
+        console.info(`Namespace "${namespace}" already exists. Updating mapping.`);
     }
+    config.namespaces[namespace] = mapping;
 };
 
 export const setTransport = (name: string, handler: TransportHandler): void => {
     const config = getConfiguration();
+    if (config.transports[name]) {
+        // eslint-disable-next-line no-console
+        console.info(`Transport "${name}" already exists. Updating handler.`);
+    }
     config.transports[name] = handler;
 };
 
@@ -52,8 +32,4 @@ export const resolveNamespace = (namespace = "default", defaultEndpoint = "/api"
     const resolvedNamespace = config.namespaces[namespace] ?? { endpoint: defaultEndpoint, transport: "default" };
     const resolvedTransport = config.transports[resolvedNamespace.transport || "default"] ?? getDependencyContext().defaultTransportHandler;
     return { name: namespace, endpoint: resolvedNamespace.endpoint, transport: resolvedTransport };
-};
-
-export const setServerConfig = (serverConfig: ServerConfig) => {
-    setConfiguration({ ...getConfiguration(), serverConfig });
 };

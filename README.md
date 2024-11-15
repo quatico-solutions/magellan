@@ -7,24 +7,20 @@
 
 # Magellan
 
-[![CI](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml/badge.svg)](https://github.com/quatico-solutions/magellan/actions/workflows/protect-stable.yml)  [![npm version](https://badge.fury.io/js/@quatico%2Fmagellan-cli.svg)](https://www.npmjs.com/search?q=%40quatico)
+[![npm version](https://badge.fury.io/js/@quatico%2Fmagellan-cli.svg)](https://www.npmjs.com/search?q=%40quatico)
 
-The Magellan project provides compiler tooling and a runtime API for remote execution of
-service functions written in TypeScript.
+The Magellan project provides compiler tooling and a runtime API for remote execution of service functions written in TypeScript.
 
-In many applications, backend developers have to create REST APIs, e.g., using swagger.io. Frontend developer implement
-client code in their components to present domain logic and data in the browser. During the development developers in
-frontend and backend have numerous discussions about this API, followed by changes and extensions on both sides.
-Magellan simplifies this process by providing a compiler that generates all involved code for both sides.
+In many applications, backend developers have to create REST APIs, e.g., using [swagger.io](https://swagger.io/). Frontend developer implement client code in their components to present domain logic and data in the browser. During the development developers infrontend and backend have numerous discussions about this API, followed by changes and extensions on both sides. Magellan simplifies this process by providing a compiler that generates all involved code for both sides.
 
 Magellan is a TypeScript library that provides a compiler and runtime API for service functions with the following features:
 
-- Transparent support to write services that consume node modules in the frontend
-- npm package generation of TypeScript server code for remote execution through node
-- (Almost) invisible transport layer between browser and node.
-- Effortless configuration of service endpoints
-- Automatic serialization of input/output values
-- Transparent error messages and exception handling
+-   Transparent support to write services that consume node modules in the frontend
+-   npm package generation of TypeScript server code for remote execution through node
+-   (Almost) invisible transport layer between browser and node.
+-   Effortless configuration of service endpoints
+-   Automatic serialization of input/output values
+-   Transparent error messages and exception handling
 
 ## 1 Prerequisites
 
@@ -46,7 +42,7 @@ a [React](https://reactjs.org/) component that displays it in the browser. This 
 ## 3 Create a react application
 
 ```bash
-npx create-react-app magellan-demo --template typescript 
+npx create-react-app magellan-demo --template typescript
 ```
 
 and open the project in your favorite IDE for example in Visual Studio Code using
@@ -63,8 +59,8 @@ Add an example function that returns a greeting `src/services/greet-me.ts`:
 ```typescript
 export const greetMe = async (name: string): Promise<string> => {
     // In the browser, accessing process.arch causes an error.
-    return `Hello ${name}, great to see you I'm Magellan running on "${ typeof window === "undefined" ? `${process.arch}" server`: "browser"}!`;
-}
+    return `Hello ${name}, great to see you I'm Magellan running on "${typeof window === "undefined" ? `${process.arch}" server` : "browser"}!`;
+};
 ```
 
 ### 3.2 Use the service in the application
@@ -89,7 +85,7 @@ function App() {
 +        setGreeting("server does not wish to greet us");
 +      });
 +  }, []);
-    
+
   return (
     <div className="App">
       <header className="App-header">
@@ -182,28 +178,25 @@ const { join } = require("path");
 const isProduction = process.env.NODE_ENV === "production";
 
 const websmithConfig = {
-  debug: process.env.NODE_ENV === "debug",
-  sourceMap: !isProduction,
-  project: join(__dirname, "tsconfig.json"),
-  config: join(__dirname, "websmith.config.json"),
-  targets: "client,server",
+    debug: process.env.NODE_ENV === "debug",
+    sourceMap: !isProduction,
+    project: join(__dirname, "tsconfig.json"),
+    config: join(__dirname, "websmith.config.json"),
+    targets: "client,server",
 };
 
 module.exports = {
-  webpack: function override(config, env) {
-    config.module.rules.push({
-      test: /\.[jt]sx?$/,
-      include: [
-        join(__dirname, "src"),
-        join(__dirname, "node_modules", "@quatico", "magellan-client"),
-      ],
-      exclude: [/\.spec\.tsx?$/, /node_modules/],
-      loader: "@quatico/websmith-webpack",
-      options: websmithConfig,
-    });
+    webpack: function override(config, env) {
+        config.module.rules.push({
+            test: /\.[jt]sx?$/,
+            include: [join(__dirname, "src"), join(__dirname, "node_modules", "@quatico", "magellan-client")],
+            exclude: [/\.spec\.tsx?$/, /node_modules/],
+            loader: "@quatico/websmith-webpack",
+            options: websmithConfig,
+        });
 
-    return config;
-  },
+        return config;
+    },
 };
 ```
 
@@ -218,13 +211,13 @@ Create a file `websmith.config.json` in the magellan-demo directory with the fol
         "client": {
             "writeFile": false,
             "addons": ["client-function-transform"],
-            "config": {"functionsDir": "./src/services"}
+            "config": { "functionsDir": "./src/services" }
         },
         "server": {
             "writeFile": true,
             "addons": ["service-function-generate"],
-            "config": {"functionsDir": "./src/services" },
-            "options": {"outDir": "./lib/server","module": 1}
+            "config": { "functionsDir": "./src/services" },
+            "options": { "outDir": "./lib/server", "module": 1 }
         }
     }
 }

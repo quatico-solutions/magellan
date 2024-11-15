@@ -13,42 +13,23 @@ import { ResolvedNamespace } from "./ResolvedNamespace";
 const DEFAULT_NAMESPACE = "default";
 const DEFAULT_TRANSPORT = "default";
 
-export const addNamespace = (namespace: string, mapping: NamespaceMapping): void | never => {
-    const config = getConfiguration();
-    assert(!config.namespaces[namespace], `Namespace "${namespace}" already registered.`);
-    config.namespaces[namespace] = mapping;
-};
-
-export const addNamespaceIfAbsent = (namespace: string, mapping: NamespaceMapping): void => {
-    const config = getConfiguration();
-    if (!config.namespaces[namespace]) {
-        config.namespaces[namespace] = mapping;
-    }
-};
-
 export const setNamespace = (namespace: string, mapping: NamespaceMapping): void => {
     const config = getConfiguration();
-    config.namespaces[namespace] = mapping;
-};
-
-export const addTransport = (name: string, handler: TransportHandler): void | never => {
-    const config = getConfiguration();
-    config.transports = config.transports || {};
-    assert(!config.transports[name], `Transport "${name}" already registered.`);
-    config.transports[name] = handler;
-};
-
-export const addTransportIfAbsent = (name: string, handler: TransportHandler): void => {
-    const config = getConfiguration();
-    config.transports = config.transports || {};
-    if (!config.transports[name]) {
-        config.transports[name] = handler;
+    config.namespaces = config.namespaces || {};
+    if (config.namespaces[namespace]) {
+        // eslint-disable-next-line no-console
+        process.env.NODE_ENV === "development" && console.info(`Namespace "${namespace}" already exists. Updating mapping.`);
     }
+    config.namespaces[namespace] = mapping;
 };
 
 export const setTransport = (name: string, handler: TransportHandler): void => {
     const config = getConfiguration();
     config.transports = config.transports || {};
+    if (config.transports[name]) {
+        // eslint-disable-next-line no-console
+        process.env.NODE_ENV === "development" && console.info(`Transport "${name}" already exists. Updating handler.`);
+    }
     config.transports[name] = handler;
 };
 

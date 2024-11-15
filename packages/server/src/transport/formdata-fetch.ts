@@ -33,7 +33,20 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
 };
 
 export const completeEndpoint = (endpoint: string) => {
-    return endpoint.startsWith("/") ? getHostpath(endpoint) : endpoint;
+    return endpoint.startsWith("/") ? getHostpath(endpoint) : validHttpOrHttpsUrlOrThrow(endpoint);
+};
+
+const validHttpOrHttpsUrlOrThrow = (endpoint: string): string => {
+    let url;
+    try {
+        url = new URL(endpoint);
+    } catch (err) {
+        throw new Error(`provided endpoint ${endpoint} is invalid`);
+    }
+    if (!/^https?:$/.test(url.protocol)) {
+        throw new Error(`provided endpoint ${endpoint} is invalid`);
+    }
+    return endpoint;
 };
 
 export const createHeaders = ({ headers }: { headers: Record<string, string> } = { headers: {} }) => {
@@ -51,5 +64,5 @@ export const createFormData = ({ name, payload, namespace }: { name: string; pay
 
 const getHostpath = (path: string): string => {
     const config = getConfiguration().serverConfig ?? { url: "http://localhost", port: 3000 };
-    return `${config.url}:${config.port}/${path}`;
+    return `${config.url}:${config.port}${path}`;
 };

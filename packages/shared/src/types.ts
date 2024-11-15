@@ -22,10 +22,14 @@ export type SerializedComplexType = {
     value: any;
 };
 
-export const isSerializedComplexType = (it: any): it is SerializedComplexType => {
+export const isSerializedComplexType = (it: unknown): it is SerializedComplexType => {
     if (!it || typeof it !== "object") {
         return false;
     }
     const keys = Object.keys(it);
-    return keys.includes("__type__") && Object.values(SerializedTypes).includes(it.__type__) && keys.includes("value");
+    return (
+        keys.includes("__type__") &&
+        Object.values(SerializedTypes).includes((it as Pick<SerializedComplexType, "__type__">).__type__) &&
+        keys.includes("value")
+    );
 };
