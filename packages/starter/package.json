@@ -1,7 +1,7 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.11.2",
+    "version": "0.11.3",
     "author": "Quatico Solutions AG",
     "main": "bin/create-magellan.cjs",
     "bin": "bin/create-magellan.cjs",
