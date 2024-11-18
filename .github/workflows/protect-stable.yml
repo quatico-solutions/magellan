@@ -7,45 +7,38 @@ on:
   push:
     # List all branches that shall be tested and are not protected by requiring pull requests to commit to.
     branches:
-      - "develop"
-      - "main"
+      - 'develop'
+      - 'main'
 
 jobs:
   protect:
-    name: Protect stable 
+    name: Protect stable
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16" 
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
+          node-version: '16'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-            cache-name: cache-node-modules
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-            path: |
-                node_modules
-                packages/addons/node_modules
-                packages/cli/node_modules
-                packages/client/node_modules
-                packages/server/node_modules
-                packages/shared/node_modules
-                packages/test/node_modules
-            key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
-            restore-keys: |
-                ${{ runner.os }}-build-
-                ${{ runner.os }}-
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install YARN dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - name: lint
