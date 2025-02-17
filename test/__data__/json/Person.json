@@ -8,14 +8,16 @@
 			"age": 123,
 			"birthday": { "__type__": "date", "value": "1999-04-01T00:00:00.000Z" },
 			"children": [],
-			"friends": { "__type__": "map", "value": { } },
+			"friendsAsMap": { "__type__": "map", "value": { } },
+			"friendsAsObject": { },
 			"height": 1.723,
 			"name": "chucky",
 			"surname": "cheese",
 			"tel": { "__type__": "set", "value": [] }
 		}
 	],
-	"friends": { "__type__": "map", "value": { "bff": "chucky cheese", "favorite": 3.0 } },
+	"friendsAsMap": { "__type__": "map", "value": { "bff": "chucky cheese", "favorite": 3.0 } },
+	"friendsAsObject": { "bff": { "name": "john", "surname": "McClane" } },
 	"height": 1.721,
 	"name": "fanny",
 	"surname": "may",

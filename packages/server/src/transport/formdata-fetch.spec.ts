@@ -1,21 +1,26 @@
 import { TransportFunction } from "@quatico/magellan-shared";
-import fetch from "node-fetch";
 import { initDependencyContext } from "../services";
 import { completeEndpoint, formdataFetch } from "./formdata-fetch";
 
-jest.mock("node-fetch");
+let fetch: jest.Mock;
 
 beforeAll(() => {
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
 describe("formdataFetch", () => {
+    beforeEach(() => {
+        globalThis.fetch = fetch = jest.fn();
+    });
+
+    afterEach(() => {
+        // @ts-ignore The operand of a 'delete' operator must be optional.ts (2790)
+        delete globalThis.fetch;
+    });
+
     it("calls fetch once using POST and endpoint with valid transport function", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/expected", payload: "whatever" };
-        (fetch as any) = jest.fn().mockReturnValue({
-            ok: true,
-            text: () => "whatever",
-        });
+        fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
 
         await formdataFetch(validTransportFn, { headers: {} });
 
@@ -30,16 +35,22 @@ describe("formdataFetch", () => {
             endpoint: "/whatever",
             payload: JSON.stringify({ expected: "value" }),
         };
-        (fetch as any) = jest.fn().mockReturnValue({
-            ok: true,
-            text: () => "whatever",
+        fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
+
+        await formdataFetch(validTransportFn, { headers: { "token-name": "token-value" } });
+
+        const stateSymbol = Object.getOwnPropertySymbols(fetch.mock.calls[0][1].body)[0];
+        const body = fetch.mock.calls[0][1].body[stateSymbol];
+        expect(body).toEqual([
+            { name: "name", value: "whatever" },
+            { name: "data", value: '{"expected":"value"}' },
+            { name: "namespace", value: "whatever" },
+        ]);
+        const headers = fetch.mock.calls[0][1].headers;
+        expect(headers).toEqual({
+            Accept: "application/json",
+            "token-name": "token-value",
         });
-
-        await formdataFetch(validTransportFn, { headers: {} });
-
-        const target = (fetch as jest.MockedFn).mock.calls[0][1].body._streams[4].toString();
-
-        expect(target).toBe('{"expected":"value"}');
     });
 
     it("rejects promise without name in transport function", async () => {
@@ -56,7 +67,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch causing an error", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        (fetch as any) = jest.fn().mockImplementation(() => {
+        fetch.mockImplementation(() => {
             throw Error("Expected Error Message");
         });
 
@@ -67,11 +78,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch returning 404 and status message", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        (fetch as any) = jest.fn().mockReturnValue({
-            ok: false,
-            status: 404,
-            statusText: "Expected Status Message",
-        });
+        fetch.mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" });
 
         const actual = formdataFetch(validTransportFn, { headers: {} });
 

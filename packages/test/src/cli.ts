@@ -21,7 +21,7 @@ export class Cli {
     }
     public async executeCompile({ command }: { command?: CompileCommand }): Promise<void> {
         const { cwd = ".", args } = command ?? {};
-        executeCompileCommand(["compile", ...(args?.split(" ") ?? ""), "-p", `${resolve(cwd, "tsconfig.json")}`]);
+        executeCompileCommand(["compile", ...(args?.split(" ") ?? ""), "--project", `${resolve(cwd, "tsconfig.json")}`]);
     }
 
     public async executeServe({ command }: { command?: CompileCommand }): Promise<void> {

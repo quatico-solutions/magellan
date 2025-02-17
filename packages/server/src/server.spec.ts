@@ -5,47 +5,42 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { unpackPayload } from "@quatico/magellan-shared";
+import { Express } from "express";
 import { writeFileSync } from "fs";
+import http from "http";
 import { resolve } from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
-import { configureMagellanRoutes, handleError, normalizePort, serve, setupApp } from "./server";
+import { configureMagellanRoutes, handleError, normalizePort, serve, ServerOptions, setupApp } from "./server";
 import { initDependencyContext } from "./services";
 
 beforeAll(() => {
-    function formDataMock() {
-        // @ts-ignore
-        this.append = jest.fn();
-    }
-
-    // @ts-ignore
-    global.FormData = formDataMock;
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
 describe("serve", () => {
     it("sets port in Express app", () => {
-        const target = {
-            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
-            server: { listen: jest.fn() } as any,
-            requireFn: jest.fn().mockReturnValue({}) as any,
-        } as any;
+        const target: ServerOptions = {
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() } as unknown as Express,
+            server: { listen: jest.fn() } as unknown as http.Server,
+            requireFn: jest.fn().mockReturnValue({}) as unknown as NodeJS.Require,
+        };
 
         serve(target);
 
-        expect(target.app.set).toHaveBeenCalledWith("port", expect.any(Number));
+        expect(target.app?.set).toHaveBeenCalledWith("port", expect.any(Number));
     });
 
     it("sets static resources dir in Express app", () => {
-        const target = {
-            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
-            server: { listen: jest.fn() } as any,
-            requireFn: jest.fn().mockReturnValue({}) as any,
-        } as any;
+        const target: ServerOptions = {
+            app: { get: jest.fn(), set: jest.fn(), use: jest.fn() } as unknown as Express,
+            server: { listen: jest.fn() } as unknown as http.Server,
+            requireFn: jest.fn().mockReturnValue({}) as unknown as NodeJS.Require,
+        };
 
         serve(target);
 
-        expect(target.app.use).toHaveBeenCalledWith("/", expect.any(Function));
+        expect(target.app?.use).toHaveBeenCalledWith("/", expect.any(Function));
     });
 
     it("calls listen passing port on server", () => {
@@ -127,7 +122,7 @@ describe("setupApp", () => {
             <title>Redirecting</title>
             </head>
             <body>
-            <pre>Redirecting to <a href="/unexpected/non-existant/">/unexpected/non-existant/</a></pre>
+            <pre>Redirecting to /unexpected/non-existant/</pre>
             </body>
             </html>
             "

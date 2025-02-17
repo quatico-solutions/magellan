@@ -23,7 +23,7 @@ export interface ServerOptions {
     debug?: boolean;
     serverModuleDir?: string;
     port?: number;
-    requireFn?: NodeRequire;
+    requireFn?: NodeJS.Require;
     sdk?: Sdk;
     server?: http.Server;
     staticRoute?: string;

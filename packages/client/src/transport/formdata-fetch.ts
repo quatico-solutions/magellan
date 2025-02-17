@@ -15,7 +15,11 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
     }
 
     try {
-        const response = await fetch(endpoint, { method: "POST", body: createFormData(func), headers: createHeaders({ headers: ctx.headers }) });
+        const response = await fetch(endpoint, {
+            method: "POST",
+            body: createFormData(func),
+            headers: createHeaders({ headers: ctx.headers }),
+        });
         if (!response.ok) {
             return Promise.reject({ status: response.status, message: response?.statusText || "" });
         }

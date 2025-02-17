@@ -12,6 +12,25 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.12.0] - 2025-02-14
+
+### Fixed
+
+-   **Breaking Change**: Removed short options from CLI commands. Fixes bug when using `-p` for both `--project` and `--port`. Use long options `--project <path>` and `--port <port>` instead.
+
+### Changed
+
+-   **Breaking Change**: Only Node.js 18 or higher is supported.
+-   Upgraded `@quatico/websmith-*` dependencies to `0.6.3`
+-   Upgraded `commander` to `12.1.0`
+-   Upgraded `minimist` to `1.2.8`
+
+### Removed
+
+-   Removed `node-fetch` as a dependency as Node.js 18 and above have it built-in.
+-   Removed `form-data` as a dependency as Node.js 18 and above have it built-in.
+-   Removed `morgan` as it was not used.
+
 ## [0.11.2] - 2024-11-15
 
 ### Added

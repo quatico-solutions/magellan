@@ -24,14 +24,14 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
         .option("-c, --config <filePath>", 'file path to the "websmith.config.json"', "./websmith.config.json")
         .option("-h, --hostname <name>", "hostname for the standalone HTTP server", "http://localhost")
         .option(
-            "-p, --port <port>",
+            "--port <port>",
             "port for the standalone HTTP server",
             num => (typeof num === "string" && !isNaN(parseInt(num, 10)) ? parseInt(num, 10) : 3000),
             3000
         )
         // .option("-s, --serverModuleDir <path>", "relative path to output directory of the created server module(s)", "./server-esm")
         .option("-d, --debug", "enable the output of debug information", false)
-        .option("-p, --project <projectPath>", 'file path to the "tsconfig.json"', "./tsconfig.json")
+        .option("--project <projectPath>", 'file path to the "tsconfig.json"', "./tsconfig.json")
         .option(
             "-t, --targets <targetList>",
             "Comma-separated list of compilation target names to use specific configuration and list of addons.",

@@ -5,8 +5,6 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
-import FormData from "form-data";
-import fetch from "node-fetch";
 import type { Context } from "../api";
 import { getConfiguration } from "../configuration";
 
@@ -18,9 +16,10 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
     }
 
     try {
+        const formData = createFormData({ name, payload, namespace });
         const response = await fetch(completeEndpoint(endpoint), {
             method: "POST",
-            body: createFormData({ name, payload, namespace }),
+            body: formData,
             headers: createHeaders({ headers: ctx.headers }),
         });
         if (!response.ok) {

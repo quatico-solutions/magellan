@@ -1,7 +1,7 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.11.3",
+    "version": "0.12.0",
     "author": "Quatico Solutions AG",
     "main": "bin/create-magellan.cjs",
     "bin": "bin/create-magellan.cjs",
@@ -30,13 +30,13 @@
         "@clack/prompts": "^0.7.0"
     },
     "devDependencies": {
-        "@types/node": "16",
+        "@types/node": "18",
         "esbuild": "^0.24.0",
         "rimraf": "^5.0.0",
         "typescript": "5.0.x"
     },
     "engines": {
-        "node": "16 || 18",
+        "node": ">=18",
         "yarn": "1.22.x"
     }
 }

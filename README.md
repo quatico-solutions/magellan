@@ -24,12 +24,12 @@ Magellan is a TypeScript library that provides a compiler and runtime API for se
 
 ## 1 Prerequisites
 
-Before you can use Magellan, you need to install the dependencies. You'll need a working Node environment with Node 16+, npm and npx (or yarn 1.20.0+)
+Before you can use Magellan, you need to install the dependencies. You'll need a working Node environment with Node 18+, npm and npx (or yarn 1.22.0+)
 
 ```bash
 npm -v  # 8.14.0
 npx -v  # 8.14.0
-node -v # v16.15.1
+node -v # v18
 ```
 
 Windows users please note that we don't fully support Windows yet, but we are working on it.

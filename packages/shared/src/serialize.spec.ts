@@ -17,7 +17,8 @@ describe("serialize", () => {
             age: 666,
             colors: ["red", "green"],
             children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-            friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsMap: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsObject: { bff: { name: "john", surname: "McClane" } },
             phone: new Set(["0041791234567"]),
         };
 
@@ -31,9 +32,12 @@ describe("serialize", () => {
                     age: 666,
                     colors: ["red", "green"],
                     children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-                    friends: {
+                    friendsAsMap: {
                         __type__: "map",
                         value: { bff: { name: "john", surname: "McClane" } },
+                    },
+                    friendsAsObject: {
+                        bff: { name: "john", surname: "McClane" },
                     },
                     phone: { __type__: "set", value: ["0041791234567"] },
                 })
@@ -41,6 +45,7 @@ describe("serialize", () => {
         );
     });
 });
+
 describe("serializeError", () => {
     it("serializes an error", () => {
         const expected = { message: "expected message", error: "expected error" };
@@ -59,7 +64,8 @@ describe("packInput", () => {
             age: 666,
             colors: ["red", "green"],
             children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-            friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsMap: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsObject: { bff: { name: "john", surname: "McClane" } },
             phone: new Set(["0041791234567"]),
         };
 
@@ -71,9 +77,12 @@ describe("packInput", () => {
             age: 666,
             colors: ["red", "green"],
             children: [{ name: "chucky", surname: "cheese", age: 0.5 }],
-            friends: {
+            friendsAsMap: {
                 __type__: "map",
                 value: { bff: { name: "john", surname: "McClane" } },
+            },
+            friendsAsObject: {
+                bff: { name: "john", surname: "McClane" },
             },
             phone: { __type__: "set", value: ["0041791234567"] },
         });
@@ -269,7 +278,8 @@ describe("packObject", () => {
             height: 1.721,
             children: [{ name: "chucky", surname: "cheese", age: 123, height: 1.723, children: [], address: null }],
             colors: ["red", "green", 3, null],
-            friends: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsMap: new Map([["bff", { name: "john", surname: "McClane" }]]),
+            friendsAsObject: { bff: { name: "john", surname: "McClane" } },
             phone: new Set(["0041791234567"]),
             address: { street: "Musterstrasse 9", zip: "1234", city: "Musterhausen" },
         };
@@ -295,10 +305,11 @@ describe("packObject", () => {
                 },
             ],
             colors: ["red", "green", 3, null],
-            friends: {
+            friendsAsMap: {
                 __type__: "map",
                 value: { bff: { name: "john", surname: "McClane" } },
             },
+            friendsAsObject: { bff: { name: "john", surname: "McClane" } },
             phone: { __type__: "set", value: ["0041791234567"] },
             height: 1.721,
             name: "fanny",
@@ -319,7 +330,8 @@ describe("packObject", () => {
                     name: "chucky",
                     surname: "cheese",
                     age: 123,
-                    friends: new Map<string, unknown>(),
+                    friendsAsMap: new Map<string, unknown>(),
+                    friendsAsObject: {},
                     height: 1.723,
                     children: [],
                     birthday: new Date(Date.UTC(1999, 3, 1)),
@@ -327,10 +339,11 @@ describe("packObject", () => {
                 },
             ],
             address: { street: "Musterstrasse 9", zip: "1234", city: "Musterhausen" },
-            friends: new Map<string, unknown>([
+            friendsAsMap: new Map<string, unknown>([
                 ["bff", "chucky cheese"],
                 ["favorite", 3],
             ]),
+            friendsAsObject: { bff: { name: "john", surname: "McClane" } },
             tel: new Set(["0791234567"]),
         };
 

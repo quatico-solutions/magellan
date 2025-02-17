@@ -22,7 +22,7 @@ export const addServeCommand = (parent = new Command(), serveFn: (options: Serve
                 ` Use the "compile" command to provide functions that can be called on the server.`
         )
         .option("-s, --serverModuleDir <serverModuleDir>", "relative path to the directory that holds the server module(s)")
-        .option("-p, --port <port>", "port for the standalone HTTP server", num => parseInt(num, 10), 3000)
+        .option("--port <port>", "port for the standalone HTTP server", num => parseInt(num, 10), 3000)
         .option("-d, --debug", "enable the output of debug information", false)
         .action((staticDir: string, args: Partial<ServerOptions>, command: Command) => {
             // eslint-disable-next-line no-console
