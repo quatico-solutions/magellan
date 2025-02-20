@@ -6,9 +6,7 @@
             "addons": [
                 "client-function-transform"
             ],
-            "config": {
-                "functionsDir": "./src/functions"
-            },
+            "config": {},
             "options": {
                 "outDir": "./lib/client",
                 "module": 1
@@ -19,9 +17,7 @@
             "addons": [
                 "service-function-generate"
             ],
-            "config": {
-                "functionsDir": "./src/functions"
-            },
+            "config": {},
             "options": {
                 "outDir": "./lib/server",
                 "module": 1

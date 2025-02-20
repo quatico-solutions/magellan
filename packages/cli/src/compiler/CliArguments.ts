@@ -9,7 +9,6 @@ export interface CliArguments {
     addonsDir: string;
     config?: string;
     debug: boolean;
-    // functionsDir: string;        MOVED to addConfig
     hostname: string;
     port: number;
     project: string;

@@ -210,13 +210,11 @@ Create a file `websmith.config.json` in the magellan-demo directory with the fol
     "targets": {
         "client": {
             "writeFile": false,
-            "addons": ["client-function-transform"],
-            "config": { "functionsDir": "./src/services" }
+            "addons": ["client-function-transform"]
         },
         "server": {
             "writeFile": true,
             "addons": ["service-function-generate"],
-            "config": { "functionsDir": "./src/services" },
             "options": { "outDir": "./lib/server", "module": 1 }
         }
     }

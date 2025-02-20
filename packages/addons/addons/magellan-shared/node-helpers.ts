@@ -34,33 +34,49 @@ export const isNodeExported = (node: ts.Node): boolean => {
 
 export const isStatement = (node: ts.Node): node is ts.Statement => ts.isVariableStatement(node) || ts.isFunctionDeclaration(node);
 
-export const hasDecorator = (sf: ts.SourceFile, node: ts.Node, decoratorText: string): node is ts.VariableStatement | ts.FunctionDeclaration => {
+const getDecoratorCommentLines = (sf: ts.SourceFile, node: ts.Node): string[] => {
     if ((!ts.isFunctionDeclaration(node) && !ts.isVariableStatement(node)) || node.pos < 0) {
+        return [];
+    }
+
+    // get the full text before the node
+    const comment = node.getFullText(sf).slice(0, node.getLeadingTriviaWidth(sf));
+
+    // split the comment into lines
+    return comment
+        .split("\n")
+        .map(line => line.trim())
+        .filter(line => !!line);
+};
+
+export const hasDecorator = (sf: ts.SourceFile, node: ts.Node, decoratorText: string): node is ts.VariableStatement | ts.FunctionDeclaration => {
+    const commentLines = getDecoratorCommentLines(sf, node);
+    if (commentLines.length === 0) {
         return false;
     }
-    return node.getFullText(sf).slice(0, node.getLeadingTriviaWidth(sf)).includes(decoratorText);
+    // check that the last non-empty comment line contains the decorator
+    const decoratorLine = commentLines[commentLines.length - 1];
+    return decoratorLine.includes(`@${decoratorText}`);
 };
 
 export const getDecoration = (sf: ts.SourceFile, node: ts.Node, decoratorText: string): ServiceDecoratorData | undefined => {
-    if (!ts.isFunctionDeclaration(node) && !ts.isVariableStatement(node)) {
-        return undefined;
-    }
-    if (node.pos < 0) {
+    const commentLines = getDecoratorCommentLines(sf, node);
+    if (commentLines.length === 0) {
         return undefined;
     }
 
-    const comment = node.getFullText(sf).slice(0, node.getLeadingTriviaWidth(sf));
-    const isDecorator = comment.includes(decoratorText);
-    if (!isDecorator) {
+    // check that the last non-empty comment line contains the decorator
+    const decoratorLine = commentLines[commentLines.length - 1];
+    if (!decoratorLine.includes(`@${decoratorText}`)) {
         return undefined;
     }
 
     try {
-        const matches = comment.match(/\/\/.*@service\(({.*})?\)/) ?? [comment];
-        if (matches.length === 1 || matches[1] === undefined) {
+        const matches = decoratorLine.match(/\/\/.*@service\(({.*})?\)/);
+        if (!matches || matches.length === 1 || matches[1] === undefined) {
             return fillDefaultMetaInformation();
         }
-        return fillDefaultMetaInformation(JSON.parse(matches[1]) as ServiceDecoratorData);
+        return fillDefaultMetaInformation(JSON.parse(matches[1]));
     } catch (err) {
         const error: Error = err as Error;
         if (error) {

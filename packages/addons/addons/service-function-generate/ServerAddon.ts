@@ -27,11 +27,7 @@ export const createTransformer = (fileName: string, content: string, ctx: AddonC
         throw new Error("service-function-generate targetConfig is missing");
     }
 
-    const transformResults = ts.transform(
-        sf,
-        [createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: ctx.resolvePath(compilationOptions.functionsDir) })],
-        ctx.getConfig().options
-    );
+    const transformResults = ts.transform(sf, [createServerTransformer()], ctx.getConfig().options);
     if (transformResults.diagnostics) {
         // eslint-disable-next-line no-console
         transformResults.diagnostics.forEach(it => console.error(`[${it.category}] - ${it.messageText}`));

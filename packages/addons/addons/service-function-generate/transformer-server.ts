@@ -12,7 +12,6 @@ import {
     isNodeExported,
     isStatement,
     isTransformable,
-    TransformationArguments,
     transformInvocableArrow,
     transformInvocableFunction,
     transformLocalServerArrow,
@@ -22,21 +21,21 @@ import { ServiceDecoratorData } from "../magellan-shared/node-helpers";
 
 const DECORATOR_NAME = "service";
 
-export const createServerTransformer = ({ functionsDir }: TransformationArguments) => {
-    const platformTransformerFactory: ts.TransformerFactory<ts.SourceFile> = (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
+export const createServerTransformer = () => {
+    const foundFunctions: Map<ts.Identifier | string, ts.Statement> = new Map();
+    return (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
         return (sf: ts.SourceFile) => {
-            if (sf.fileName.endsWith("/index.ts") || (functionsDir && !sf.fileName.includes(functionsDir))) {
-                return ctx.factory.updateSourceFile(sf, []);
-            }
-
-            const foundFunctions: Map<ts.Identifier | string, ts.Statement> = new Map();
             const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
                 if (ts.isSourceFile(node)) {
                     return ts.visitEachChild(node, visitor, ctx);
                 }
 
+                if (!isNodeExported(node) || !isTransformable(node)) {
+                    return node;
+                }
+
                 const serviceDecoration = getDecoration(sf, node, DECORATOR_NAME);
-                if (!serviceDecoration || !isNodeExported(node) || !isTransformable(node)) {
+                if (!serviceDecoration) {
                     return node;
                 }
 
@@ -55,7 +54,6 @@ export const createServerTransformer = ({ functionsDir }: TransformationArgument
             return ts.visitNode(sf, visitor, ts.isSourceFile);
         };
     };
-    return platformTransformerFactory;
 };
 
 export const transformLocalNode = (node: ts.Node): ts.Node | undefined => {

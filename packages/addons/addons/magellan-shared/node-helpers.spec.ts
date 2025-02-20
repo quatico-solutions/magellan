@@ -155,6 +155,56 @@ describe("hasDecorator", () => {
         expect(hasDecorator(sf, target, "service")).toBe(true);
     });
 
+    it("returns false w/ function declaration and invalid annotation", () => {
+        const { target, sf } = setupNode<ts.FunctionDeclaration>({
+            kind: SyntaxKind.FunctionDeclaration,
+            source: `
+                // @ service
+                export async function target() { return "whatever"; }
+            `,
+        });
+
+        expect(hasDecorator(sf, target, "service")).toBe(false);
+    });
+
+    it("returns false w/ arrow function and invalid annotation", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+                // @ service
+                export const target = () => "whatever";
+            `,
+        });
+
+        expect(hasDecorator(sf, target, "service")).toBe(false);
+    });
+
+    it("returns false w/ function declaration and annotation not directly above the function", () => {
+        const { target, sf } = setupNode<ts.FunctionDeclaration>({
+            kind: SyntaxKind.FunctionDeclaration,
+            source: `
+                // @service()
+                // there is a comment above the function
+                export async function target() { return "whatever"; }
+            `,
+        });
+
+        expect(hasDecorator(sf, target, "service")).toBe(false);
+    });
+
+    it("returns false w/ arrow function and annotation not directly above the function", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+                // @service()
+                // there is a comment above the arrow function
+                export const target = () => "whatever";
+            `,
+        });
+
+        expect(hasDecorator(sf, target, "service")).toBe(false);
+    });
+
     it("returns false w/ arrow function without annotation", () => {
         const { target, sf } = setupNode<ts.VariableStatement>({
             kind: SyntaxKind.VariableStatement,
@@ -172,6 +222,34 @@ describe("getDecoration", () => {
             source: `
                 // @service()
                 export const target = () => "whatever";
+            `,
+        });
+
+        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+    });
+
+    it("returns local kind metadata w/ arrow function calling a helper function", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+                function helper() { return "helper"; }
+
+                // @service()
+                export const target = () => helper();
+            `,
+        });
+
+        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+    });
+
+    it("returns local kind metadata w/ arrow function calling another exported function", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+            // @service()
+            export const target = () => helper();
+
+            export function helper() { return "helper"; }
             `,
         });
 
@@ -203,6 +281,31 @@ describe("getDecoration", () => {
         expect(getDecoration(sf, target, "service")).toBeUndefined();
         // eslint-disable-next-line no-console
         expect(console.error).toHaveBeenCalledWith('Invalid service kind "invalid" provided. Must be empty, "local" or "external"');
+    });
+
+    it("returns undefined if the 'service' decorator is not present", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+            export const target = () => helper();
+
+            export function helper() { return "helper"; }
+            `,
+        });
+
+        expect(getDecoration(sf, target, "service")).toBeUndefined();
+    });
+
+    it("returns undefined if the 'service' decorator is not correctly formatted", () => {
+        const { target, sf } = setupNode<ts.VariableStatement>({
+            kind: SyntaxKind.VariableStatement,
+            source: `
+                // service but not @ service()
+                export const target = () => "helper";
+            `,
+        });
+
+        expect(getDecoration(sf, target, "service")).toBeUndefined();
     });
 
     it("returns undefined w/ arrow function without annotation", () => {

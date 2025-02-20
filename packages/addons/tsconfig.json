@@ -3,6 +3,6 @@
     "compilerOptions": {
         "outDir": "./lib"
     },
-    "exclude": ["src/**/*.spec.ts"],
+    "exclude": ["**/*.spec.ts"],
     "include": ["src/**/*.ts", "addons/**/*.ts"]
 }

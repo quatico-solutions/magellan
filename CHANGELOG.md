@@ -12,6 +12,15 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.13.0] - 2025-02-20
+
+### Changed
+
+-   **Breaking Change**: All dependencies apart from `@quatico/magellan-cli` have all their dependencies move from bundled to peer dependencies.
+-   **Breaking Change**: `@quatico/magellan-addons`: `client-function-transform` - now removes all code from generated/transformed client-side service function files that are not the service functions themselves. This includes all imports, exported and non-exported code.
+-   `@quatico/magellan-addons`: `client-function-transform` - changed behaviour. `functionsDir` is no longer required. All source files are checked for `@service()` decorators.
+-   `@quatico/magellan-addons`: `serivce-function-generate` - changed behaviour. `functionsDir` is no longer required. All source files are checked for `@service()` decorators.
+
 ## [0.12.0] - 2025-02-14
 
 ### Fixed

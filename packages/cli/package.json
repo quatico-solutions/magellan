@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.12.0",
+    "version": "0.13.0",
     "author": "Quatico Solutions AG",
     "license": "SEE LICENSE IN LICENSE",
     "main": "lib/index.js",
@@ -35,11 +35,11 @@
         "publish-npm": "npm publish --access public"
     },
     "dependencies": {
-        "@quatico/magellan-client": "^0.12.0",
-        "@quatico/magellan-server": "^0.12.0",
-        "@quatico/websmith-api": "0.6.3",
-        "@quatico/websmith-compiler": "0.6.3",
-        "@quatico/websmith-core": "0.6.3",
+        "@quatico/magellan-client": "^0.13.0",
+        "@quatico/magellan-server": "^0.13.0",
+        "@quatico/websmith-api": "^0.6.3",
+        "@quatico/websmith-compiler": "^0.6.3",
+        "@quatico/websmith-core": "^0.6.3",
         "commander": "^12.1.0",
         "minimist": "1.2.8",
         "ts-node": "10.9.x",

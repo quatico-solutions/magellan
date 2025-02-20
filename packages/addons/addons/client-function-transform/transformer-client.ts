@@ -11,46 +11,89 @@ import {
     isTransformable,
     TransformationArguments,
     transformInvocableArrow,
-    transformInvocableFunction
+    transformInvocableFunction,
 } from "../magellan-shared";
 import { ServiceDecoratorData } from "../magellan-shared/node-helpers";
 
 const DECORATOR_NAME = "service";
 const NAMED_IMPORTS = ["remoteInvoke"];
 
-export const createClientTransformer = ({ libPath, functionsDir }: TransformationArguments) => {
+export const createClientTransformer = ({ libPath }: TransformationArguments) => {
     return (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
         return (sf: ts.SourceFile) => {
-            if (sf.fileName.endsWith("/index.ts") || (functionsDir && !sf.fileName.includes(functionsDir))) {
-                return sf;
-            }
-            let hasServiceFunctions = false;
+            let currentFileHasServiceFunctions = false;
 
-            const visitor = (node: ts.Node): ts.VisitResult<ts.Node> => {
+            const serviceFunctionLocator = (node: ts.Node): ts.VisitResult<ts.Node> => {
                 if (ts.isSourceFile(node)) {
-                    return ts.visitEachChild(node, visitor, ctx);
+                    return ts.visitEachChild(node, serviceFunctionLocator, ctx);
                 }
 
-                if (ts.isImportDeclaration(node)) {
+                if (!isNodeExported(node) || !isTransformable(node)) {
                     return node;
                 }
 
-                if (!isTransformable(node)) {
+                const serviceDecoration = getDecoration(sf, node, DECORATOR_NAME);
+                if (!serviceDecoration) {
                     return node;
                 }
 
-                const decorations = getDecoration(sf, node, DECORATOR_NAME);
-                if (!isNodeExported(node) || !decorations) {
-                    return node;
+                const [transformedNode, isServiceFunction] = transformNode(node, sf, serviceDecoration);
+                if (isServiceFunction) {
+                    currentFileHasServiceFunctions = true;
                 }
-
-                const [transformedNode, isServiceFunction] = transformNode(node, sf, decorations);
-                hasServiceFunctions = hasServiceFunctions || isServiceFunction;
                 return transformedNode ?? node;
             };
 
-            sf = ts.visitNode(sf, visitor, ts.isSourceFile);
-            if (hasServiceFunctions) {
+            const clientSideCodeRemoval = (node: ts.Node): ts.VisitResult<ts.Node> => {
+                if (ts.isSourceFile(node)) {
+                    return ts.visitEachChild(node, clientSideCodeRemoval, ctx);
+                }
+
+                // remove imports from the service function file on the client-side
+                // removes all ES module imports
+                if (ts.isImportDeclaration(node)) {
+                    return ts.factory.createNotEmittedStatement(node);
+                }
+
+                // removes all commonjs imports
+                if (ts.isVariableStatement(node)) {
+                    const declarations = node.declarationList.declarations;
+                    if (
+                        declarations.some(
+                            decl =>
+                                decl.initializer &&
+                                ts.isCallExpression(decl.initializer) &&
+                                ts.isIdentifier(decl.initializer.expression) &&
+                                decl.initializer.expression.text === "require"
+                        )
+                    ) {
+                        return ts.factory.createNotEmittedStatement(node);
+                    }
+                }
+
+                // keep all type, interface and enum declarations
+                if (ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isEnumDeclaration(node)) {
+                    return node;
+                }
+
+                // remove all other non-exported nodes
+                if (!isNodeExported(node)) {
+                    return ts.factory.createNotEmittedStatement(node);
+                }
+
+                // remove all other nodes that are not service functions
+                const serviceDecoration = getDecoration(sf, node, DECORATOR_NAME);
+                if (!serviceDecoration) {
+                    return ts.factory.createNotEmittedStatement(node);
+                }
+
+                return node;
+            };
+
+            sf = ts.visitNode(sf, serviceFunctionLocator, ts.isSourceFile);
+
+            if (currentFileHasServiceFunctions) {
+                sf = ts.visitNode(sf, clientSideCodeRemoval, ts.isSourceFile);
                 if (!hasInvokeImport(sf, libPath, NAMED_IMPORTS)) {
                     sf = ts.factory.updateSourceFile(sf, [getImportInvoke(libPath, NAMED_IMPORTS), ...sf.statements]);
                 }

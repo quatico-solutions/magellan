@@ -14,7 +14,7 @@ describe("createServerTransformer", () => {
         export const getDate = async () => new Date();`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 
@@ -31,7 +31,7 @@ describe("createServerTransformer", () => {
         export const logNameOnServer = async (name: string) => { console.log("name", name); }`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 
@@ -51,7 +51,7 @@ describe("createServerTransformer", () => {
         export const getInputAsOutput = (simple: string) => simple;`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 
@@ -71,7 +71,7 @@ describe("createServerTransformer", () => {
         export const getInputAsOutput = (obj: { name: string; }) => obj;`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 
@@ -94,7 +94,7 @@ describe("createServerTransformer", () => {
         export const getInputAsOutput = (obj: MyInput): MyOutput => { return { name: obj.name } };`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 
@@ -124,7 +124,7 @@ describe("createServerTransformer", () => {
         export function getInputAsOutput(obj: { name: string; }) { return obj; }`;
 
         const transformed = ts.transform(ts.createSourceFile("function/test.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS), [
-            createServerTransformer({ libPath: "@quatico/magellan-server", functionsDir: "function" }),
+            createServerTransformer(),
         ]);
         const actual = printer.printFile(transformed.transformed[0]);
 

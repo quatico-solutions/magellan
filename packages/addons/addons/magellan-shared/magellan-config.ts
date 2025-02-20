@@ -8,7 +8,6 @@ import { TargetConfig } from "@quatico/websmith-api";
 import * as ts from "typescript";
 
 export interface MagellanConfig extends TargetConfig {
-    functionsDir: string;
     configFilePath?: string;
     config?: string;
     debug: boolean;
@@ -26,7 +25,6 @@ export type CompilationConfig = {
 
 export type CompilerOptions = {
     configFilePath?: string;
-    functionsDir: string;
     addons?: {
         client?: string[];
         server?: string[];

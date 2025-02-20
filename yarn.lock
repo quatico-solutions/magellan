@@ -1453,12 +1453,12 @@
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@quatico/websmith-api@0.6.3":
+"@quatico/websmith-api@0.6.3", "@quatico/websmith-api@^0.6.3":
   version "0.6.3"
   resolved "https://registry.npmjs.org/@quatico/websmith-api/-/websmith-api-0.6.3.tgz#c8f04670bb3ac7abd286abc6d3edac1386801c2e"
   integrity sha512-9d3tPd7pAnwVxMuWRe8P/S51z3+FJinV9bGEKATI8SuQrR2BtdeLfih7vUT8ohVRytK0kQABCu7599EseO8G6A==
 
-"@quatico/websmith-compiler@0.6.3":
+"@quatico/websmith-compiler@^0.6.3":
   version "0.6.3"
   resolved "https://registry.npmjs.org/@quatico/websmith-compiler/-/websmith-compiler-0.6.3.tgz#24b46f37086fde4275e55536ff5ef7dd15b9cbc9"
   integrity sha512-6oZZGEZuvYlDoHr96e79hRRvsZraVJi2HHqWmVlhVR0BfIqPCwBhnP8V9NW1pqr8U5Tgawa5gDQPaN+qG0QWdg==
@@ -1471,7 +1471,7 @@
     tslib "2.6.2"
     typescript "5.4.5"
 
-"@quatico/websmith-core@0.6.3":
+"@quatico/websmith-core@0.6.3", "@quatico/websmith-core@^0.6.3":
   version "0.6.3"
   resolved "https://registry.npmjs.org/@quatico/websmith-core/-/websmith-core-0.6.3.tgz#2a51c16fc6c70e2dd75180eb9e398bd07710e780"
   integrity sha512-DYBqbhYAL5RNz95rNTjiew1mcSai/m+yaCKTMI5ObcSnBPnAvx1JNDZZ4zcuBBnboxhwEH770ae+V/X9Pc/d3g==
@@ -9036,6 +9036,11 @@ typescript@5.0.x:
   version "5.0.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.4.tgz#b217fd20119bd61a94d4011274e0ab369058da3b"
   integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
+
+typescript@5.1.6:
+  version "5.1.6"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-5.1.6.tgz#02f8ac202b6dad2c0dd5e0913745b47a37998274"
+  integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
 
 typescript@5.4.5:
   version "5.4.5"

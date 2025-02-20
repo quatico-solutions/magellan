@@ -54,7 +54,6 @@ describe("addCompileCommand", () => {
 
         addCompileCommand(new Command(), target).parse(["compile"], { from: "user" });
 
-        // expect(target.testOptions!.functionsDir).toBe("./functions");
         expect(target.testOptions!.project).toEqual({
             allowJs: false,
             allowSyntheticDefaultImports: true,
@@ -82,6 +81,7 @@ describe("addCompileCommand", () => {
             pretty: true,
             removeComments: false,
             resolveJsonModule: true,
+            skipLibCheck: true,
             sourceMap: false,
             strict: true,
             strictBindCallApply: true,
@@ -104,7 +104,6 @@ describe("addCompileCommand", () => {
                     addons: ["client-function-transform"],
                     config: {
                         debug: true,
-                        functionsDir: "./functions",
                     },
                     options: {
                         outDir: resolve("./lib/client"),
@@ -115,7 +114,6 @@ describe("addCompileCommand", () => {
                     addons: ["service-function-generate"],
                     config: {
                         debug: true,
-                        functionsDir: "./functions",
                     },
                     options: {
                         outDir: resolve("./lib/server"),
@@ -272,13 +270,13 @@ const createDefaultCompilerConfig = () => {
                 client: {
                     writeFile: true,
                     addons: ["client-function-transform"],
-                    config: { functionsDir: "./functions", debug: true },
+                    config: { debug: true },
                     options: { outDir: "./lib/client" },
                 },
                 server: {
                     writeFile: true,
                     addons: ["service-function-generate"],
-                    config: { functionsDir: "./functions", debug: true },
+                    config: { debug: true },
                     options: { outDir: "./lib/server" },
                 },
                 expected: {

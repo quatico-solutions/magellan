@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan",
     "description": "",
-    "version": "0.12.0",
+    "version": "0.13.0",
     "keywords": [
         "typescript",
         "java",
@@ -65,7 +65,7 @@
         "rimraf": "^5.0.0",
         "ts-jest": "^29.1.0",
         "ts-node": "10.9.x",
-        "typescript": "5.0.x"
+        "typescript": "5.1.6"
     },
     "engines": {
         "node": ">=18",

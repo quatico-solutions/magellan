@@ -2,15 +2,29 @@
     "targets": {
         "client": {
             "writeFile": true,
-            "addons": ["client-function-transform"],
-            "config": { "functionsDir": "./src", "debug": true },
-            "options": { "outDir": "./lib/client", "noEmit": false }
+            "addons": [
+                "client-function-transform"
+            ],
+            "config": {
+                "debug": true
+            },
+            "options": {
+                "outDir": "./lib/client",
+                "noEmit": false
+            }
         },
         "server": {
             "writeFile": true,
-            "addons": ["service-function-generate"],
-            "config": { "functionsDir": "./src", "debug": true },
-            "options": { "outDir": "./lib/server", "noEmit": false }
+            "addons": [
+                "service-function-generate"
+            ],
+            "config": {
+                "debug": true
+            },
+            "options": {
+                "outDir": "./lib/server",
+                "noEmit": false
+            }
         }
     }
 }

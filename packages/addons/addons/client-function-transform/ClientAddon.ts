@@ -27,12 +27,7 @@ export const createTransformer = (fileName: string, content: string, ctx: AddonC
         throw new Error("client-function-transform targetConfig is missing");
     }
 
-    // FIXME: ctx.getSystem().resolvePath is the root for our chdir need. If we can overcome this, we might be free of said pain!
-    const transformResults = ts.transform(
-        sf,
-        [createClientTransformer({ libPath: "@quatico/magellan-client", functionsDir: ctx.resolvePath(compilationOptions.functionsDir) })],
-        ctx.getConfig().options
-    );
+    const transformResults = ts.transform(sf, [createClientTransformer({ libPath: "@quatico/magellan-client" })], ctx.getConfig().options);
     if (transformResults.diagnostics) {
         // eslint-disable-next-line no-console
         transformResults.diagnostics.forEach(it => console.error(`[${it.category}] - ${it.messageText}`));
