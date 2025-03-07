@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-client",
     "description": "Client library for proxies generated with @quatico/websmith-compiler",
-    "version": "0.13.0",
+    "version": "0.13.1",
     "author": "Quatico Solutions AG",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -31,7 +31,7 @@
         "@quatico/magellan-shared": "^0.13.0-SNAPSHOT.0"
     },
     "devDependencies": {
-        "@quatico/magellan-shared": "^0.13.0",
+        "@quatico/magellan-shared": "^0.13.1",
         "@swc/core": "^1.3.57",
         "@swc/jest": "^0.2.26",
         "@types/jest": "^29.5.1",

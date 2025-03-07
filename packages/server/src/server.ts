@@ -6,7 +6,6 @@
  */
 /* eslint-disable no-console */
 
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { ErrorRequestHandler, Express, NextFunction, Request, Response } from "express";
 import http from "http";
@@ -89,9 +88,6 @@ export const configureRequestMiddlewares = ({ app }: { app: express.Express }) =
     app.use(express.json());
     // Configure multipart/form-data processing
     app.use(multer().any());
-
-    // Configure cookie parsing
-    app.use(cookieParser());
 };
 
 type MagellanRouteConfiguration = {
