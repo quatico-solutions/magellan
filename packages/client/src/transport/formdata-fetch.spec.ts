@@ -17,9 +17,9 @@ describe("formdataFetch", () => {
 
     it("yields payload as data property with valid transport function", async () => {
         const validTransportFn = {
-            name: "whatever",
-            namespace: "whatever",
-            endpoint: "/whatever",
+            name: "name",
+            namespace: "namespace",
+            endpoint: "/endpoint",
             payload: JSON.stringify({ expected: "value" }),
         };
         globalThis.fetch = jest.fn().mockReturnValue({
@@ -27,11 +27,19 @@ describe("formdataFetch", () => {
             text: () => "whatever",
         });
 
-        await formdataFetch(validTransportFn, { headers: {} });
+        await formdataFetch(validTransportFn, {
+            client: { headers: { "token-name": "client-token-value", "x-request-id": "request-id" } },
+        });
 
-        const target = Object.fromEntries((globalThis.fetch as jest.Mock).mock.calls[0][1].body.entries());
+        const body = Object.fromEntries((globalThis.fetch as jest.Mock).mock.calls[0][1].body.entries());
+        expect(body).toStrictEqual({ data: '{"expected":"value"}', name: "name", namespace: "namespace" });
 
-        expect(target).toStrictEqual(expect.objectContaining({ data: '{"expected":"value"}' }));
+        const headers = (globalThis.fetch as jest.Mock).mock.calls[0][1].headers;
+        expect(headers).toStrictEqual({
+            Accept: "application/json",
+            "token-name": "client-token-value",
+            "x-request-id": "request-id",
+        });
     });
 
     it("rejects promise without name in transport function", async () => {

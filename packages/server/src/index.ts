@@ -4,8 +4,6 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import type { Context } from "./api";
 import type { Configuration } from "./configuration";
 import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport } from "./configuration";
 import type { ServerOptions } from "./server";
@@ -13,7 +11,6 @@ import { configureMagellanRoutes, configureRequestMiddlewares, serve, setupMagel
 import { getFunctionService } from "./services";
 import { formdataFetch } from "./transport";
 
-export type { ServerOptions, Configuration, Context, NamespaceMapping, TransportHandler };
 export {
     configureMagellanRoutes,
     configureRequestMiddlewares,
@@ -27,3 +24,4 @@ export {
     setupMagellanModules,
     startServer,
 };
+export type { Configuration, ServerOptions };

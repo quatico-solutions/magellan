@@ -1,5 +1,6 @@
 import { After, Before, Given, Then, When } from "@cucumber/cucumber";
 import { formdataFetch } from "@quatico/magellan-server";
+import type { Context } from "@quatico/magellan-shared";
 import assert from "assert";
 import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { basename, extname, isAbsolute, join, resolve } from "path";
@@ -145,6 +146,26 @@ When(
             // eslint-disable-next-line no-console
             console.error = error => (remoteInvokeConsoleError = error);
             remoteInvokeResult = await module[functionName](JSON.parse(data));
+            // eslint-disable-next-line no-console
+            console.error = errorConsole;
+        } catch (e) {
+            remoteInvokeError = e;
+        }
+    }
+);
+
+When(
+    "the function {string} is invoked with {string} and x-request-id in context {string}",
+    // { timeout: 60 * 1000 },
+    async function (functionName: string, data: string, requestId: string) {
+        try {
+            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            // eslint-disable-next-line no-console
+            const errorConsole = console.error;
+            // eslint-disable-next-line no-console
+            console.error = error => (remoteInvokeConsoleError = error);
+            const ctx: Context = { client: { headers: { "x-request-id": requestId } } };
+            remoteInvokeResult = await module[functionName](JSON.parse(data), ctx);
             // eslint-disable-next-line no-console
             console.error = errorConsole;
         } catch (e) {

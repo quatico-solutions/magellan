@@ -5,7 +5,6 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable no-var */
 import type { NamespaceMapping } from "@quatico/magellan-shared";
 import { Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";

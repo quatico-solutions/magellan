@@ -22,7 +22,7 @@ describe("invokeFunction", () => {
 
         await testObj.invokeFunction({ name: "target", data: "expected" });
 
-        expect(target).toHaveBeenCalledWith("expected");
+        expect(target).toHaveBeenCalledWith("expected", { server: {} });
     });
 
     it("requests remote execution with locally unregistered function", async () => {
@@ -32,17 +32,7 @@ describe("invokeFunction", () => {
 
         testObj.invokeFunction({ name: "target", data: "expected", namespace: "remote" });
 
-        expect(target).toHaveBeenCalledWith({ name: "target", data: "expected", namespace: "remote" });
-    });
-
-    // TODO: This assumption no longer holds until a full function registration with name and namespace becomes available across frontend, node and
-    // java both for manually and automatically registered functions!
-    it.skip("throws error with with unknown function", async () => {
-        const testObj = new FunctionService(jest.fn());
-
-        expect(() => testObj.invokeFunction({ name: "target", data: "expected" })).toThrow(
-            new Error('Cannot invoke function "target". Function is not registered.')
-        );
+        expect(target).toHaveBeenCalledWith({ name: "target", data: "expected", namespace: "remote" }, { server: {} });
     });
 });
 

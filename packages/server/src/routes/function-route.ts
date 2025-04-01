@@ -4,15 +4,15 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { RequestPayload, ResponsePayload } from "@quatico/magellan-shared";
+import type { Context, RequestPayload, ResponsePayload } from "@quatico/magellan-shared";
 import { serialize, serializeError, unpackObject } from "@quatico/magellan-shared";
 import { Request as ExpressRequest, Response, Router } from "express";
 import { Sdk } from "../sdk";
 
 export const createFunctionRoute = (sdk = new Sdk()) => {
-    const router = Router();
+    sdk.init();
 
-    new Sdk().init();
+    const router = Router();
     router.post(
         "/",
         async (
@@ -22,14 +22,15 @@ export const createFunctionRoute = (sdk = new Sdk()) => {
             const { name, data = "{}", namespace = "default" } = req.body;
             res.set("Content-Type", "application/json");
             try {
+                // the client provides the request context as headers
+                const ctx: Context = { server: { "x-request-id": getValidatedRequestId(req) } };
                 const input = unpackObject(JSON.parse(data));
-                const response = await sdk.invokeFunction(name, input, namespace);
+                const response = await sdk.invokeFunction(name, input, namespace, ctx);
                 res.end(serialize(response), () =>
                     // eslint-disable-next-line no-console
                     console.debug(`Request to ${name} finished.`)
                 );
             } catch (err) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const error = err as Error;
                 // eslint-disable-next-line no-console
                 console.error(`received error ${error.message} with stack`, error.stack);
@@ -42,8 +43,15 @@ export const createFunctionRoute = (sdk = new Sdk()) => {
             }
         }
     );
-
     return router;
+};
+
+const getValidatedRequestId = (req: ExpressRequest) => {
+    const requestId = req?.headers?.["x-request-id"];
+    if (!requestId || typeof requestId !== "string") {
+        return "";
+    }
+    return requestId;
 };
 
 const isProductionEnvironment = () => process.env.NODE_ENV === "production";

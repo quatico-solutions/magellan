@@ -37,7 +37,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "/api", payload: serialize(target), name: "whatever", namespace: "test" },
-            { headers: {} }
+            { client: { headers: {} } }
         );
     });
 
@@ -50,7 +50,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "/api", payload: serialize(target), name: "whatever", namespace: "test" },
-            { headers: {} }
+            { client: { headers: {} } }
         );
     });
 
@@ -60,7 +60,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "whatever", namespace: "test" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: jest.fn(),
                 deserialize: target,
@@ -76,7 +76,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "expected", namespace: "test" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: target,
                 deserialize: jest.fn().mockImplementation(value => value),
@@ -95,7 +95,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "expected", data: "whatever" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: (val: unknown) => JSON.stringify(val),
                 deserialize: (val: string) => JSON.parse(val),
@@ -105,7 +105,7 @@ describe("transportRequest", () => {
         expect(transportHandler).toHaveBeenCalledTimes(1);
         expect(transportHandler).toHaveBeenCalledWith(
             { endpoint: "http://expected-host:3000/api", payload: JSON.stringify("whatever"), name: "expected", namespace: "default" },
-            { headers: {} }
+            { client: { headers: {} } }
         );
     });
 
@@ -118,7 +118,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "target", data: "whatever" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: (val: unknown) => JSON.stringify(val),
                 deserialize: (val: string) => JSON.parse(val),
@@ -133,7 +133,7 @@ describe("transportRequest", () => {
                 name: "target",
                 namespace: "default",
             },
-            { headers: {} }
+            { client: { headers: {} } }
         );
     });
 
@@ -148,7 +148,7 @@ describe("transportRequest", () => {
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: () => {
                     throw new Error("expected");

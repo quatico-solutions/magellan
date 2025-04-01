@@ -22,7 +22,7 @@ describe("formdataFetch", () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/expected", payload: "whatever" };
         fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
 
-        await formdataFetch(validTransportFn, { headers: {} });
+        await formdataFetch(validTransportFn, { client: { headers: {} } });
 
         expect(fetch).toHaveBeenCalledWith("http://localhost:3000/expected", expect.objectContaining({ method: "POST" }));
         expect(fetch).toHaveBeenCalledTimes(1);
@@ -30,26 +30,25 @@ describe("formdataFetch", () => {
 
     it("yields payload as data property with value transport function", async () => {
         const validTransportFn = {
-            name: "whatever",
-            namespace: "whatever",
-            endpoint: "/whatever",
+            name: "name",
+            namespace: "namespace",
+            endpoint: "/endpoint",
             payload: JSON.stringify({ expected: "value" }),
         };
         fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
 
-        await formdataFetch(validTransportFn, { headers: { "token-name": "token-value" } });
+        await formdataFetch(validTransportFn, {
+            client: { headers: { "token-name": "client-token-value", "x-request-id": "request-id" } },
+        });
 
-        const stateSymbol = Object.getOwnPropertySymbols(fetch.mock.calls[0][1].body)[0];
-        const body = fetch.mock.calls[0][1].body[stateSymbol];
-        expect(body).toEqual([
-            { name: "name", value: "whatever" },
-            { name: "data", value: '{"expected":"value"}' },
-            { name: "namespace", value: "whatever" },
-        ]);
+        const body = Object.fromEntries(fetch.mock.calls[0][1].body.entries());
+        expect(body).toStrictEqual({ data: '{"expected":"value"}', name: "name", namespace: "namespace" });
+
         const headers = fetch.mock.calls[0][1].headers;
         expect(headers).toEqual({
             Accept: "application/json",
-            "token-name": "token-value",
+            "token-name": "client-token-value",
+            "x-request-id": "request-id",
         });
     });
 
@@ -60,7 +59,7 @@ describe("formdataFetch", () => {
             payload: "whatever",
         } as TransportFunction;
 
-        const actual = formdataFetch(invalidTransportFn, { headers: {} });
+        const actual = formdataFetch(invalidTransportFn, { headers: {}, client: { headers: {} } });
 
         await expect(actual).rejects.toThrow('Cannot invoke remote function without "name" property.');
     });
@@ -71,7 +70,7 @@ describe("formdataFetch", () => {
             throw Error("Expected Error Message");
         });
 
-        const actual = formdataFetch(validTransportFn, { headers: {} });
+        const actual = formdataFetch(validTransportFn, { headers: {}, client: { headers: {} } });
 
         await expect(actual).rejects.toThrow('Cannot invoke remote function: "whatever". Reason: "Error: Expected Error Message".');
     });
@@ -80,7 +79,7 @@ describe("formdataFetch", () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
         fetch.mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" });
 
-        const actual = formdataFetch(validTransportFn, { headers: {} });
+        const actual = formdataFetch(validTransportFn, { headers: {}, client: { headers: {} } });
 
         await expect(actual).rejects.toStrictEqual({
             status: 404,

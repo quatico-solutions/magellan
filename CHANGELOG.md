@@ -12,6 +12,31 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.14.0] - 2025-03-29
+
+### Added
+
+-   `@quatico/magellan-shared`: New `Context` system with generic interfaces for client and server contexts
+-   `@quatico/magellan-addons`: Validation for service function imports to ensure both `Context` and `Serialization` are properly imported
+
+### Changed
+
+-   **BREAKING**: `@quatico/magellan-shared`: Removed `ExecutionContext` type
+-   **BREAKING**: `@quatico/magellan-client` and `@quatico/magellan-server`: Removed the `Context` interface
+-   **BREAKING**: `@quatico/magellan-addons`: Removed `TransformationArguments` interface
+-   `@quatico/magellan-addons`: Updated transformer implementations to validate required imports
+-   `@quatico/magellan-addons`: Reformed client transformer to produce context-aware service function calls
+-   `@quatico/magellan-addons`: Reformed server transformer to handle context parameters
+
+### Fixed
+
+-   `@quatico/magellan-addons`: Enforced proper imports for service functions to prevent runtime errors
+-   `@quatico/magellan-addons`: Fixed error handling in transformer functions
+-   `@quatico/magellan-client` and `@quatico/magellan-server`: Fixed headers assignment in network requests to correctly use client headers
+
+This update represents a significant overhaul of the context management system, enabling better type safety and separation of client and server concerns.
+**BREAKING**: Service functions now require explicit imports for `Context` and `Serialization` types, and transformers validate these requirements.
+
 ## [0.13.0] - 2025-02-20
 
 ### Changed

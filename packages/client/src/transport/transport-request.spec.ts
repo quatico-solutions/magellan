@@ -42,12 +42,12 @@ describe("transportRequest", () => {
         };
         global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
-        await transportRequest({ name: "whatever", data: target });
+        await transportRequest({ name: "whatever", data: target }, { client: { headers: { "1": "1-client" } } });
 
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith(`/api`, {
             body: expect.any(FormData),
-            headers: expect.anything(),
+            headers: expect.objectContaining({ "1": "1-client" }),
             method: "POST",
         });
 
@@ -94,7 +94,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: "whatever" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: jest.fn(),
                 deserialize: target,
@@ -116,7 +116,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "whatever", data: value },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: target,
                 deserialize: jest.fn().mockImplementation(value => value),
@@ -141,7 +141,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "expected", data: value },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: val => JSON.stringify(val),
                 deserialize: val => JSON.parse(val),
@@ -176,7 +176,7 @@ describe("transportRequest", () => {
 
         await transportRequest(
             { name: "target", data: value },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: val => JSON.stringify(val),
                 deserialize: val => JSON.parse(val),
@@ -231,7 +231,7 @@ describe("transportRequest", () => {
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },
-            { headers: {} },
+            { client: { headers: {} } },
             {
                 serialize: () => {
                     throw new Error("expected");

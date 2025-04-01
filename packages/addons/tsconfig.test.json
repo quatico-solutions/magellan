@@ -3,13 +3,7 @@
     "compilerOptions": {
         "allowJs": true,
         "resolveJsonModule": true,
-        "noEmit": false,
-        "baseUrl": "./",
-        "paths": {
-            "@quatico/magellan-shared": ["../shared/src"],
-            "@quatico/magellan-client": ["../client/src"],
-            "@quatico/magellan-server": ["../server/src"]
-        }
+        "noEmit": false
     },
-    "include": ["src/**/*.ts", "addons/**/*.spec.ts"],
+    "include": ["src/**/*.ts", "addons/**/*.spec.ts"]
 }

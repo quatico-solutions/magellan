@@ -4,8 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { TransportFunction, TransportHandler } from "@quatico/magellan-shared";
-import type { Context } from "./Context";
+import { Context, TransportFunction, TransportHandler } from "@quatico/magellan-shared";
 
 export const formdataFetch: TransportHandler = async (func: TransportFunction, ctx: Context): Promise<string> => {
     const { name, endpoint } = func;
@@ -18,7 +17,7 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
         const response = await fetch(endpoint, {
             method: "POST",
             body: createFormData(func),
-            headers: createHeaders({ headers: ctx.headers }),
+            headers: createHeaders({ headers: { ...ctx?.client?.headers } }),
         });
         if (!response.ok) {
             return Promise.reject({ status: response.status, message: response?.statusText || "" });

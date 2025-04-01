@@ -30,17 +30,33 @@ class TestSdk extends Sdk {
 
 describe("invokeFunction", () => {
     it("yields registered function execution w/ registered function", async () => {
-        const target = jest.fn();
+        const target = jest.fn().mockImplementation((data, ctx) => {
+            return Promise.resolve({ data, ctx });
+        });
 
-        await new Sdk().registerFunction("test", target).invokeFunction("test", "whatever");
+        const result = await new Sdk().registerFunction("test-fn", target).invokeFunction("test-fn", "whatever");
 
         expect(target).toHaveBeenCalledTimes(1);
+        expect(result).toEqual({
+            data: "whatever",
+            ctx: { server: {} },
+        });
     });
 
-    // TODO: This assumption no longer holds until a full function registration with name and namespace becomes available across frontend, node and java
-    //          both for manually and automatically registered functions!
-    it.skip("throws an error when invoking a function w/o registering the function", async () => {
-        expect(() => new Sdk().invokeFunction("test", "whatever")).toThrow(new Error('Cannot invoke function "test". Function is not registered.'));
+    it("yields registered function execution w/ registered function with context", async () => {
+        const target = jest.fn().mockImplementation((data, ctx) => {
+            return Promise.resolve({ data, ctx });
+        });
+
+        const result = await new Sdk().registerFunction("test-fn-with-context", target).invokeFunction("test-fn-with-context", "data", "default", {
+            server: { "mock-header": "mock-value" },
+        });
+
+        expect(target).toHaveBeenCalledTimes(1);
+        expect(result).toEqual({
+            data: "data",
+            ctx: { server: { "mock-header": "mock-value" } },
+        });
     });
 });
 

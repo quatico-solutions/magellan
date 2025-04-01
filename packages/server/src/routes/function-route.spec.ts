@@ -99,23 +99,4 @@ describe("createStaticRoute", () => {
         expect(payload.error).toEqual({ message: "expected error message" });
         expect(res.statusCode).toBe(200);
     });
-
-    // TODO: This assumption no longer holds until a full function registration with name and namespace becomes available across frontend, node and java
-    //          both for manually and automatically registered functions!
-    it.skip("responds to /api with unknown function", async () => {
-        app.use("/api", createFunctionRoute(new Sdk()));
-
-        const res = await request(app)
-            .post("/api")
-            .set("Accept", "application/json")
-            .field("name", "unknown")
-            .field("data", JSON.stringify({ input: "whatever" }));
-
-        expect(res.header["content-type"]).toBe("application/json; charset=utf-8");
-        expect(res.statusCode).toBe(500);
-        const { error, message } = unpackPayload(res.body) as { error: string; message: string };
-        expect(message).toBe('Function request to "unknown" failed.');
-        expect(error.toString()).toBe('Cannot invoke function "unknown". Function is not registered.');
-        expect(res.error.toString()).toBe("Error: cannot POST /api (500)");
-    });
 });

@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { TargetConfig } from "@quatico/websmith-api";
-import * as ts from "typescript";
+import ts from "typescript";
 
 export interface MagellanConfig extends TargetConfig {
     configFilePath?: string;

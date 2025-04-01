@@ -4,13 +4,12 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { deserialize, RemoteFunction, Serialization, serialize } from "@quatico/magellan-shared";
-import type { Context } from "../api";
+import { Context, deserialize, RemoteFunction, Serialization, serialize } from "@quatico/magellan-shared";
 import { resolveNamespace } from "../configuration";
 
 export const transportRequest = async <O = void>(
     func: RemoteFunction,
-    ctx: Context = { headers: {} },
+    ctx: Context = { client: { headers: {} } },
     serialization: Serialization = { serialize, deserialize }
 ): Promise<O> => {
     const { name, data = {}, namespace = "default" } = func;

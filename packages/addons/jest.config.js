@@ -6,7 +6,7 @@
  */
 module.exports = {
     preset: "ts-jest",
-    collectCoverageFrom: ["./src/**/*.ts"],
+    collectCoverageFrom: ["./addons/**/*.ts"],
     coverageDirectory: "coverage",
     coveragePathIgnorePatterns: ["index.ts"],
     moduleFileExtensions: ["ts", "js", "json", "node"],

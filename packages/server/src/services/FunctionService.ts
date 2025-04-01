@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { RemoteFunction } from "@quatico/magellan-shared";
+import type { Context, RemoteFunction } from "@quatico/magellan-shared";
 import { TransportRequest } from "../api";
 import { ServerFunction } from "./ServerFunction";
 
@@ -23,9 +23,9 @@ export class FunctionService {
         return this;
     }
 
-    public invokeFunction<O>({ name, data, namespace = "default" }: RemoteFunction): Promise<O> {
+    public invokeFunction<O>({ name, data, namespace = "default" }: RemoteFunction, ctx: Context = { server: {} }): Promise<O> {
         const func = this.functions.get(name);
-        return func ? func(data) : this.transport<O>({ name, data, namespace });
+        return func ? func(data, ctx) : this.transport<O>({ name, data, namespace }, ctx);
     }
 }
 

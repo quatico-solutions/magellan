@@ -226,8 +226,10 @@ Create a file `websmith.config.json` in the magellan-demo directory with the fol
 Update function `greetMe` in `src/services/greet-me.ts` and annotate it as a service.
 
 ```diff
+import { Context } from "@quatico/magellan-shared";
+
 +// @service()
-export const greetMe = async (name: string): Promise<string> => {
+export const greetMe = async (name: string, context?: Context): Promise<string> => {
     return `Hello ${name}, great to see you on ${ typeof window === "undefined" ? `${process.arch} server`: "browser"}!`;
 }
 ```

@@ -5,5 +5,4 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-export type { Context } from "./Context";
 export type { TransportRequest } from "./TransportRequest";

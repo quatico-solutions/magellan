@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import * as ts from "typescript";
+import ts from "typescript";
 
 export const isTsAddonApplicable = (fileName: string, config: ts.ParsedCommandLine): boolean => {
     return config.fileNames.includes(fileName);

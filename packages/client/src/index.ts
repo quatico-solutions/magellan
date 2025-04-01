@@ -5,12 +5,10 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import { deserialize, serialize } from "@quatico/magellan-shared";
 import { remoteInvoke } from "./remote-invoke";
 import { Sdk } from "./sdk";
-import type { Configuration, Context } from "./transport";
+import type { Configuration } from "./transport";
 import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport } from "./transport";
 
-export { setNamespace, setTransport, deserialize, initProjectConfiguration, remoteInvoke, resolveNamespace, Sdk, serialize };
-export type { Configuration, Context, NamespaceMapping, TransportHandler };
+export { initProjectConfiguration, remoteInvoke, resolveNamespace, Sdk, setNamespace, setTransport };
+export type { Configuration };

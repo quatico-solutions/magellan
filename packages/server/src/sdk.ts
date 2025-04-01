@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
+import type { Context, NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { TransportRequest } from "./api";
 import { getConfiguration, setNamespace, setTransport } from "./configuration";
 import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
@@ -40,8 +40,8 @@ export class Sdk {
         return this;
     }
 
-    public invokeFunction<I, O>(name: string, data: I, namespace = "default"): Promise<O> {
-        return this.service.invokeFunction<O>({ name, data, namespace });
+    public invokeFunction<I, O>(name: string, data: I, namespace = "default", ctx: Context = { server: {} }): Promise<O> {
+        return this.service.invokeFunction<O>({ name, data, namespace }, ctx);
     }
 
     public setNamespace(name: string, mapping: NamespaceMapping): this | never {

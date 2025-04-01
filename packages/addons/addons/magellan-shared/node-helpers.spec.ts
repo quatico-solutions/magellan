@@ -6,16 +6,7 @@
  */
 
 import ts, { createSourceFile, Node, ScriptTarget, SyntaxKind } from "typescript";
-import {
-    getDecoration,
-    getDescendantsOfKind,
-    getFunctionName,
-    hasDecorator,
-    isNodeExported,
-    isStatement,
-    isTransformable,
-    ServiceDecoratorData,
-} from "./node-helpers";
+import { getDecoration, getDescendantsOfKind, getFunctionName, isNodeExported, isTransformable, ServiceDecoratorData } from "./node-helpers";
 
 interface SetupResult<T extends Node> {
     target: T;
@@ -77,141 +68,6 @@ describe("isTransformable", () => {
         });
 
         expect(isTransformable(target)).toBe(false);
-    });
-});
-
-describe("getStatement", () => {
-    it("returns true w/ assignment statement", () => {
-        const { target } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `export const target = "whatever";`,
-        });
-
-        expect(isStatement(target)).toBe(true);
-    });
-
-    it("returns true w/ function declaration", () => {
-        const { target } = setupNode<ts.FunctionDeclaration>({
-            kind: SyntaxKind.FunctionDeclaration,
-            source: `export async function computeDate() { return new Date(); }`,
-        });
-
-        expect(isStatement(target)).toBe(true);
-    });
-
-    it("returns false w/ string literal", () => {
-        const target = ts.factory.createStringLiteral("target");
-
-        expect(isStatement(target)).toBe(false);
-    });
-});
-
-describe("hasDecorator", () => {
-    it("returns true w/ function declaration and call annotation", () => {
-        const { target, sf } = setupNode<ts.FunctionDeclaration>({
-            kind: SyntaxKind.FunctionDeclaration,
-            source: `
-                // @service()
-                export async function target() { return "whatever"; }
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(true);
-    });
-
-    it("returns true w/ function declaration and non-call annotation", () => {
-        const { target, sf } = setupNode<ts.FunctionDeclaration>({
-            kind: SyntaxKind.FunctionDeclaration,
-            source: `
-                // @service
-                export async function target() { return "whatever"; }
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(true);
-    });
-
-    it("returns true w/ arrow function and call annotation", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `
-                // @service()
-                export const target = () => "whatever";
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(true);
-    });
-
-    it("returns true w/ arrow function and non-call annotation", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `
-                // @service
-                export const target = () => "whatever";
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(true);
-    });
-
-    it("returns false w/ function declaration and invalid annotation", () => {
-        const { target, sf } = setupNode<ts.FunctionDeclaration>({
-            kind: SyntaxKind.FunctionDeclaration,
-            source: `
-                // @ service
-                export async function target() { return "whatever"; }
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(false);
-    });
-
-    it("returns false w/ arrow function and invalid annotation", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `
-                // @ service
-                export const target = () => "whatever";
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(false);
-    });
-
-    it("returns false w/ function declaration and annotation not directly above the function", () => {
-        const { target, sf } = setupNode<ts.FunctionDeclaration>({
-            kind: SyntaxKind.FunctionDeclaration,
-            source: `
-                // @service()
-                // there is a comment above the function
-                export async function target() { return "whatever"; }
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(false);
-    });
-
-    it("returns false w/ arrow function and annotation not directly above the function", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `
-                // @service()
-                // there is a comment above the arrow function
-                export const target = () => "whatever";
-            `,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(false);
-    });
-
-    it("returns false w/ arrow function without annotation", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
-            source: `export const target = () => "whatever";`,
-        });
-
-        expect(hasDecorator(sf, target, "service")).toBe(false);
     });
 });
 
@@ -320,19 +176,19 @@ describe("getDecoration", () => {
 
 describe("getFunctionName", () => {
     it("returns the function name w/ an ArrowFunction node", () => {
-        const { target, sf } = setupNode<ts.VariableStatement>({
-            kind: SyntaxKind.VariableStatement,
+        const { target } = setupNode<ts.VariableDeclaration>({
+            kind: SyntaxKind.VariableDeclaration,
             source: `
                 // @service
                 export const expected = () => "whatever";
             `,
         });
 
-        expect(getFunctionName(target, sf)).toBe("expected");
+        expect(getFunctionName(target)).toBe("expected");
     });
 
     it("returns the function name w/ a FunctionDeclaration node", () => {
-        const { target, sf } = setupNode<ts.FunctionDeclaration>({
+        const { target } = setupNode<ts.FunctionDeclaration>({
             kind: SyntaxKind.FunctionDeclaration,
             source: `
                 // @service
@@ -340,6 +196,13 @@ describe("getFunctionName", () => {
             `,
         });
 
-        expect(getFunctionName(target, sf)).toBe("expected");
+        expect(getFunctionName(target)).toBe("expected");
+    });
+
+    it("throws an error if the function name is not found", () => {
+        const sf = createSourceFile("test.ts", "", ScriptTarget.Latest);
+        expect(() => getFunctionName(sf as unknown as ts.FunctionDeclaration)).toThrow(
+            "getFunctionName failed, no function or arrow function node provided."
+        );
     });
 });

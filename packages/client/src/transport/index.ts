@@ -6,7 +6,6 @@
  */
 export type { Configuration } from "./Configuration";
 export { getConfiguration, initProjectConfiguration } from "./configuration-repository";
-export type { Context } from "./Context";
 export { formdataFetch } from "./formdata-fetch";
 export { setNamespace, setTransport, resolveNamespace } from "./namespace";
 export type { ResolvedNamespace } from "./ResolvedNamespace";

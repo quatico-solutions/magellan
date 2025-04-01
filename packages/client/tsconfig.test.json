@@ -1,11 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "resolveJsonModule": true,
-        "baseUrl": "./",
-        "paths": {
-            "@quatico/magellan-shared": ["../shared/src"]
-        }
+        "resolveJsonModule": true
     },
     "include": ["src/**/*.ts"]
 }

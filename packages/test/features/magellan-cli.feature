@@ -73,3 +73,13 @@ Feature: Magellan CLI commands
         And the function "echo" is invoked with '{"ping": "expected"}'
         Then the promise is resolved with '{"ping":"expected"}'.
         # And writes no console error. # Temporally disabled until websmith-compiler no longer floods the error console with ts missing files from the Typescript libraries
+
+    Scenario: Serve command is called with valid function and server context in response
+        Given valid TypeScript project directory was created
+        And directory "./src/functions" was created
+        And valid FaaS module file "echoWithCtx.ts" was created
+        And CLI command "compile" is called without arguments
+        When CLI command "serve" is called without arguments
+        And the function "echoWithCtx" is invoked with '{"echo": "expected"}' and x-request-id in context "demo-request-id-1"
+        Then the promise is resolved with '{"echo":"expected","requestId":"demo-request-id-1"}'.
+        # And writes no console error. # Temporally disabled until websmith-compiler no longer floods the error console with ts missing files from the Typescript libraries
