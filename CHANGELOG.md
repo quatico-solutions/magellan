@@ -12,6 +12,17 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.14.1] - 2025-04-02
+
+### Added
+
+## [0.14.1] - 2025-04-02
+
+### Added
+
+-   `@quatico/magellan-shared`: Now supports context management across service calls by providing event-based context updates using `ClientContextChangedEvent`.
+-   `@quatico/magellan-client`: New `ClientContextHandler` for managing client-side context. It enables storing and retrieving per-namespace context information (e.g., a request identifier or custom header which should be provided to each `remoteInvoke` call). Also, if registered the `ClientContextHandler` listens for context updates propagated using the `ClientContextChangedEvent`.
+
 ## [0.14.0] - 2025-03-29
 
 ### Added

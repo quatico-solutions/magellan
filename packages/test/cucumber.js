@@ -7,10 +7,9 @@
 module.exports = {
     default: {
         parallel: 1,
-        // format: ["html:cucumber-report.html"],
+        format: ["html:./reports/cucumber-report.html", "json:./reports/cucumber-report.json"],
         paths: ["./features"],
         import: ["./lib"],
         tags: "not @skip",
-        publishQuiet: true
-    }
+    },
 };

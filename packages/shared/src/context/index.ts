@@ -4,6 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { Context, ClientContext, ServerContext } from "./Context";
+import { CLIENT_CONTEXT_CHANGED_EVENT_TYPE, ClientContext, ClientContextChangedEvent, Context, ServerContext } from "./Context";
 
-export type { Context, ClientContext, ServerContext };
+export { CLIENT_CONTEXT_CHANGED_EVENT_TYPE, ClientContextChangedEvent };
+export type { ClientContext, Context, ServerContext };

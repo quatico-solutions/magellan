@@ -207,9 +207,42 @@ function transformClientFunction(
  * Creates a visitor function that removes code not needed on the client side
  */
 function clientSideCodeRemover(ctx: ts.TransformationContext, sf: ts.SourceFile) {
+    const ALLOWED_PACKAGES = new Set(["@quatico/magellan-client", "@quatico/magellan-shared"]);
+    // These imports will be added by createClientImports, so we don't need to keep them
+    const IMPORTS_ADDED_BY_CLIENT_TRANSFORMER = new Set([REMOTE_INVOKE_PARAM_NAME, CONTEXT_TYPE_NAME, SERIALIZATION_TYPE_NAME]);
+
+    function shouldImportBeKept(node: ts.Node): boolean {
+        if (!ts.isImportDeclaration(node)) {
+            return false;
+        }
+
+        // What does it mean if the module specifier is a string literal
+        // For example: import { something } from "package-name" <- "package-name" is the string literal
+        if (!ts.isStringLiteral(node.moduleSpecifier)) {
+            return false;
+        }
+
+        // Keep the import if 1. it's from an allowed package
+        if (!ALLOWED_PACKAGES.has(node.moduleSpecifier.text)) {
+            return false;
+        }
+
+        // and 2. it imports anything not handled by createClientImports
+        if (node?.importClause?.namedBindings && ts.isNamedImports(node.importClause.namedBindings)) {
+            return node.importClause.namedBindings.elements.some(element => !IMPORTS_ADDED_BY_CLIENT_TRANSFORMER.has(element.name.text));
+        }
+
+        return false;
+    }
+
     return (node: ts.Node): ts.VisitResult<ts.Node> => {
         if (ts.isSourceFile(node)) {
             return ts.visitEachChild(node, clientSideCodeRemover(ctx, sf), ctx);
+        }
+
+        // Keep imports from allowed packages that aren't handled by createClientImports
+        if (shouldImportBeKept(node)) {
+            return node;
         }
 
         // Keep type declarations

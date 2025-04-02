@@ -5,10 +5,10 @@
  * ---------------------------------------------------------------------------------------------
  */
 
+import { ClientContextHandler } from "./context/ClientContextHandler";
 import { remoteInvoke } from "./remote-invoke";
-import { Sdk } from "./sdk";
 import type { Configuration } from "./transport";
 import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport } from "./transport";
 
-export { initProjectConfiguration, remoteInvoke, resolveNamespace, Sdk, setNamespace, setTransport };
+export { ClientContextHandler, initProjectConfiguration, remoteInvoke, resolveNamespace, setNamespace, setTransport };
 export type { Configuration };

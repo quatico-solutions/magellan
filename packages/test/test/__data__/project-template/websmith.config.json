@@ -3,9 +3,7 @@
     "targets": {
         "client": {
             "writeFile": true,
-            "addons": [
-                "client-function-transform"
-            ],
+            "addons": ["client-function-transform"],
             "config": {},
             "options": {
                 "outDir": "./lib/client",
@@ -14,9 +12,7 @@
         },
         "server": {
             "writeFile": true,
-            "addons": [
-                "service-function-generate"
-            ],
+            "addons": ["service-function-generate"],
             "config": {},
             "options": {
                 "outDir": "./lib/server",

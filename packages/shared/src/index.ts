@@ -5,7 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { ClientContext, Context, ServerContext } from "./context";
+import type { ClientContext, Context, ServerContext } from "./context";
+import { CLIENT_CONTEXT_CHANGED_EVENT_TYPE, ClientContextChangedEvent } from "./context";
 import { deserialize, unpackObject, unpackPayload } from "./deserialize";
 import { packInput, packObject, serialize, serializeError } from "./serialize";
 import type {
@@ -19,7 +20,18 @@ import type {
 } from "./transport";
 import { assert } from "./utils";
 
-export { assert, deserialize, packInput, packObject, serialize, serializeError, unpackObject, unpackPayload };
+export {
+    assert,
+    CLIENT_CONTEXT_CHANGED_EVENT_TYPE,
+    ClientContextChangedEvent,
+    deserialize,
+    packInput,
+    packObject,
+    serialize,
+    serializeError,
+    unpackObject,
+    unpackPayload,
+};
 export type {
     ClientContext,
     Context,

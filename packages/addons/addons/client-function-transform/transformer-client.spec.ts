@@ -67,6 +67,54 @@ describe("createClientTransformer", () => {
         `);
     });
 
+    it("should not remove imports from allowed packages", () => {
+        const source = createSource(
+            `
+            import { ClientContextHandler } from "@quatico/magellan-client";
+            import { type Context } from "@quatico/magellan-shared";
+            import { type Serialization } from "@quatico/magellan-shared";
+            
+            // @service({"namespace":"expected"})
+            export const getDate = async (_: never, context?: Context = ClientContextHandler.getClientContext("expected"), serialization?: Serialization) => new Date()
+            `
+        );
+        const actual = applyClientTransformer(source);
+        expect(actual).toMatchInlineSnapshot(`
+            "import { remoteInvoke } from "@quatico/magellan-client";
+            import { type Context } from "@quatico/magellan-shared";
+            import { type Serialization } from "@quatico/magellan-shared";
+            import { ClientContextHandler } from "@quatico/magellan-client";
+            // @service({"namespace":"expected"})
+            export const getDate = async (_: never, context?: Context = ClientContextHandler.getClientContext("expected"), serialization?: Serialization) => {
+                return remoteInvoke({ name: "getDate", data: {}, namespace: "expected" }, context, serialization);
+            };
+            "
+        `);
+    });
+
+    it("should not remove default parameters", () => {
+        const source = createSource(
+            `
+            import { type Context } from "@quatico/magellan-shared";
+            import { type Serialization } from "@quatico/magellan-shared";
+            
+            // @service({"namespace":"expected"})
+            export const getDate = async (_: never, context?: Context = { client: { headers: { "x-test": "default" } } }, serialization?: Serialization) => new Date()
+            `
+        );
+        const actual = applyClientTransformer(source);
+        expect(actual).toMatchInlineSnapshot(`
+            "import { remoteInvoke } from "@quatico/magellan-client";
+            import { type Context } from "@quatico/magellan-shared";
+            import { type Serialization } from "@quatico/magellan-shared";
+            // @service({"namespace":"expected"})
+            export const getDate = async (_: never, context?: Context = { client: { headers: { "x-test": "default" } } }, serialization?: Serialization) => {
+                return remoteInvoke({ name: "getDate", data: {}, namespace: "expected" }, context, serialization);
+            };
+            "
+        `);
+    });
+
     it("should set add no data if no data is provided (never type)", () => {
         const source = createSource(
             `// @service()

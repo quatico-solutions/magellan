@@ -24,3 +24,22 @@ export interface ServerContext<S = DefaultServerContext> extends Ctx<never, S> {
 }
 
 export type Context<C = DefaultClientContext, S = DefaultServerContext> = ClientContext<C> | ServerContext<S>;
+
+declare global {
+    interface WindowEventMap {
+        [CLIENT_CONTEXT_CHANGED_EVENT_TYPE]: ClientContextChangedEvent;
+    }
+}
+
+export const CLIENT_CONTEXT_CHANGED_EVENT_TYPE = "CLIENT_CONTEXT_CHANGED_EVENT";
+
+export class ClientContextChangedEvent extends Event {
+    public readonly namespace: string;
+    public readonly context: ClientContext;
+
+    constructor(namespace: string, context: ClientContext) {
+        super(CLIENT_CONTEXT_CHANGED_EVENT_TYPE);
+        this.namespace = namespace;
+        this.context = context;
+    }
+}
