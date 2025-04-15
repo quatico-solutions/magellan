@@ -15,37 +15,27 @@ jobs:
             - name: checkout
               uses: actions/checkout@v4
 
-            - name: Set up Node
+            - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: '18'
-                  cache: 'yarn'
-                  cache-dependency-path: '**/yarn.lock'
-
-            - name: Get yarn cache directory path
-              id: yarn-cache-dir-path
-              run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-            - uses: actions/cache@v4
-              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+                  node-version: 18
+                  registry-url: https://registry.npmjs.org/
+                  scope: "@quatico"
+            - uses: pnpm/action-setup@v3
               with:
-                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+                  version: 9
 
-            - name: Install YARN dependencies
-              if: steps.yarn-cache.outputs.cache-hit != 'true'
-              run: yarn install --frozen-lockfile
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
-            - name: lint
-              run: yarn lint
+            - name: Run lint
+              run: pnpm lint
 
-            - name: test
-              run: yarn test:ci
+            - name: Run unit tests
+              run: pnpm test:ci
 
-            - name: build
-              run: yarn build
+            - name: Build project
+              run: pnpm build
 
-            - name: E2E tests
-              run: yarn test:e2e
+            - name: Run E2E tests
+              run: pnpm test:e2e
