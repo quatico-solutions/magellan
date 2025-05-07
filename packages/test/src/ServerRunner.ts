@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable no-console */
-import { ChildProcess, exec } from "child_process";
+import { type ChildProcess, exec } from "child_process";
 
 type Command = {
     scriptPath?: string;
@@ -35,14 +35,20 @@ export class ServerRunner {
                 signal: ac.signal,
                 env: { ...process.env, NODE_ENV: process.env.NODE_ENV },
             });
-            debugOutput && childProcess.on("error", err => console.debug(`\nserverRunner finished with:`, err));
+            if (debugOutput) {
+                childProcess.on("error", err => console.debug(`\nserverRunner finished with:`, err));
+            }
             childProcess.stdout?.on("data", data => {
-                debugOutput && console.info(`Child Info: ${data}`);
+                if (debugOutput) {
+                    console.info(`Child Info: ${data}`);
+                }
                 if (data.toString().includes("magellan serve started on http://localhost:")) {
                     resolvePromise();
                 }
             });
-            debugOutput && childProcess.stderr?.on("data", data => console.error(`Child Error: ${data.toString()}`));
+            if (debugOutput) {
+                childProcess.stderr?.on("data", data => console.error(`Child Error: ${data.toString()}`));
+            }
             childProcess.on("uncoughtException", err => process.exit(err && !err.toString().includes("AbortError") ? 1 : 0));
             this.childProcesses.push(childProcess);
         });

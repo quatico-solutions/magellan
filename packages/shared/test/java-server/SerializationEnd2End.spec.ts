@@ -4,17 +4,17 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { readFileSync } from "fs";
-import { join } from "path";
+import fs from "fs";
+import path from "path";
 import { packObject, unpackObject } from "../../src";
 
 const readTestFile = (filename: string): string => {
-    return JSON.parse(readFileSync(join(__dirname, "..", "..", "..", "..", "data", "serialization", filename)).toString());
+    return JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..", "..", "..", "data", "serialization", filename)).toString());
 };
 
 /**
  * End 2 End Serialization Tests
- * These are the symmetrical tests to /packages/java/serialization/src/testt/java/io/magellan/TransportSerializerTest.java.
+ * These are the symmetrical tests to /packages/java/serialization/src/test/java/io/magellan/TransportSerializerTest.java.
  */
 describe("Java-TypeScript Serialization End 2 End Test", () => {
     it.each([

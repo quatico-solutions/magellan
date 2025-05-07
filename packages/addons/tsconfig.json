@@ -4,5 +4,5 @@
         "outDir": "./lib"
     },
     "exclude": ["**/*.spec.ts"],
-    "include": ["src/**/*.ts", "addons/**/*.ts"]
+    "include": ["src"]
 }

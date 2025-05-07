@@ -1,5 +1,5 @@
 import { formdataFetch } from "./formdata-fetch";
-import { TransportFunction } from "@quatico/magellan-shared";
+import { type TransportFunction } from "@quatico/magellan-shared";
 
 describe("formdataFetch", () => {
     it("calls fetch once using POST and endpoint with valid transport function", async () => {

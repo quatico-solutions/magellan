@@ -6,7 +6,7 @@
  */
 
 import type { NamespaceMapping } from "@quatico/magellan-shared";
-import { Configuration } from "./Configuration";
+import { type Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
 export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {

@@ -14,7 +14,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 1661359
+              "duration": 1622512
             }
           },
           {
@@ -27,7 +27,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6597522
+              "duration": 7218445
             }
           },
           {
@@ -40,7 +40,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2035662
+              "duration": 2139488
             }
           },
           {
@@ -53,7 +53,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1521772
+              "duration": 1630982
             }
           },
           {
@@ -66,7 +66,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2804983252
+              "duration": 2735287833
             }
           },
           {
@@ -75,11 +75,11 @@
             "line": 11,
             "name": "directory \"lib/client\" contains file \"foobar.js\"",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:158"
+              "location": "lib/steps/magellan-cli.steps.js:160"
             },
             "result": {
               "status": "passed",
-              "duration": 2204748
+              "duration": 1600379
             }
           },
           {
@@ -88,11 +88,11 @@
             "line": 12,
             "name": "directory \"lib/client\" contains file \"foobar.d.ts\"",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:158"
+              "location": "lib/steps/magellan-cli.steps.js:160"
             },
             "result": {
               "status": "passed",
-              "duration": 452718
+              "duration": 281272
             }
           },
           {
@@ -101,11 +101,11 @@
             "line": 13,
             "name": "directory \"lib/server\" contains file \"foobar.js\"",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:158"
+              "location": "lib/steps/magellan-cli.steps.js:160"
             },
             "result": {
               "status": "passed",
-              "duration": 371906
+              "duration": 165857
             }
           },
           {
@@ -114,11 +114,11 @@
             "line": 14,
             "name": "directory \"lib/server\" contains file \"foobar.d.ts\"",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:158"
+              "location": "lib/steps/magellan-cli.steps.js:160"
             },
             "result": {
               "status": "passed",
-              "duration": 216207
+              "duration": 254084
             }
           },
           {
@@ -126,7 +126,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 3075592
+              "duration": 2418448
             }
           }
         ],
@@ -145,7 +145,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 322672
+              "duration": 253397
             }
           },
           {
@@ -158,7 +158,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 520276
+              "duration": 656041
             }
           },
           {
@@ -171,7 +171,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 324303
+              "duration": 445748
             }
           },
           {
@@ -184,7 +184,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 315286
+              "duration": 316093
             }
           },
           {
@@ -197,7 +197,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2309906487
+              "duration": 1945223485
             }
           },
           {
@@ -210,7 +210,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3191894
+              "duration": 2730678
             }
           },
           {
@@ -223,7 +223,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 774617376
+              "duration": 437514108
             }
           },
           {
@@ -232,11 +232,11 @@
             "line": 23,
             "name": "the function \"foobar\" is invoked",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:106"
+              "location": "lib/steps/magellan-cli.steps.js:108"
             },
             "result": {
               "status": "passed",
-              "duration": 48395066
+              "duration": 52328323
             }
           },
           {
@@ -245,11 +245,11 @@
             "line": 24,
             "name": "the promise is rejected with message \"This should have been replaced\".",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:164"
+              "location": "lib/steps/magellan-cli.steps.js:166"
             },
             "result": {
               "status": "passed",
-              "duration": 2268671
+              "duration": 3857792
             }
           },
           {
@@ -258,11 +258,11 @@
             "line": 25,
             "name": "writes console error \"This should have been replaced\".",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:167"
+              "location": "lib/steps/magellan-cli.steps.js:169"
             },
             "result": {
               "status": "passed",
-              "duration": 1744963
+              "duration": 1674627
             }
           },
           {
@@ -271,11 +271,11 @@
             "line": 26,
             "name": "writes console error \"packages/test/output/project/lib/server/foobar.js:6:11)\".",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:167"
+              "location": "lib/steps/magellan-cli.steps.js:169"
             },
             "result": {
               "status": "passed",
-              "duration": 262233
+              "duration": 254418
             }
           },
           {
@@ -283,7 +283,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 5006603390
+              "duration": 5004917355
             }
           }
         ],
@@ -302,7 +302,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 183829
+              "duration": 162650
             }
           },
           {
@@ -315,7 +315,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3731703
+              "duration": 436457
             }
           },
           {
@@ -328,7 +328,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 6089287
+              "duration": 173814
             }
           },
           {
@@ -341,7 +341,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 507352
+              "duration": 348949
             }
           },
           {
@@ -354,7 +354,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2298474650
+              "duration": 2052553648
             }
           },
           {
@@ -367,7 +367,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 345352
+              "duration": 454059
             }
           },
           {
@@ -380,7 +380,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 713382304
+              "duration": 484778726
             }
           },
           {
@@ -389,11 +389,11 @@
             "line": 35,
             "name": "the function \"foobar\" is invoked",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:106"
+              "location": "lib/steps/magellan-cli.steps.js:108"
             },
             "result": {
               "status": "passed",
-              "duration": 20301077
+              "duration": 18386273
             }
           },
           {
@@ -402,11 +402,11 @@
             "line": 36,
             "name": "the promise is rejected with message \"This should have been replaced\".",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:164"
+              "location": "lib/steps/magellan-cli.steps.js:166"
             },
             "result": {
               "status": "passed",
-              "duration": 368444
+              "duration": 311847
             }
           },
           {
@@ -414,7 +414,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 5005795583
+              "duration": 5003195996
             }
           }
         ],
@@ -433,7 +433,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 150560
+              "duration": 167534
             }
           },
           {
@@ -446,7 +446,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 354238
+              "duration": 368650
             }
           },
           {
@@ -459,7 +459,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 168607
+              "duration": 184317
             }
           },
           {
@@ -472,7 +472,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 156445
+              "duration": 201921
             }
           },
           {
@@ -485,7 +485,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2179452567
+              "duration": 1915608988
             }
           },
           {
@@ -498,7 +498,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 712954532
+              "duration": 437860336
             }
           },
           {
@@ -507,11 +507,11 @@
             "line": 45,
             "name": "the function \"echo\" is invoked with '{\"ping\": \"expected\"}'",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:123"
+              "location": "lib/steps/magellan-cli.steps.js:125"
             },
             "result": {
               "status": "passed",
-              "duration": 18887820
+              "duration": 19222829
             }
           },
           {
@@ -520,11 +520,11 @@
             "line": 46,
             "name": "the promise is resolved with '{\"ping\":\"expected\"}'.",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:161"
+              "location": "lib/steps/magellan-cli.steps.js:163"
             },
             "result": {
               "status": "passed",
-              "duration": 1348259
+              "duration": 1221610
             }
           },
           {
@@ -532,7 +532,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 5004570404
+              "duration": 5003531976
             }
           }
         ],
@@ -551,7 +551,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 179020
+              "duration": 196396
             }
           },
           {
@@ -564,7 +564,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 436266
+              "duration": 394347
             }
           },
           {
@@ -577,7 +577,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 170665
+              "duration": 204278
             }
           },
           {
@@ -590,7 +590,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 174700
+              "duration": 170074
             }
           },
           {
@@ -603,7 +603,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2134342305
+              "duration": 1893925263
             }
           },
           {
@@ -616,7 +616,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 726437236
+              "duration": 449758329
             }
           },
           {
@@ -625,11 +625,11 @@
             "line": 55,
             "name": "the function \"echoWithCtx\" is invoked with '{\"echo\": \"expected\"}' and x-request-id in context \"demo-request-id-1\"",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:140"
+              "location": "lib/steps/magellan-cli.steps.js:142"
             },
             "result": {
               "status": "passed",
-              "duration": 19429262
+              "duration": 18231665
             }
           },
           {
@@ -638,11 +638,11 @@
             "line": 56,
             "name": "the promise is resolved with '{\"echo\":\"expected\",\"requestId\":\"demo-request-id-1\"}'.",
             "match": {
-              "location": "lib/steps/magellan-cli.steps.js:161"
+              "location": "lib/steps/magellan-cli.steps.js:163"
             },
             "result": {
               "status": "passed",
-              "duration": 327780
+              "duration": 266932
             }
           },
           {
@@ -650,7 +650,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 5005186383
+              "duration": 5001807633
             }
           }
         ],

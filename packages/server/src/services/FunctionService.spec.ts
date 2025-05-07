@@ -30,7 +30,7 @@ describe("invokeFunction", () => {
         const testObj = new FunctionService(target);
         setNamespace("remote", { endpoint: "/api", transport: "default" });
 
-        testObj.invokeFunction({ name: "target", data: "expected", namespace: "remote" });
+        await testObj.invokeFunction({ name: "target", data: "expected", namespace: "remote" });
 
         expect(target).toHaveBeenCalledWith({ name: "target", data: "expected", namespace: "remote" }, { server: {} });
     });

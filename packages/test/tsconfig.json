@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./lib",
-        "lib": ["ES2021", "dom"],
         "types": ["node"],
         "target": "ES2021",
         "module": "CommonJS",
@@ -10,5 +9,5 @@
         "moduleResolution": "node"
     },
     "exclude": ["node_modules", "lib", "src/**/*.spec.ts", "src/**/*.test.ts"],
-    "include": ["@types", "src"]
+    "include": ["src"]
 }

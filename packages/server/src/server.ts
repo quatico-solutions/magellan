@@ -7,11 +7,11 @@
 /* eslint-disable no-console */
 
 import cors from "cors";
-import express, { ErrorRequestHandler, Express, NextFunction, Request, Response } from "express";
+import express, { type ErrorRequestHandler, type Express, type NextFunction, type Request, type Response } from "express";
 import http from "http";
 import createError from "http-errors";
 import multer from "multer";
-import { resolve } from "path";
+import path from "path";
 import { wildcardMiddleware } from "./middlewares";
 import { loadModules } from "./module-loader";
 import { createFunctionRoute, createStaticRoute } from "./routes";
@@ -46,7 +46,7 @@ export const setupApp = (options: ServerOptions): express.Express => {
         app = options.app ?? express(),
         port = normalizePort(process.env.PORT),
         staticRoute = "/",
-        staticDir = resolve(process.cwd(), process.env.STATIC_DIR ?? "."),
+        staticDir = path.resolve(process.cwd(), process.env.STATIC_DIR ?? "."),
     } = options;
 
     app.set("port", port);
@@ -64,7 +64,7 @@ export const setupApp = (options: ServerOptions): express.Express => {
 };
 
 export const setupMagellanModules = (options: ServerOptions) => {
-    const { serverModuleDir: moduleDir = resolve(process.env.MODULE_DIR ?? "."), requireFn = require, sdk = new Sdk() } = options;
+    const { serverModuleDir: moduleDir = path.resolve(process.env.MODULE_DIR ?? "."), requireFn = require, sdk = new Sdk() } = options;
     refreshModules({ moduleDir, requireFn, sdk });
 };
 
@@ -123,7 +123,7 @@ export const normalizePort = (port = "3000"): number => {
         if (!isNaN(result)) {
             return result;
         }
-    } catch (err) {
+    } catch (_ignored) {
         // falls through
     }
     return 3000;

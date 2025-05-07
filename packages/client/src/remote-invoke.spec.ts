@@ -13,21 +13,23 @@ let formSet: jest.Mock;
 beforeAll(() => {
     formAppend = jest.fn();
     formSet = jest.fn();
-
-    function formDataMock() {
-        // @ts-ignore
-        this.append = formAppend;
-        // @ts-ignore
-        this.set = formSet;
+    class FormData {
+        append = formAppend;
+        set = formSet;
+        entries = jest.fn();
+        get = jest.fn();
+        getAll = jest.fn();
+        has = jest.fn();
+        setAll = jest.fn();
+        delete = jest.fn();
+        forEach = jest.fn();
     }
 
-    // @ts-ignore
-    global.FormData = formDataMock;
+    global.FormData = FormData
 });
 
 describe("remoteInvoke", () => {
     beforeEach(() => {
-        // eslint-disable-next-line no-console
         console.warn = () => undefined;
     });
 
@@ -80,11 +82,10 @@ describe("remoteInvoke", () => {
     });
 
     it("calls deserialize passing result from fetch", async () => {
-        const value = Buffer.from("expected");
+        const value = "expected";
         const mockResponse: Partial<Response> = {
             status: 200,
             ok: true,
-            // @ts-ignore
             text: () => Promise.resolve(value),
         };
         global.fetch = jest.fn().mockResolvedValue(mockResponse);

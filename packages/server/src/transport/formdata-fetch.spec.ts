@@ -1,31 +1,21 @@
-import { TransportFunction } from "@quatico/magellan-shared";
+import { type TransportFunction } from "@quatico/magellan-shared";
 import { initDependencyContext } from "../services";
 import { completeEndpoint, formdataFetch } from "./formdata-fetch";
 
-let fetch: jest.Mock;
 
 beforeAll(() => {
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
 describe("formdataFetch", () => {
-    beforeEach(() => {
-        globalThis.fetch = fetch = jest.fn();
-    });
-
-    afterEach(() => {
-        // @ts-ignore The operand of a 'delete' operator must be optional.ts (2790)
-        delete globalThis.fetch;
-    });
-
     it("calls fetch once using POST and endpoint with valid transport function", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/expected", payload: "whatever" };
-        fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
+        jest.spyOn(global, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
 
         await formdataFetch(validTransportFn, { client: { headers: {} } });
 
-        expect(fetch).toHaveBeenCalledWith("http://localhost:3000/expected", expect.objectContaining({ method: "POST" }));
-        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenCalledWith("http://localhost:3000/expected", expect.objectContaining({ method: "POST" }));
+        expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
     it("yields payload as data property with value transport function", async () => {
@@ -35,16 +25,18 @@ describe("formdataFetch", () => {
             endpoint: "/endpoint",
             payload: JSON.stringify({ expected: "value" }),
         };
-        fetch.mockResolvedValue({ ok: true, text: () => "whatever" });
+        jest.spyOn(global, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
 
         await formdataFetch(validTransportFn, {
             client: { headers: { "token-name": "client-token-value", "x-request-id": "request-id" } },
         });
 
-        const body = Object.fromEntries(fetch.mock.calls[0][1].body.entries());
+        const target = global.fetch as jest.Mock;
+
+        const body = Object.fromEntries(target.mock.calls[0][1].body.entries());
         expect(body).toStrictEqual({ data: '{"expected":"value"}', name: "name", namespace: "namespace" });
 
-        const headers = fetch.mock.calls[0][1].headers;
+        const headers = target.mock.calls[0][1].headers;
         expect(headers).toEqual({
             Accept: "application/json",
             "token-name": "client-token-value",
@@ -66,7 +58,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch causing an error", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        fetch.mockImplementation(() => {
+        jest.spyOn(global, "fetch").mockImplementation(() => {
             throw Error("Expected Error Message");
         });
 
@@ -77,7 +69,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch returning 404 and status message", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        fetch.mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" });
+        jest.spyOn(global, "fetch").mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" } as Response);
 
         const actual = formdataFetch(validTransportFn, { headers: {}, client: { headers: {} } });
 

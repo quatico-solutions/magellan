@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { ResponsePayload } from "./transport";
+import { type ResponsePayload } from "./transport";
 import { isSerializedComplexType, SerializedTypes } from "./types";
 
 export const deserialize = <O>(jsonData: string): ResponsePayload<O> => {

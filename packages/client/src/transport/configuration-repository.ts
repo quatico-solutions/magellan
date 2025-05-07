@@ -5,8 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { NamespaceMapping } from "@quatico/magellan-shared";
-import { Configuration } from "./Configuration";
+import { type NamespaceMapping } from "@quatico/magellan-shared";
+import { type Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
 export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
@@ -21,7 +21,7 @@ export const getConfiguration = (): Configuration => {
 };
 
 const configurationNeedsMerge = (configuration: Partial<Configuration>): boolean => {
-    return configuration.merge || global.__qsMagellanConfig__.lastMerged !== configuration;
+    return configuration.merge || (global.__qsMagellanConfig__?.lastMerged !== undefined && global.__qsMagellanConfig__?.lastMerged !== configuration);
 };
 
 export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {

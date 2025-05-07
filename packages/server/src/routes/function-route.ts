@@ -6,15 +6,16 @@
  */
 import type { Context, RequestPayload, ResponsePayload } from "@quatico/magellan-shared";
 import { serialize, serializeError, unpackObject } from "@quatico/magellan-shared";
-import { Request as ExpressRequest, Response, Router } from "express";
+import { type Request as ExpressRequest, type Response, Router } from "express";
 import { Sdk } from "../sdk";
 
-export const createFunctionRoute = (sdk = new Sdk()) => {
+export const createFunctionRoute = (sdk = new Sdk()): Router => {
     sdk.init();
 
     const router = Router();
     router.post(
         "/",
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (
             req: ExpressRequest<{ name: string }, ResponsePayload<unknown> /* ResBody */, RequestPayload /* ReqBody */>,
             res: Response<ResponsePayload<unknown>>

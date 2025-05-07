@@ -4,6 +4,4 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { executeCompileCommand, executeServeCommand } from "./commands";
-
-export { executeCompileCommand, executeServeCommand };
+export { executeCompileCommand, executeServeCommand } from "./commands";

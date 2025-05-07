@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-
+/// <reference types="./types/global.d.ts" />
 import { ClientContextHandler } from "./context/ClientContextHandler";
 import { remoteInvoke } from "./remote-invoke";
 import type { Configuration } from "./transport";

@@ -4,13 +4,12 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-/* eslint-disable no-console */
 import { WarnMessage } from "@quatico/websmith-api";
 import { createOptions } from "@quatico/websmith-compiler";
-import { Compiler, CompilerOptions, NoReporter } from "@quatico/websmith-core";
+import { Compiler, type CompilerOptions, NoReporter } from "@quatico/websmith-core";
 import { Command } from "commander";
-import { writeFileSync } from "fs";
-import { resolve } from "path";
+import fs from "fs";
+import path from "path";
 import * as ts from "typescript";
 import { getVersion } from "../extract-version";
 import { addCompileCommand } from "./command";
@@ -65,9 +64,11 @@ describe("addCompileCommand", () => {
             emitDecoratorMetadata: true,
             esModuleInterop: true,
             experimentalDecorators: true,
+            forceConsistentCasingInFileNames: true,
             importHelpers: true,
             incremental: true,
             inlineSources: undefined,
+            isolatedModules: true,
             lib: ["lib.es2015.d.ts", "lib.es2016.d.ts", "lib.es2017.d.ts", "lib.esnext.d.ts", "lib.dom.d.ts"],
             module: 1,
             moduleResolution: 2,
@@ -77,7 +78,7 @@ describe("addCompileCommand", () => {
             noImplicitReturns: true,
             noImplicitThis: true,
             noUnusedLocals: true,
-            outDir: resolve("./lib"),
+            outDir: path.resolve("./lib"),
             pretty: true,
             removeComments: false,
             resolveJsonModule: true,
@@ -90,6 +91,7 @@ describe("addCompileCommand", () => {
             strictPropertyInitialization: true,
             target: 2,
             types: ["node", "jest"],
+            useUnknownInCatchVariables: false,
         });
         expect(target.getOptions().additionalArguments?.get("hostname")).toBe("http://localhost");
         expect(target.getOptions().additionalArguments?.get("port")).toBe(3000);
@@ -106,7 +108,7 @@ describe("addCompileCommand", () => {
                         debug: true,
                     },
                     options: {
-                        outDir: resolve("./lib/client"),
+                        outDir: path.resolve("./lib/client"),
                     },
                     writeFile: true,
                 },
@@ -116,7 +118,7 @@ describe("addCompileCommand", () => {
                         debug: true,
                     },
                     options: {
-                        outDir: resolve("./lib/server"),
+                        outDir: path.resolve("./lib/server"),
                     },
                     writeFile: true,
                 },
@@ -140,13 +142,13 @@ describe("addCompileCommand", () => {
     });
 
     it("should set project option  w/ --project cli argument", () => {
-        writeFileSync("expected/tsconfig.json", "{}");
+        fs.writeFileSync("expected/tsconfig.json", "{}");
         const target = new CompilerTestClass(createOptions({}), system);
 
         addCompileCommand(new Command(), target).parse(["compile", "--project", "expected/tsconfig.json"], { from: "user" });
 
         expect(target.testOptions!.project).toEqual({
-            configFilePath: resolve("./expected/tsconfig.json"),
+            configFilePath: path.resolve("./expected/tsconfig.json"),
             inlineSources: undefined,
             outDir: "./lib",
             sourceMap: false,
@@ -213,17 +215,17 @@ describe("addCompileCommand", () => {
 
     it("should set the config option w/ --config cli argument and compiler configuration file found", () => {
         const fs = jest.requireActual("fs");
-        fs.mkdirSync(resolve("./addons"), { recursive: true });
-        fs.mkdirSync(resolve("./expected"), { recursive: true });
-        fs.writeFileSync(resolve("./expected/expected.json"), "{}");
-        const expected = resolve("./expected/expected.json");
+        fs.mkdirSync(path.resolve("./addons"), { recursive: true });
+        fs.mkdirSync(path.resolve("./expected"), { recursive: true });
+        fs.writeFileSync(path.resolve("./expected/expected.json"), "{}");
+        const expected = path.resolve("./expected/expected.json");
         const target = new CompilerTestClass(createOptions({}), system);
 
         addCompileCommand(new Command(), target).parse(["compile", "--config", "./expected/expected.json"], { from: "user" });
 
         expect(target.testOptions!.config).toEqual(expect.objectContaining({ configFilePath: expected }));
-        fs.rmSync(resolve("./addons"), { recursive: true, force: true });
-        fs.rmSync(resolve("./expected"), { recursive: true, force: true });
+        fs.rmSync(path.resolve("./addons"), { recursive: true, force: true });
+        fs.rmSync(path.resolve("./expected"), { recursive: true, force: true });
     });
 
     it("should have undefined config path w/ --config cli argument and no compiler configuration file found", () => {
@@ -235,7 +237,7 @@ describe("addCompileCommand", () => {
         expect(target.testOptions!.config).toBeUndefined();
         expect(target.getReporter().reportDiagnostic).toHaveBeenNthCalledWith(
             1,
-            new WarnMessage(`No configuration file found at ${resolve("./expected/unexpected.json")}.`)
+            new WarnMessage(`No configuration file found at ${path.resolve("./expected/unexpected.json")}.`)
         );
     });
 
@@ -263,7 +265,7 @@ describe("addCompileCommand", () => {
 });
 
 const createDefaultCompilerConfig = () => {
-    writeFileSync(
+    fs.writeFileSync(
         "./websmith.config.json",
         JSON.stringify({
             targets: {

@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { Context, deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
+import { type Context, deserialize, packInput, type RemoteFunction, type Serialization } from "@quatico/magellan-shared";
 import { transportRequest } from "./transport";
 
 export const remoteInvoke = async <O = void>(

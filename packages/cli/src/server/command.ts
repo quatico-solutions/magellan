@@ -5,9 +5,9 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { serve, ServerOptions } from "@quatico/magellan-server";
+import { serve, type ServerOptions } from "@quatico/magellan-server";
 import { Command } from "commander";
-import { existsSync } from "fs";
+import fs from "fs";
 import { getVersion } from "../extract-version";
 import { createOptions, getServerModuleDir } from "./options";
 
@@ -33,7 +33,7 @@ export const addServeCommand = (parent = new Command(), serveFn: (options: Serve
                 console.warn(
                     `moduleDir "unspecified" does not exist!\nNo services will be provided. If this was not your intention, try using --help.`
                 );
-            } else if (!existsSync(serverModuleDir)) {
+            } else if (!fs.existsSync(serverModuleDir)) {
                 // eslint-disable-next-line no-console
                 console.error(`moduleDir "${serverModuleDir}" does not exist!\nPlease verify your arguments.`);
                 command.help({ error: true });

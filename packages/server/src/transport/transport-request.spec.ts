@@ -24,7 +24,6 @@ afterEach(() => {
 
 describe("transportRequest", () => {
     beforeEach(() => {
-        // eslint-disable-next-line no-console
         console.warn = () => undefined;
     });
 

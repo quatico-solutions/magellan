@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { Context, deserialize, RemoteFunction, Serialization, serialize } from "@quatico/magellan-shared";
+import { type Context, deserialize, type RemoteFunction, type Serialization, serialize } from "@quatico/magellan-shared";
 import { resolveNamespace } from "../configuration";
 
 export const transportRequest = async <O = void>(
@@ -21,7 +21,7 @@ export const transportRequest = async <O = void>(
     let payload: string;
     try {
         payload = serialization.serialize(data);
-    } catch (err) {
+    } catch (_err) {
         throw new Error(`Cannot serialize input parameter for remote function: "${name}".`);
     }
 
@@ -34,6 +34,7 @@ export const transportRequest = async <O = void>(
             // eslint-disable-next-line no-console
             console.error(`Function request to "${name}" failed with error ${error.error}`);
         }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return error ? Promise.reject(error.message) : (data as O);
     } catch (err) {
         throw new Error(`Cannot deserialize response from invoke function: "${name}". Reason: "${err}".`);

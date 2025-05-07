@@ -7,7 +7,7 @@
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { getDependencyContext } from "../services";
 import { getConfiguration } from "./configuration-repository";
-import { ResolvedNamespace } from "./ResolvedNamespace";
+import { type ResolvedNamespace } from "./ResolvedNamespace";
 
 export const setNamespace = (namespace: string, mapping: NamespaceMapping): void => {
     const config = getConfiguration();

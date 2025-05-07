@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { ResponseError } from "./transport";
+import { type ResponseError } from "./transport";
 import { SerializedTypes } from "./types";
 
 export const serialize = <I>(input: I): string => JSON.stringify(packObject({ data: input }));

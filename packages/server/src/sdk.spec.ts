@@ -7,7 +7,7 @@
 import { getConfiguration } from "./configuration";
 import { setConfiguration } from "./configuration/configuration-repository";
 import { getDefaultConfiguration } from "./configuration/default-configuration";
-import { DefaultSdkParameters, Sdk } from "./sdk";
+import { type DefaultSdkParameters, Sdk } from "./sdk";
 import { FunctionService } from "./services";
 
 afterEach(() => {
@@ -101,10 +101,10 @@ describe("setTransport", () => {
 });
 
 describe("constructor", () => {
-    it("initializes Magellan DI Context w/ execution of constructor", async () => {
+    it("initializes Magellan DI Context w/ execution of constructor", () => {
         const defaultTransportRequest = jest.fn();
         const defaultTransportHandler = jest.fn();
-        await new Sdk({ defaultTransportHandler, defaultTransportRequest, functionService: new FunctionService(defaultTransportRequest) });
+        new Sdk({ defaultTransportHandler, defaultTransportRequest, functionService: new FunctionService(defaultTransportRequest) });
 
         expect(global.__qsMagellanDI__).toEqual({ defaultTransportRequest, defaultTransportHandler });
     });

@@ -4,9 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-/* eslint-disable no-console */
 import { Command } from "commander";
-import { mkdirSync } from "fs";
+import fs from "fs";
 import { getVersion } from "../extract-version";
 import { addServeCommand } from "./command";
 
@@ -86,6 +85,6 @@ describe("addServeCommand", () => {
 
 const setupFolders = (...paths: string[]) => {
     paths.forEach(path => {
-        mkdirSync(path);
+        fs.mkdirSync(path);
     });
 };

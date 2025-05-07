@@ -12,9 +12,13 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
-## [0.14.1] - 2025-04-02
+## [0.14.2] - 2025-04-08
 
-### Added
+## Changed
+
+-   Replaced `yarn` with `pnpm`
+-   Replaced `@swc/jest` with `ts-jest`
+-   Upgrade to `eslint` v9
 
 ## [0.14.1] - 2025-04-02
 

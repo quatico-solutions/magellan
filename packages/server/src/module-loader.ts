@@ -5,23 +5,27 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { lstatSync, readdirSync } from "fs";
-import { extname, join, resolve } from "path";
+import fs from "fs";
+import path from "path";
 import { Sdk } from "./sdk";
 
 export const loadModules = (dirPath: string, requireFn: NodeRequire = require, sdk: Sdk = new Sdk()) => {
-    const imports = recursiveFind(dirPath, it => extname(it) === ".js").map(it => requireFn(resolve(it)));
-    for (const cur in imports) {
-        Object.keys(imports[cur]).forEach(key => sdk.registerFunction(key, imports[cur][key]));
-    }
+    recursiveFind(dirPath, it => path.extname(it) === ".js")
+        .map(it => requireFn(path.resolve(it)))
+        .forEach(it => {
+            Object.keys(it).forEach(key => sdk.registerFunction(key, it[key]));
+        });
 };
 
-export const recursiveFind = (path: string, filter: (path: string) => boolean = () => true): string[] => {
+export const recursiveFind = (dirPath: string, filter: (path: string) => boolean = () => true): string[] => {
     try {
-        return readdirSync(path)
-            .flatMap(cur => (lstatSync(join(path, cur)).isDirectory() ? recursiveFind(join(path, cur), filter) : join(path, cur)))
+        return fs
+            .readdirSync(dirPath)
+            .flatMap(cur =>
+                fs.lstatSync(path.join(dirPath, cur)).isDirectory() ? recursiveFind(path.join(dirPath, cur), filter) : path.join(dirPath, cur)
+            )
             .filter(filter);
-    } catch (ignored) {
+    } catch (_ignored) {
         return [];
     }
 };

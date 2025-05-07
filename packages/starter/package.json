@@ -1,30 +1,30 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.14.1",
+    "version": "0.14.2",
     "author": "Quatico Solutions AG",
-    "main": "bin/create-magellan.cjs",
-    "bin": "bin/create-magellan.cjs",
     "type": "module",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
         "url": "https://github.com/quatico-solutions/magellan"
     },
+    "main": "bin/create-magellan.cjs",
+    "bin": "bin/create-magellan.cjs",
     "files": [
         "LICENSE",
         "README.md",
         "bin"
     ],
     "scripts": {
-        "clean": "rimraf bin coverage",
+        "clean": "rimraf bin coverage reports",
         "bundle": "esbuild ./src/main.ts --bundle --outfile=bin/create-magellan.cjs --target=node16 --platform=node --tree-shaking=true --external:typescript --minify",
         "type-check": "tsc",
-        "dist": "yarn run clean && yarn run type-check && yarn run bundle && yarn run copy:template",
-        "prepack": "yarn run dist",
+        "dist": "pnpm run clean && pnpm run type-check && pnpm run bundle && pnpm run copy:template",
+        "prepack": "pnpm run dist",
         "test:scaffolding": "node ./bin/create-magellan.cjs",
         "copy:template": "cp -r ./templates ./bin/templates",
-        "publish-npm": "npm publish --access public"
+        "publish-npm": "pnpm publish --access public --no-git-checks --publish-branch develop"
     },
     "dependencies": {
         "@clack/prompts": "^0.7.0"
@@ -35,8 +35,7 @@
         "rimraf": "^5.0.0",
         "typescript": "5.1.6"
     },
-    "engines": {
-        "node": ">=18",
-        "yarn": "1.22.x"
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
     }
 }

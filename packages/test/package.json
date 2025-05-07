@@ -1,52 +1,50 @@
 {
     "name": "@quatico/magellan-test",
     "description": "End to end tests for magellan suite",
-    "version": "0.14.1",
+    "version": "0.14.2",
     "author": "Quatico Solutions AG",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
     "license": "SEE LICENSE IN LICENSE",
     "private": true,
-    "files": [
-        "LICENSE",
-        "README.md",
-        "lib"
-    ],
     "scripts": {
-        "clean": "rimraf lib coverage output",
-        "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
-        "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
+        "clean": "rimraf lib coverage output reports",
+        "lint": "eslint \"{src,test}/**/*.ts\" --color",
+        "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc",
+        "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm build && pnpm test:e2e\"",
+        "test:e2e": "npx cucumber-js",
         "watch": "tsc --watch",
-        "dist": "cross-env-shell NODE_ENV=production \"yarn clean && yarn lint && yarn build && yarn test:e2e\"",
-        "test:watch": "jest --watch",
-        "test:e2e": "node ./node_modules/.bin/cucumber-js",
-        "debug:e2e": "cross-env-shell TEST_DEBUG_OUTPUT=0 'yarn test:e2e'"
+        "watch:test": "jest --color --watch",
+        "debug:e2e": "cross-env-shell TEST_DEBUG_OUTPUT=0 'pnpm test:e2e'"
     },
     "devDependencies": {
         "@cucumber/cucumber": "^11.2.0",
-        "@quatico/magellan-cli": "^0.14.1",
-        "@quatico/magellan-client": "^0.14.1",
-        "@quatico/magellan-server": "^0.14.1",
-        "@quatico/magellan-shared": "^0.14.1",
+        "@eslint/compat": "^1.2.6",
+        "@eslint/js": "^9.19.0",
+        "@quatico/magellan-cli": "workspace:*",
+        "@quatico/magellan-client": "workspace:*",
+        "@quatico/magellan-server": "workspace:*",
+        "@quatico/magellan-shared": "workspace:*",
         "@types/node": "18",
-        "@typescript-eslint/eslint-plugin": "^5.59.5",
-        "@typescript-eslint/parser": "^5.59.5",
+        "@typescript-eslint/eslint-plugin": "^8.22.0",
+        "@typescript-eslint/parser": "^8.22.0",
+        "@typescript-eslint/utils": "^8.22.0",
         "cross-env": "7.0.3",
-        "eslint": "^8.40.0",
-        "eslint-config-prettier": "^8.8.0",
+        "eslint": "^9.19.0",
+        "eslint-config-prettier": "^10.0.1",
         "eslint-import-resolver-alias": "^1.1.2",
-        "eslint-plugin-import": "^2.27.5",
-        "eslint-plugin-jest": "^27.2.1",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-testing-library": "^5.10.3",
+        "eslint-import-resolver-typescript": "^3.6.3",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-jest": "^28.11.0",
+        "eslint-plugin-prettier": "^5.2.3",
+        "eslint-plugin-testing-library": "^7.1.1",
+        "eslint-plugin-unicorn": "^56.0.1",
         "memfs": "3.4.x",
-        "prettier": "^2.8.8",
+        "prettier": "^3.5.3",
         "rimraf": "^5.0.0",
-        "typescript": "5.1.6"
+        "typescript": "5.1.6",
+        "typescript-eslint": "^8.22.0"
     },
-    "engines": {
-        "node": ">=18",
-        "yarn": "1.22.x"
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
     }
 }

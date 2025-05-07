@@ -6,9 +6,9 @@
  */
 
 import type { Context, NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
-import { TransportRequest } from "./api";
+import { type TransportRequest } from "./api";
 import { getConfiguration, setNamespace, setTransport } from "./configuration";
-import { FunctionService, getFunctionService, initDependencyContext, ServerFunction } from "./services";
+import { type FunctionService, getFunctionService, initDependencyContext, type ServerFunction } from "./services";
 import { formdataFetch, transportRequest } from "./transport";
 
 export type DefaultSdkParameters = {

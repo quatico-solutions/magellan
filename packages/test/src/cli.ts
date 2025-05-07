@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { executeCompileCommand } from "@quatico/magellan-cli";
-import { join, resolve } from "path";
+import path from "path";
 import { ServerRunner } from "./ServerRunner";
 
 type CompileCommand = {
@@ -19,9 +19,9 @@ export class Cli {
     public async cleanup() {
         await this.serverRunner?.cleanup();
     }
-    public async executeCompile({ command }: { command?: CompileCommand }): Promise<void> {
+    public executeCompile({ command }: { command?: CompileCommand }) {
         const { cwd = ".", args } = command ?? {};
-        executeCompileCommand(["compile", ...(args?.split(" ") ?? ""), "--project", `${resolve(cwd, "tsconfig.json")}`]);
+        executeCompileCommand(["compile", ...(args?.split(" ") ?? ""), "--project", `${path.resolve(cwd, "tsconfig.json")}`]);
     }
 
     public async executeServe({ command }: { command?: CompileCommand }): Promise<void> {
@@ -31,7 +31,7 @@ export class Cli {
         console.info(`\nExecute Debug ServerRunner: ${!!process.env["TEST_DEBUG_OUTPUT"]}`);
         await this.serverRunner.executeServe({
             command: {
-                scriptPath: join(__dirname, "..", "..", "cli", "lib", "cli.js"),
+                scriptPath: path.join(__dirname, "..", "..", "cli", "lib", "cli.js"),
                 args,
                 ...(!!process.env["TEST_DEBUG_OUTPUT"] && { debugOutput: true }),
             },

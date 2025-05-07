@@ -2,14 +2,14 @@ import { After, Before, Given, Then, When } from "@cucumber/cucumber";
 import { formdataFetch } from "@quatico/magellan-server";
 import type { Context } from "@quatico/magellan-shared";
 import assert from "assert";
-import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
-import { basename, extname, isAbsolute, join, resolve } from "path";
+import fs from "fs";
+import path from "path";
 import { Cli } from "../cli";
 
 type CliOperation = "compile" | "serve";
 let previousPath = ".";
-const targetDirectory = resolve("output", "project");
-const dataPath = resolve("test", "__data__");
+const targetDirectory = path.resolve("output", "project");
+const dataPath = path.resolve("test", "__data__");
 let remoteInvokeResult: unknown;
 let remoteInvokeError: unknown;
 let remoteInvokeConsoleError: string | undefined;
@@ -17,32 +17,35 @@ let projectDirectory: string = targetDirectory;
 let cli: Cli;
 
 Given(/^valid TypeScript project directory was created$/, () => {
-    mkdirSync(targetDirectory, { recursive: true });
-    copyFileSync(resolve(dataPath, "project-template", "tsconfig.json"), resolve(targetDirectory, "tsconfig.json"));
-    copyFileSync(resolve(dataPath, "project-template", "websmith.config.json"), resolve(targetDirectory, "websmith.config.json"));
+    fs.mkdirSync(targetDirectory, { recursive: true });
+    fs.copyFileSync(path.resolve(dataPath, "project-template", "tsconfig.json"), path.resolve(targetDirectory, "tsconfig.json"));
+    fs.copyFileSync(path.resolve(dataPath, "project-template", "websmith.config.json"), path.resolve(targetDirectory, "websmith.config.json"));
 });
 
-Given(/^directory "(.*)" was created$/, path => {
-    if (!isAbsolute(path)) {
-        path = previousPath ? join(previousPath, path) : path;
-        previousPath = path;
+Given(/^directory "(.*)" was created$/, dirPath => {
+    if (!path.isAbsolute(dirPath)) {
+        dirPath = previousPath ? path.join(previousPath, dirPath) : dirPath;
+        previousPath = dirPath;
     }
     if (!previousPath) {
-        projectDirectory = resolve(path);
+        projectDirectory = path.resolve(dirPath);
     }
-    mkdirSync(resolve(targetDirectory, previousPath), { recursive: true });
+    fs.mkdirSync(path.resolve(targetDirectory, previousPath), { recursive: true });
 });
 
 Given(/^file "(.*)" without FaaS function was created$/, fileName => {
-    writeFileSync(resolve(projectDirectory, previousPath, fileName), `export const ${basename(fileName, extname(fileName))} = () => {}`);
+    fs.writeFileSync(
+        path.resolve(projectDirectory, previousPath, fileName),
+        `export const ${path.basename(fileName, path.extname(fileName))} = () => {}`
+    );
 });
 
 Given(/^valid FaaS module file "(.*)" was created$/, fileName => {
-    copyFileSync(resolve(dataPath, "faas-modules", fileName), resolve(targetDirectory, previousPath, fileName));
+    fs.copyFileSync(path.resolve(dataPath, "faas-modules", fileName), path.resolve(targetDirectory, previousPath, fileName));
 });
 
 Given(/^valid index module file "(.*)" was created$/, fileName => {
-    copyFileSync(resolve(dataPath, "index-modules", fileName), resolve(targetDirectory, previousPath, "index.ts"));
+    fs.copyFileSync(path.resolve(dataPath, "index-modules", fileName), path.resolve(targetDirectory, previousPath, "index.ts"));
 });
 
 Given("node environment is {string}", (env: string) => {
@@ -60,7 +63,7 @@ When(
                 return cli.executeCompile({});
             case "serve": {
                 await cli.executeServe({
-                    command: { args: `-s ${join(targetDirectory, "lib", "server")} ${join(targetDirectory, "lib", "client")}` },
+                    command: { args: `-s ${path.join(targetDirectory, "lib", "server")} ${path.join(targetDirectory, "lib", "client")}` },
                 });
                 // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
                 // Also, because it is node that executes it, we must use the servers default transport on the frontend to have it use node-fetch!
@@ -73,6 +76,7 @@ When(
                 break;
             }
             default:
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-promise-reject-errors
                 return Promise.reject(`Unsupported cli operation ${cliOperation}`);
         }
     }
@@ -87,7 +91,7 @@ When(/^CLI command "(.*)" is called with arguments {string}$/, async (cliOperati
             return cli.executeCompile({
                 command: {
                     args: args !== "" ? args.replaceAll(/<projectDir>/g, targetDirectory) : undefined,
-                    cwd: resolve(targetDirectory),
+                    cwd: path.resolve(targetDirectory),
                 },
             });
         case "serve": {
@@ -97,8 +101,8 @@ When(/^CLI command "(.*)" is called with arguments {string}$/, async (cliOperati
                     args:
                         args !== ""
                             ? args.replaceAll(/<projectDir>/g, targetDirectory)
-                            : `-s ${join(targetDirectory, "lib", "server")} ${join(targetDirectory, "lib", "client")}`,
-                    cwd: resolve(targetDirectory),
+                            : `-s ${path.join(targetDirectory, "lib", "server")} ${path.join(targetDirectory, "lib", "client")}`,
+                    cwd: path.resolve(targetDirectory),
                 },
             });
             // Because cucumber-js runs in the node environment, we need to tell the 'frontend' on what host it is running.
@@ -112,6 +116,7 @@ When(/^CLI command "(.*)" is called with arguments {string}$/, async (cliOperati
             break;
         }
         default:
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject(`Unsupported cli operation ${cliOperation}`);
     }
 });
@@ -121,7 +126,7 @@ When(
     // { timeout: 60 * 1000 },
     async function (functionName: string) {
         try {
-            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            const module = await import(path.join(process.cwd(), "lib", "client", functionName));
             // eslint-disable-next-line no-console
             const errorConsole = console.error;
             // eslint-disable-next-line no-console
@@ -140,7 +145,7 @@ When(
     //  { timeout: 60 * 1000 },
     async function (functionName: string, data: string) {
         try {
-            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            const module = await import(path.join(process.cwd(), "lib", "client", functionName));
             // eslint-disable-next-line no-console
             const errorConsole = console.error;
             // eslint-disable-next-line no-console
@@ -159,7 +164,7 @@ When(
     // { timeout: 60 * 1000 },
     async function (functionName: string, data: string, requestId: string) {
         try {
-            const module = await import(join(process.cwd(), "lib", "client", functionName));
+            const module = await import(path.join(process.cwd(), "lib", "client", functionName));
             // eslint-disable-next-line no-console
             const errorConsole = console.error;
             // eslint-disable-next-line no-console
@@ -175,7 +180,7 @@ When(
 );
 
 Then(/^directory "(.*)" contains file "(.*)"$/, (directory, fileName) => {
-    assert.equal(existsSync(resolve(targetDirectory, directory, fileName)), true, `Directory ${directory} should contain file ${fileName}`);
+    assert.equal(fs.existsSync(path.resolve(targetDirectory, directory, fileName)), true, `Directory ${directory} should contain file ${fileName}`);
 });
 
 Then("the promise is resolved with {string}.", (result: string) => {
@@ -195,7 +200,7 @@ Then("writes no console error.", () => {
 });
 
 Before(() => {
-    rmSync(resolve(targetDirectory, ".."), { recursive: true, force: true });
+    fs.rmSync(path.resolve(targetDirectory, ".."), { recursive: true, force: true });
     // eslint-disable-next-line no-console
     console.warn = () => undefined;
     previousPath = ".";
@@ -206,5 +211,5 @@ Before(() => {
 
 After(async () => {
     await cli?.cleanup();
-    rmSync(resolve(targetDirectory, ".."), { recursive: true, force: true });
+    fs.rmSync(path.resolve(targetDirectory, ".."), { recursive: true, force: true });
 });

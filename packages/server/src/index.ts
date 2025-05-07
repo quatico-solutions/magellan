@@ -4,6 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+/// <reference types="./types/global.d.ts" />
 import type { Configuration } from "./configuration";
 import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport } from "./configuration";
 import type { ServerOptions } from "./server";

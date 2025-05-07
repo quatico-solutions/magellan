@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { ResponseError } from "./ResponseError";
+import { type ResponseError } from "./ResponseError";
 
 export type ResponsePayload<O> = {
     data?: O;

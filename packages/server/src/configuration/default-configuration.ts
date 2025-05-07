@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { getDependencyContext } from "../services";
-import { Configuration } from "./Configuration";
+import { type Configuration } from "./Configuration";
 
 export const getDefaultConfiguration = () => {
     return completeConfig({

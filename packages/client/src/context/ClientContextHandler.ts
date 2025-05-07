@@ -1,4 +1,4 @@
-import { CLIENT_CONTEXT_CHANGED_EVENT_TYPE, type ClientContext, ClientContextChangedEvent } from "@quatico/magellan-shared";
+import { CLIENT_CONTEXT_CHANGED_EVENT_TYPE, type ClientContext, type ClientContextChangedEvent } from "@quatico/magellan-shared";
 import { resolveNamespace } from "../transport";
 
 declare global {

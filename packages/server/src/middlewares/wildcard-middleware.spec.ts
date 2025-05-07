@@ -5,12 +5,12 @@
  * ---------------------------------------------------------------------------------------------
  */
 /* eslint-disable jest/no-done-callback */
-import { writeFileSync } from "fs";
-import { resolve } from "path";
+import fs from "fs";
+import path from "path";
 import { wildcardMiddleware } from "./wildcard-middleware";
 
 describe("wildcardMiddleware", () => {
-    const staticDir = resolve("data");
+    const staticDir = path.resolve("data");
     it("should rewrite the request url w/ url not matching a static file", done => {
         const target = { url: "/expected", baseUrl: "/" };
 
@@ -25,7 +25,7 @@ describe("wildcardMiddleware", () => {
 
     it("should not rewrite the request url w/ url matching a static file", done => {
         const target = { url: "/expected.txt", baseUrl: "/" };
-        writeFileSync(resolve(staticDir, "expected.txt"), "expected");
+        fs.writeFileSync(path.resolve(staticDir, "expected.txt"), "expected");
 
         wildcardMiddleware(staticDir, "/unexpected")(target as any, {} as any, () => {
             expect(target).toEqual({

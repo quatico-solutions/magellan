@@ -6,7 +6,7 @@
  */
 
 import { formdataFetch } from "./formdata-fetch";
-import { Configuration } from "./Configuration";
+import { type Configuration } from "./Configuration";
 
 const config: Configuration = {
     namespaces: { default: { endpoint: "/api", transport: "default" } },

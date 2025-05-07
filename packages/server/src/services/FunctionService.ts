@@ -5,8 +5,8 @@
  * ---------------------------------------------------------------------------------------------
  */
 import type { Context, RemoteFunction } from "@quatico/magellan-shared";
-import { TransportRequest } from "../api";
-import { ServerFunction } from "./ServerFunction";
+import { type TransportRequest } from "../api";
+import { type ServerFunction } from "./ServerFunction";
 
 export class FunctionService {
     constructor(private transport: TransportRequest, private functions: Map<string, ServerFunction> = new Map()) {}
@@ -29,11 +29,6 @@ export class FunctionService {
     }
 }
 
-// TODO: Move type declaration to global.d.ts
-declare global {
-    // eslint-disable-next-line no-var
-    var functionService: FunctionService;
-}
 
 export const getFunctionService = (defaultTransportRequest: TransportRequest) =>
     global.functionService ?? (global.functionService = new FunctionService(defaultTransportRequest));

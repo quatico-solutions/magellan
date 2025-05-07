@@ -7,13 +7,12 @@
 import { formdataFetch } from "./formdata-fetch";
 import { expandConfig, getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { getDefaultConfiguration } from "./default-configuration";
-import { Configuration } from "./Configuration";
+import { type Configuration } from "./Configuration";
 import config from "./config";
 
 jest.mock("./default-configuration");
 
 beforeEach(() => {
-    // @ts-ignore
     global.__qsMagellanConfig__ = undefined;
     jest.requireMock("./default-configuration").getDefaultConfiguration.mockReturnValue(config);
 });

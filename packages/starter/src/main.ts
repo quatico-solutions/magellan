@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { cancel, intro, isCancel, log, select, text } from "@clack/prompts";
-import { cp, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { cp, mkdir } from "fs/promises";
+import path from "path";
 
 async function main(currentDir = process.cwd()) {
     intro(" create-magellan ");
@@ -39,8 +39,8 @@ async function main(currentDir = process.cwd()) {
         return process.exit(0);
     }
 
-    const templatesDir = join(__dirname, "templates");
-    const pathToTemplate = join(templatesDir, String(projectType));
+    const templatesDir = path.join(__dirname, "templates");
+    const pathToTemplate = path.join(templatesDir, String(projectType));
     await cp(pathToTemplate, projectDir, { recursive: true }).catch(() => {
         cancel(`Failed to copy template ${projectType}.`);
         return process.exit(0);

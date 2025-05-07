@@ -7,7 +7,7 @@
 import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-shared";
 import { getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { resolveNamespace, setNamespace, setTransport } from "./namespace";
-import { ResolvedNamespace } from "./ResolvedNamespace";
+import { type ResolvedNamespace } from "./ResolvedNamespace";
 
 const defaultTransport = jest.fn();
 

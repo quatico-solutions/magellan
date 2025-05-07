@@ -38,7 +38,7 @@
         "**/.gitignore",
         "**/.prettierrc",
         "**/*.iml",
-        "yarn.lock",
+        "pnpm-lock.yaml",
         "**/*.graffle",
         "**/.gitkeep",
         "**/.build",

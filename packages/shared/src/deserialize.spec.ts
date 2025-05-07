@@ -7,7 +7,7 @@
 
 import { readE2eTestData } from "../../../jest.setup";
 import { deserialize, unpackObject, unpackPayload } from "./deserialize";
-import { ResponsePayload } from "./transport";
+import { type ResponsePayload } from "./transport";
 
 describe("deserialize", () => {
     it("deserializes w/ a nested object", () => {

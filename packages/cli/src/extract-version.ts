@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 
-import { readFileSync } from "fs";
-import { join } from "path";
+import fs from "fs";
+import path from "path";
 
-export const getVersion = () => JSON.parse(readFileSync(join(__dirname, "..", "package.json")).toString()).version ?? "unknown";
+export const getVersion = () => JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json")).toString()).version ?? "unknown";

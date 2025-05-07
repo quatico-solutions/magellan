@@ -7,11 +7,11 @@
 
 /* eslint-disable no-console */
 import { addCompileCommand as addWebsmithCompileCommand } from "@quatico/websmith-compiler";
-import { Compiler } from "@quatico/websmith-core";
+import { type Compiler } from "@quatico/websmith-core";
 import { Command } from "commander";
 import parseArgs from "minimist";
 import { getVersion } from "../extract-version";
-import { CliArguments } from "./CliArguments";
+import { type CliArguments } from "./CliArguments";
 
 export const addCompileCommand = (parent = new Command(), compiler?: Compiler) => {
     parent
@@ -50,7 +50,6 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
             }
         })
         .action((args: CliArguments, command: Command) => {
-            // eslint-disable-next-line no-console
             console.info(`Magellan version ${getVersion()}`);
             if (command.args) {
                 const unknownArgs = command.args.filter(arg => !command.getOptionValueSource(arg));
@@ -80,7 +79,8 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler) =
                 });
 
             cliArguments = addRequiredTargetsIfMissing(cliArguments);
-            addWebsmithCompileCommand(new Command() as any, compiler as any).parse(cliArguments, { from: "user" });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            addWebsmithCompileCommand(new Command(), compiler as any).parse(cliArguments, { from: "user" });
         });
     return parent;
 };

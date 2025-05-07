@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { Context, deserialize, packInput, RemoteFunction, Serialization } from "@quatico/magellan-shared";
+import { type Context, deserialize, packInput, type RemoteFunction, type Serialization } from "@quatico/magellan-shared";
 import { resolveNamespace } from "./namespace";
 
 export const transportRequest = async <O = void>(
@@ -21,9 +21,12 @@ export const transportRequest = async <O = void>(
     let payload: string;
     try {
         payload = serialization.serialize(data);
-    } catch (err) {
-        // eslint-disable-next-line no-console
-        process.env.NODE_ENV === "development" && console.error(`Cannot serialize input parameter for remote function: "${name}".`);
+    } catch (_err) {
+        if (process.env.NODE_ENV === "development") {
+            // eslint-disable-next-line no-console
+            console.error(`Cannot serialize input parameter for remote function: "${name}".`);
+        }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Serialization failed");
     }
 
@@ -37,10 +40,14 @@ export const transportRequest = async <O = void>(
             // eslint-disable-next-line no-console
             console.error(new Error(error.error));
         }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return error ? Promise.reject(error.message) : (data as O);
-    } catch (err) {
-        // eslint-disable-next-line no-console
-        process.env.NODE_ENV === "development" && console.error(`Cannot deserialize response from remote function: "${name}".`);
+    } catch (_err) {
+        if (process.env.NODE_ENV === "development") {
+            // eslint-disable-next-line no-console
+            console.error(`Cannot deserialize response from remote function: "${name}".`);
+        }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Deserialization failed");
     }
 };

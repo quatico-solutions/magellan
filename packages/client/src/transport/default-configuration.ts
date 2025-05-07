@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import config from "./config";
-import { Configuration } from "./Configuration";
+import { type Configuration } from "./Configuration";
 import { formdataFetch } from "./formdata-fetch";
 
 export const getDefaultConfiguration = (): Configuration => {

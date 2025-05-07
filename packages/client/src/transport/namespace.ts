@@ -8,7 +8,7 @@ import type { NamespaceMapping, TransportHandler } from "@quatico/magellan-share
 import { assert } from "@quatico/magellan-shared";
 import { formdataFetch } from "./formdata-fetch";
 import { getConfiguration } from "./configuration-repository";
-import { ResolvedNamespace } from "./ResolvedNamespace";
+import { type ResolvedNamespace } from "./ResolvedNamespace";
 
 const DEFAULT_NAMESPACE = "default";
 const DEFAULT_TRANSPORT = "default";
@@ -16,9 +16,9 @@ const DEFAULT_TRANSPORT = "default";
 export const setNamespace = (namespace: string, mapping: NamespaceMapping): void => {
     const config = getConfiguration();
     config.namespaces = config.namespaces || {};
-    if (config.namespaces[namespace]) {
+    if (config.namespaces[namespace] && process.env.NODE_ENV === "development") {
         // eslint-disable-next-line no-console
-        process.env.NODE_ENV === "development" && console.info(`Namespace "${namespace}" already exists. Updating mapping.`);
+        console.info(`Namespace "${namespace}" already exists. Updating mapping.`);
     }
     config.namespaces[namespace] = mapping;
 };
@@ -26,9 +26,9 @@ export const setNamespace = (namespace: string, mapping: NamespaceMapping): void
 export const setTransport = (name: string, handler: TransportHandler): void => {
     const config = getConfiguration();
     config.transports = config.transports || {};
-    if (config.transports[name]) {
+    if (config.transports[name] && process.env.NODE_ENV === "development") {
         // eslint-disable-next-line no-console
-        process.env.NODE_ENV === "development" && console.info(`Transport "${name}" already exists. Updating handler.`);
+        console.info(`Transport "${name}" already exists. Updating handler.`);
     }
     config.transports[name] = handler;
 };

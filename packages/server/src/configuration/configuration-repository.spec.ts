@@ -4,7 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { TransportHandler } from "@quatico/magellan-shared";
+import { type TransportHandler } from "@quatico/magellan-shared";
 import { initDependencyContext } from "../services";
 import { expandConfig, getConfiguration, initProjectConfiguration } from "./configuration-repository";
 import { getDefaultConfiguration } from "./default-configuration";
@@ -12,7 +12,6 @@ import { getDefaultConfiguration } from "./default-configuration";
 const defaultTransportHandler: TransportHandler = jest.fn();
 
 beforeEach(() => {
-    // @ts-ignore
     global.__qsMagellanServerConfig__ = undefined;
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler });
 });

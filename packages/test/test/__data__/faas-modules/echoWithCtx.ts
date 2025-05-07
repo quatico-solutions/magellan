@@ -10,7 +10,7 @@ interface EchoWithCtxOutput {
 }
 
 // @service()
-export const echoWithCtx = async (obj: EchoWithCtxInput, context?: Context, serialization?: Serialization): Promise<EchoWithCtxOutput> => {
+export const echoWithCtx = async (obj: EchoWithCtxInput, context?: Context, _serialization?: Serialization): Promise<EchoWithCtxOutput> => {
     const serverContext = (context?.server ?? {}) as Required<Context["server"]>;
     return Promise.resolve({ echo: obj.echo, requestId: serverContext?.["x-request-id"] ?? "unknown" });
 };

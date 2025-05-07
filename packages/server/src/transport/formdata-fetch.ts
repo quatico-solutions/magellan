@@ -22,6 +22,7 @@ export const formdataFetch: TransportHandler = async (func: TransportFunction, c
             headers: createHeaders({ headers: { ...ctx?.client?.headers } }),
         });
         if (!response.ok) {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject({ status: response.status, message: response?.statusText || "" });
         }
         return await response.text();
@@ -38,7 +39,7 @@ const validHttpOrHttpsUrlOrThrow = (endpoint: string): string => {
     let url;
     try {
         url = new URL(endpoint);
-    } catch (err) {
+    } catch (_err) {
         throw new Error(`provided endpoint ${endpoint} is invalid`);
     }
     if (!/^https?:$/.test(url.protocol)) {

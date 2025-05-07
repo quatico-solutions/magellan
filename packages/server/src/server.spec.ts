@@ -5,13 +5,13 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { unpackPayload } from "@quatico/magellan-shared";
-import { Express } from "express";
-import { writeFileSync } from "fs";
-import http from "http";
-import { resolve } from "path";
+import { type Express } from "express";
+import fs from "fs";
+import type http from "http";
+import path from "path";
 import request from "supertest";
 import { Sdk } from "./sdk";
-import { configureMagellanRoutes, handleError, normalizePort, serve, ServerOptions, setupApp } from "./server";
+import { configureMagellanRoutes, handleError, normalizePort, serve, type ServerOptions, setupApp } from "./server";
 import { initDependencyContext } from "./services";
 
 beforeAll(() => {
@@ -86,7 +86,7 @@ describe("setupApp", () => {
     it("responds with index page w/ staticDir and GET to /", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
-        writeFileSync(resolve(staticDir, "index.html"), expected);
+        fs.writeFileSync(path.resolve(staticDir, "index.html"), expected);
         const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,
@@ -103,7 +103,7 @@ describe("setupApp", () => {
     it("redirects to index page w/ staticDir and GET to non-existing wildcard route", async () => {
         const staticDir = "./data";
         const expected = "<html><body>expected html</body></html>";
-        writeFileSync(resolve(staticDir, "index.html"), expected);
+        fs.writeFileSync(path.resolve(staticDir, "index.html"), expected);
         const target = setupApp({
             staticDir,
             requireFn: jest.fn().mockReturnValue({}) as any,
@@ -146,7 +146,7 @@ describe("configureMagellanRoutes", () => {
     it("configures the wildcare middleware route", () => {
         const target = {
             app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
-            staticDir: resolve(__dirname, "static"),
+            staticDir: path.resolve(__dirname, "static"),
             staticRoute: "/",
             apiRoute: "/api",
         } as any;
@@ -159,7 +159,7 @@ describe("configureMagellanRoutes", () => {
     it("configures the static route", () => {
         const target = {
             app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
-            staticDir: resolve(__dirname, "static"),
+            staticDir: path.resolve(__dirname, "static"),
             staticRoute: "/",
             apiRoute: "/api",
         } as any;
@@ -172,7 +172,7 @@ describe("configureMagellanRoutes", () => {
     it("configures the api route", () => {
         const target = {
             app: { get: jest.fn(), set: jest.fn(), use: jest.fn() },
-            staticDir: resolve(__dirname, "static"),
+            staticDir: path.resolve(__dirname, "static"),
             staticRoute: "/",
             apiRoute: "/api",
         } as any;

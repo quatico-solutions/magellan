@@ -5,21 +5,28 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { unpackPayload } from "@quatico/magellan-shared";
-import express, { Express } from "express";
+import express, { type Express } from "express";
 import multer from "multer";
-import { join } from "path";
+import path from "path";
 import request from "supertest";
 import { Sdk } from "../sdk";
 import { initDependencyContext } from "../services";
 import { createFunctionRoute } from "./function-route";
 
 beforeAll(() => {
-    function formDataMock() {
-        return { append: jest.fn() };
+    class FormData {
+        append = jest.fn();
+        set = jest.fn();
+        entries = jest.fn();
+        get = jest.fn();
+        getAll = jest.fn();
+        has = jest.fn();
+        setAll = jest.fn();
+        delete = jest.fn();
+        forEach = jest.fn();
     }
 
-    // @ts-ignore access custom global object
-    global.FormData = formDataMock;
+    global.FormData = FormData
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 
@@ -69,7 +76,7 @@ describe("createStaticRoute", () => {
         const payload = unpackPayload(res.body);
         expect(payload.error).toEqual({
             message: "expected error message",
-            error: expect.stringContaining("Error: expected error message\n" + `    at ${join(__dirname, "function-route.spec.ts")}`),
+            error: expect.stringContaining("Error: expected error message\n" + `    at ${path.join(__dirname, "function-route.spec.ts")}`),
         });
         expect(res.statusCode).toBe(200);
     });

@@ -10,6 +10,6 @@ export type { RemoteFunction } from "./RemoteFunction";
 export type { RequestPayload } from "./RequestPayload";
 export type { ResponseError } from "./ResponseError";
 export type { ResponsePayload } from "./ResponsePayload";
-export { Serialization } from "./Serialization";
+export type { Serialization } from "./Serialization";
 export type { TransportFunction } from "./TransportFunction";
 export type { TransportHandler } from "./TransportHandler";

@@ -4,5 +4,5 @@
         "outDir": "./lib"
     },
     "exclude": ["node_modules", "**/*.js", "src/**/*.spec.ts", "src/**/*.spec.tsx"],
-    "include": ["src", "types"]
+    "include": ["src"]
 }

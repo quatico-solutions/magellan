@@ -1,15 +1,15 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.14.1",
+    "version": "0.14.2",
     "author": "Quatico Solutions AG",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
         "url": "https://github.com/quatico-solutions/magellan"
     },
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
     "files": [
         "LICENSE",
         "README.md",
@@ -17,19 +17,19 @@
     ],
     "scripts": {
         "clean": "rimraf lib coverage",
-        "lint": "eslint \"{src,test,addons}/**/*.ts\" --color",
-        "lint:fix": "eslint \"{src,test,addons}/**/*.ts\" --fix",
+        "lint": "eslint \"{src,test}/**/*.ts\" --color",
+        "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc",
-        "watch": "tsc --watch",
-        "dist": "cross-env-shell NODE_ENV=production \"yarn clean && yarn lint && yarn test && yarn build\"",
+        "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
         "dev": "ts-node src/cli/index.ts serve ../../../qs-magellan-sandbox/packages/react/lib ../../../qs-magellan-sandbox/packages/react/server-esm",
-        "test": "jest --coverage",
-        "test:watch": "jest --watch",
-        "test:update-snapshots": "yarn test -u",
-        "publish-npm": "npm publish --access public"
+        "test": "jest --color --coverage",
+        "test:update-snapshots": "pnpm test -u",
+        "watch": "tsc --watch",
+        "watch:test": "jest --color --watch",
+        "publish-npm": "pnpm publish --access public --no-git-checks --publish-branch develop"
     },
     "peerDependencies": {
-        "@quatico/magellan-shared": "^0.13.2-SNAPSHOT.0",
+        "@quatico/magellan-shared": "workspace:*",
         "cors": "2.x",
         "express": "4.x",
         "http-errors": "1.x",
@@ -37,9 +37,9 @@
         "tslib": "2.x"
     },
     "devDependencies": {
-        "@quatico/magellan-shared": "^0.14.1",
-        "@swc/core": "^1.3.57",
-        "@swc/jest": "^0.2.26",
+        "@eslint/compat": "^1.2.6",
+        "@eslint/js": "^9.19.0",
+        "@quatico/magellan-shared": "workspace:*",
         "@types/cors": "2.8.13",
         "@types/express": "4.17.x",
         "@types/http-errors": "^2.0.1",
@@ -47,30 +47,34 @@
         "@types/multer": "1.4.7",
         "@types/node": "18",
         "@types/supertest": "^2.0.12",
-        "@typescript-eslint/eslint-plugin": "^5.59.5",
-        "@typescript-eslint/parser": "^5.59.5",
+        "@typescript-eslint/eslint-plugin": "^8.22.0",
+        "@typescript-eslint/parser": "^8.22.0",
+        "@typescript-eslint/utils": "^8.22.0",
         "cors": "2.8.x",
         "cross-env": "^7.0.3",
-        "eslint": "^8.40.0",
-        "eslint-config-prettier": "^8.8.0",
+        "eslint": "^9.19.0",
+        "eslint-config-prettier": "^10.0.1",
         "eslint-import-resolver-alias": "^1.1.2",
-        "eslint-plugin-import": "^2.27.5",
-        "eslint-plugin-jest": "^27.2.1",
-        "eslint-plugin-prettier": "^4.2.1",
-        "eslint-plugin-testing-library": "^5.10.3",
+        "eslint-import-resolver-typescript": "^3.6.3",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-jest": "^28.11.0",
+        "eslint-plugin-prettier": "^5.2.3",
+        "eslint-plugin-testing-library": "^7.1.1",
+        "eslint-plugin-unicorn": "^56.0.1",
         "express": "4.21.x",
         "http-errors": "1.6.x",
         "jest": "^29.5.0",
         "multer": "1.4.5-lts.1",
-        "prettier": "^2.8.8",
+        "prettier": "^3.5.3",
         "rimraf": "^5.0.0",
         "supertest": "^6.3.3",
         "ts-jest": "^29.1.0",
         "ts-node": "10.9.x",
         "tslib": "^2.8.1",
-        "typescript": "5.1.6"
+        "typescript": "5.1.6",
+        "typescript-eslint": "^8.22.0"
     },
-    "engines": {
-        "node": ">=18"
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
     }
 }
