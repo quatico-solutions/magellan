@@ -34,3 +34,4 @@ tsconfig.tsbuildinfo
 
 # GENERATED
 cucumber-report.html
+cucumber-report.json
