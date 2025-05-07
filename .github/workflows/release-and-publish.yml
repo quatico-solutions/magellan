@@ -26,7 +26,8 @@ jobs:
                   version: 9
 
             - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+              # --no-frozen-lockfile is necessary as the lockfile contains additional dependencies not used in the published part of the code
+              run: pnpm install --no-frozen-lockfile 
 
             - name: Run lint
               run: pnpm lint
