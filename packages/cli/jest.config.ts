@@ -9,7 +9,6 @@ import { config as baseConfig } from "../../jest-base.config";
 
 const config: Config = {
     ...baseConfig,
-    testRegex: "src/.*spec\\.ts$",
 };
 
 export default config;

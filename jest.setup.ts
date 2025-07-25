@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { createFs, resetFs } from "./test/fusion-fs";
 import { readE2eTestData } from "./test/test-data-helper";
 
 export { readE2eTestData };
@@ -9,12 +8,3 @@ console.info = () => undefined;
 console.log = () => undefined;
 console.warn = () => undefined;
 console.error = () => undefined;
-
-jest.mock("fs", () => {
-    return createFs(jest.requireActual("fs"));
-});
-
-afterEach(() => {
-    jest.clearAllMocks();
-    resetFs();
-});

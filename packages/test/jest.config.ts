@@ -9,10 +9,12 @@ import { config as baseConfig } from "../../jest-base.config";
 
 const config: Config = {
     ...baseConfig,
-    roots: ["<rootDir>/src/", "<rootDir>/../../test/"],
-    testEnvironment: "node",
-    testRegex: "src/.*spec\\.ts$",
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+    testTimeout: 60000, // 1 minute for server integration tests
+    maxWorkers: 1, // Run tests sequentially due to shared file system resources
+    forceExit: true, // Force Jest to exit after tests complete
+    detectOpenHandles: true, // Detect handles that prevent Jest from exiting
+    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"], // Setup file for global cleanup
+    testRegex: ".*\\.test\\.ts$",
 };
 
 export default config;

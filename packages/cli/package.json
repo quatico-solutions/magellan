@@ -1,21 +1,19 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.14.2",
+    "version": "0.15.0",
     "author": "Quatico Solutions AG",
-    "license": "SEE LICENSE IN LICENSE",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/quatico-solutions/magellan"
     },
+    "bin": {
+        "magellan": "bin/magellan.js"
+    },
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
-    "bin": {
-        "magellan": "./bin/magellan.js"
-    },
     "files": [
-        "LICENSE",
-        "README.md",
         "lib",
         "bin"
     ],
@@ -24,10 +22,10 @@
         "lint": "eslint \"{src,test}/**/*.ts\" --color",
         "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc && pnpm bundle",
-        "bundle": "esbuild src/cli.ts --bundle  --outfile=bin/magellan.js --target=node18 --platform=node --minify --tree-shaking=true --external:typescript",
+        "bundle": "webpack",
         "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
-        "dev:compile": "ts-node src/index.ts compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
-        "dev:serve": "ts-node src/index.ts serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
+        "dev:compile": "tsc && node lib/index.js compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
+        "dev:serve": "tsc && node lib/index.js serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
         "test": "jest --color --coverage",
         "test:update-snapshots": "pnpm test -u",
         "watch": "tsc --watch",
@@ -38,13 +36,13 @@
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
         "@quatico/magellan-shared": "workspace:*",
-        "@quatico/websmith-api": "^0.6.3",
-        "@quatico/websmith-compiler": "^0.6.3",
-        "@quatico/websmith-core": "^0.6.3",
-        "commander": "^12.1.0",
+        "@quatico/websmith-api": "^0.7.6",
+        "@quatico/websmith-compiler": "^0.7.6",
+        "@quatico/websmith-core": "^0.7.6",
+        "commander": "^13.1.0",
         "minimist": "1.2.8",
-        "ts-node": "10.9.x",
-        "typescript": "5.0.x"
+        "tslib": "^2.8.1",
+        "typescript": "5.1.6"
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.6",
@@ -56,7 +54,6 @@
         "@typescript-eslint/parser": "^8.22.0",
         "@typescript-eslint/utils": "^8.22.0",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.24.0",
         "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-import-resolver-alias": "^1.1.2",
@@ -69,9 +66,14 @@
         "jest": "^29.3.1",
         "prettier": "^3.5.3",
         "rimraf": "^5.0.0",
+        "terser-webpack-plugin": "^5.3.10",
         "ts-jest": "^29.0.3",
+        "ts-loader": "^9.5.1",
         "typescript": "5.1.6",
-        "typescript-eslint": "^8.22.0"
+        "typescript-eslint": "^8.22.0",
+        "webpack": "^5.94.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-node-externals": "^3.0.0"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"

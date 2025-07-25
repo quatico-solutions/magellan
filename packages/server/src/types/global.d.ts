@@ -1,7 +1,6 @@
 /* eslint-disable no-var */
 import type { Configuration } from "../configuration";
-import type { DependencyContext } from "../services";
-import type { FunctionService } from "../services";
+import type { DependencyContext , FunctionService } from "../services";
 
 export {};
 

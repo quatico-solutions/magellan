@@ -4,15 +4,7 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import type { Config } from "jest";
-import { config as baseConfig } from "../../jest-base.config";
 
-const config: Config = {
-    ...baseConfig,
-    roots: ["<rootDir>/src/", "<rootDir>/../../test/"],
-    testEnvironment: "node",
-    testRegex: "src/.*spec\\.ts$",
-    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-};
+import { fs } from "memfs";
 
-export default config;
+module.exports = fs;

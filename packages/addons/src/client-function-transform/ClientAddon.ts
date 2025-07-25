@@ -5,7 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { type AddonContext } from "@quatico/websmith-api";
-import { createBaseTransformer } from "../magellan-shared/Addon";
+import { createBaseTransformer } from "../magellan-shared/base-transformer";
 import { type MagellanConfig } from "../magellan-shared/magellan-config";
 import { createClientTransformer } from "./transformer-client";
 

@@ -12,6 +12,8 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.15.0] - 2025-07-25
+
 ## [0.14.2] - 2025-04-08
 
 ## Changed

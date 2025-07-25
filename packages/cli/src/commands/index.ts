@@ -6,11 +6,12 @@
  */
 import { addCompileCommand } from "../compiler";
 import { addServeCommand } from "../server";
+import { Command } from "commander";
 
 export const executeCompileCommand = (argv: string[]) => {
-    addCompileCommand().parse(argv, { from: "user" });
+    addCompileCommand(new Command()).parse(argv, { from: "user" });
 };
 
 export const executeServeCommand = (argv: string[]) => {
-    addServeCommand().parse(argv, { from: "user" });
+    addServeCommand(new Command()).parse(argv, { from: "user" });
 };

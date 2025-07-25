@@ -38,13 +38,12 @@ export default (env, options) => {
                           test: /\.[jt]sx?$/,
                           include: [join(__dirname, "src/services"), join(__dirname, "node_modules", "@quatico", "magellan-client")],
                           exclude: [/\.spec\.tsx?$/, /node_modules/],
-                          loader: "@quatico/websmith-webpack",
+                          loader: "websmith-loader",
                           options: {
                               debug: !isProduction,
-                              sourceMap: !isProduction,
-                              project: join(__dirname, "tsconfig.json"),
-                              config: join(__dirname, "websmith.config.json"),
-                              targets: "client,server",
+                              tsConfigFile: join(__dirname, "tsconfig.json"),
+                              configFile: join(__dirname, "websmith.config.json"),
+                              profile: "client",
                           },
                       }
                     : {},

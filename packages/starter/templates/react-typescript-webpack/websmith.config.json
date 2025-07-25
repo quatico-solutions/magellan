@@ -1,20 +1,14 @@
 {
     "addonsDir": "./node_modules/@quatico/magellan-addons/lib",
-    "targets": {
+    "profiles": {
         "client": {
-            "writeFile": false,
-            "addons": [
-                "client-function-transform"
-            ]
+            "addons": ["client-function-transform"]
         },
         "server": {
-            "writeFile": true,
-            "addons": [
-                "service-function-generate"
-            ],
-            "options": {
+            "addons": ["service-function-generate"],
+            "tsConfig": {
                 "outDir": "./lib/server",
-                "module": 1
+                "module": "ESNext"
             }
         }
     }

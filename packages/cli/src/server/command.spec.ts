@@ -85,6 +85,8 @@ describe("addServeCommand", () => {
 
 const setupFolders = (...paths: string[]) => {
     paths.forEach(path => {
-        fs.mkdirSync(path);
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path, { recursive: true });
+        }
     });
 };

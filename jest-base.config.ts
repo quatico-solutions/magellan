@@ -12,6 +12,7 @@ export const config: Config = {
     coveragePathIgnorePatterns: ["index.ts", "test/*"],
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     moduleNameMapper: {
+        "@quatico/magellan-cli": "<rootDir>/../cli/src",
         "@quatico/magellan-shared": "<rootDir>/../shared/src",
         "@quatico/magellan-client": "<rootDir>/../client/src",
         "@quatico/magellan-server": "<rootDir>/../server/src",

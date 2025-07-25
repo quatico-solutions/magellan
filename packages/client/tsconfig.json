@@ -1,8 +1,10 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "./lib"
+        "lib": ["ES2020", "DOM"],
+        "outDir": "./lib",
+        "noEmit": false
     },
-    "exclude": ["node_modules", "**/*.js", "src/**/*.spec.ts", "src/**/*.spec.tsx"],
+    "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.test.ts"],
     "include": ["src"]
 }

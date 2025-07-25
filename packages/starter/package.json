@@ -1,10 +1,10 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.14.2",
+    "version": "0.15.0",
     "author": "Quatico Solutions AG",
     "type": "module",
-    "license": "SEE LICENSE IN LICENSE",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/quatico-solutions/magellan"
@@ -12,8 +12,6 @@
     "main": "bin/create-magellan.cjs",
     "bin": "bin/create-magellan.cjs",
     "files": [
-        "LICENSE",
-        "README.md",
         "bin"
     ],
     "scripts": {

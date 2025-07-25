@@ -1,9 +1,9 @@
 {
     "name": "@quatico/magellan-shared",
     "description": "Shared functionality for server/client communication",
-    "version": "0.14.2",
+    "version": "0.15.0",
     "author": "Quatico Solutions AG",
-    "license": "SEE LICENSE IN LICENSE",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/quatico-solutions/magellan"
@@ -11,10 +11,7 @@
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
-        "LICENSE",
-        "README.md",
-        "lib",
-        "@types"
+        "lib"
     ],
     "scripts": {
         "clean": "rimraf lib coverage",
