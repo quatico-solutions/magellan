@@ -1,7 +1,7 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.15.0",
+    "version": "0.16.0",
     "author": "Quatico Solutions AG",
     "type": "module",
     "license": "MIT",

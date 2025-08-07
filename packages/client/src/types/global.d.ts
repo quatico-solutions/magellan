@@ -1,4 +1,4 @@
-/* eslint-disable no-var */
+ 
 import type { Configuration } from "../transport";
 
 export {};

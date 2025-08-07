@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.15.0",
+    "version": "0.16.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -26,8 +26,9 @@
         "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
         "dev:compile": "tsc && node lib/index.js compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
         "dev:serve": "tsc && node lib/index.js serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
-        "test": "jest --color --coverage",
+        "test": "jest --testRegex=\".*\\.spec\\.ts$\" --coverage",
         "test:update-snapshots": "pnpm test -u",
+        "test:e2e": "jest --testRegex=\".*\\.test\\.ts$\" --coverage",
         "watch": "tsc --watch",
         "watch:test": "jest --color --watch",
         "publish-npm": "pnpm publish --access public --no-git-checks --publish-branch develop"
@@ -36,13 +37,13 @@
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
         "@quatico/magellan-shared": "workspace:*",
-        "@quatico/websmith-api": "^0.7.6",
-        "@quatico/websmith-compiler": "^0.7.6",
-        "@quatico/websmith-core": "^0.7.6",
+        "@quatico/websmith-api": "0.7.9",
+        "@quatico/websmith-compiler": "0.7.9",
+        "@quatico/websmith-core": "0.7.9",
         "commander": "^13.1.0",
         "minimist": "1.2.8",
         "tslib": "^2.8.1",
-        "typescript": "5.1.6"
+        "typescript": "5.7.3"
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.6",
@@ -69,7 +70,7 @@
         "terser-webpack-plugin": "^5.3.10",
         "ts-jest": "^29.0.3",
         "ts-loader": "^9.5.1",
-        "typescript": "5.1.6",
+        "typescript": "5.7.3",
         "typescript-eslint": "^8.22.0",
         "webpack": "^5.94.0",
         "webpack-cli": "^5.1.4",

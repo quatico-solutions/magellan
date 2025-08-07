@@ -1,0 +1,5 @@
+{
+    "ignore_vcs": [".git", ".hg", ".svn"],
+    "ignore_dirs": ["node_modules", "dist", "build", ".next", "coverage", ".nyc_output", "logs", ".vscode", ".idea", ".build"],
+    "ignore_patterns": ["*.log", "*.tmp", ".DS_Store", "test-output*"]
+}
