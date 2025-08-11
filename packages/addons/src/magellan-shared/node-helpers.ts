@@ -6,6 +6,8 @@
  */
 import ts, { SyntaxKind } from "typescript";
 import { DEFAULT_NAMESPACE } from "./constants";
+import { type AddonContext, ErrorMessage } from "@quatico/websmith-api";
+import { type MagellanConfig } from "./magellan-config";
 
 /**
  * Configuration data for the @service decorator
@@ -71,7 +73,12 @@ const getDecoratorCommentLines = (sf: ts.SourceFile, node: ts.Node): string[] =>
  * @param decoratorText The decorator name to search for
  * @returns ServiceDecoratorData if found, undefined otherwise
  */
-export const getDecoration = (sf: ts.SourceFile, node: ts.Node, decoratorText: string): ServiceDecoratorData | undefined => {
+export const getDecoration = (
+    sf: ts.SourceFile,
+    node: ts.Node,
+    decoratorText: string,
+    context: AddonContext<MagellanConfig>
+): ServiceDecoratorData | undefined => {
     const commentLines = getDecoratorCommentLines(sf, node);
     if (commentLines.length === 0) {
         return undefined;
@@ -87,14 +94,13 @@ export const getDecoration = (sf: ts.SourceFile, node: ts.Node, decoratorText: s
         // Extract any JSON configuration from the decorator
         const matches = decoratorLine.match(/\/\/.*@service\(({.*})?\)/);
         if (!matches || matches.length === 1 || matches[1] === undefined) {
-            return fillDefaultMetaInformation();
+            return fillDefaultMetaInformation(context);
         }
-        return fillDefaultMetaInformation(JSON.parse(matches[1]));
+        return fillDefaultMetaInformation(context, JSON.parse(matches[1]));
     } catch (err) {
         const error: Error = err as Error;
         if (error) {
-            // eslint-disable-next-line no-console
-            console.error(error.toString());
+            context.getReporter().reportDiagnostic(new ErrorMessage(error.toString()));
         }
     }
 
@@ -104,11 +110,15 @@ export const getDecoration = (sf: ts.SourceFile, node: ts.Node, decoratorText: s
 /**
  * Fills in default values for service decorator data
  */
-const fillDefaultMetaInformation = (decoratorData?: ServiceDecoratorData): ServiceDecoratorData | undefined => {
+const fillDefaultMetaInformation = (
+    context: AddonContext<MagellanConfig>,
+    decoratorData?: ServiceDecoratorData
+): ServiceDecoratorData | undefined => {
     // Validate kind value
     if (decoratorData?.kind && !["local", "external"].includes(decoratorData.kind)) {
-        // eslint-disable-next-line no-console
-        console.error(`Invalid service kind "${decoratorData?.kind}" provided. Must be empty, "local" or "external"`);
+        context
+            .getReporter()
+            .reportDiagnostic(new ErrorMessage(`Invalid service kind "${decoratorData?.kind}" provided. Must be empty, "local" or "external"`));
         return undefined;
     }
 

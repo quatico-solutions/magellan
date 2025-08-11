@@ -9,7 +9,10 @@ import { config as baseConfig } from "../../jest-base.config";
 
 const config: Config = {
     ...baseConfig,
-    testRegex: "src/.*spec\\.ts$",
+    rootDir: __dirname,
+    testRegex: "(src|tests)/.*\\.(test|spec)\\.ts$",
+    testPathIgnorePatterns: ["/node_modules/", "/dist/", "/test-output.*/"],
+    watchPathIgnorePatterns: ["/node_modules/", "/dist/", "/test-output.*/"],
 };
 
 export default config;

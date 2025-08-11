@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.16.0",
+    "version": "0.16.1",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -29,7 +29,7 @@
     "peerDependencies": {
         "@quatico/magellan-shared": "workspace:*",
         "cors": "2.x",
-        "express": "4.x",
+        "express": "5.x",
         "http-errors": "1.x",
         "multer": "1.x",
         "tslib": "2.x"
@@ -39,7 +39,7 @@
         "@eslint/js": "^9.19.0",
         "@quatico/magellan-shared": "workspace:*",
         "@types/cors": "2.8.13",
-        "@types/express": "4.17.x",
+        "@types/express": "5.0.1",
         "@types/http-errors": "^2.0.1",
         "@types/jest": "^29.5.1",
         "@types/multer": "1.4.7",
@@ -59,7 +59,7 @@
         "eslint-plugin-prettier": "^5.2.3",
         "eslint-plugin-testing-library": "^7.1.1",
         "eslint-plugin-unicorn": "^56.0.1",
-        "express": "4.21.x",
+        "express": "5.1.0",
         "http-errors": "1.6.x",
         "jest": "^29.5.0",
         "memfs": "3.5.x",

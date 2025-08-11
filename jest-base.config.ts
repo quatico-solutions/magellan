@@ -25,4 +25,23 @@ export const config: Config = {
     },
     resetMocks: true,
     clearMocks: true,
+    // Watchman configuration to prevent conflicts
+    watchman: true,
+    watchPathIgnorePatterns: [
+        "<rootDir>/node_modules/",
+        "<rootDir>/lib/",
+        "<rootDir>/bin/",
+        "<rootDir>/dist/",
+        "<rootDir>/build/",
+        "<rootDir>/coverage/",
+        "<rootDir>/.gradle/",
+        "<rootDir>/target/",
+        "\\.watchman-.*",
+        "test-output.*",
+    ],
+    // Optimize haste map for better performance
+    haste: {
+        enableSymlinks: false,
+        forceNodeFilesystemAPI: false,
+    },
 };

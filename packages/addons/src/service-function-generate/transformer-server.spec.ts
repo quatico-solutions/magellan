@@ -5,6 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import ts from "typescript";
+import { type AddonContext } from "@quatico/websmith-api";
 import {
     DESTRUCTURED_OBJECT_ERROR,
     FUNCTION_PARAMETER_ERROR,
@@ -13,6 +14,7 @@ import {
     SIGNATURE_ERROR_LENGTH,
     SIGNATURE_ERROR_SERIALIZATION,
 } from "../magellan-shared/constants";
+import { type MagellanConfig } from "../magellan-shared/magellan-config";
 import { createServerTransformer } from "./transformer-server";
 
 // helper to create source files with standard params
@@ -20,7 +22,22 @@ const printer = ts.createPrinter();
 
 // Updated createSource to allow easier signature changes
 const createSource = (fn: string) => ts.createSourceFile("test.ts", fn, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-const applyServerTransformer = (sourceFile: ts.SourceFile) => printer.printFile(ts.transform(sourceFile, [createServerTransformer()]).transformed[0]);
+
+// Mock context for testing
+const mockContext: AddonContext<MagellanConfig> = {
+    getReporter: () => ({
+        reportDiagnostic: jest.fn(),
+        reportWatchStatus: jest.fn(),
+        indent: jest.fn(),
+        unindent: jest.fn(),
+    }),
+    getConfiguration: () => ({
+        namespace: "default",
+    }),
+} as any;
+
+const applyServerTransformer = (sourceFile: ts.SourceFile) =>
+    printer.printFile(ts.transform(sourceFile, [createServerTransformer(mockContext)]).transformed[0]);
 
 describe("createServerTransformer", () => {
     it("should transform arrow with correct signature (never input)", () => {

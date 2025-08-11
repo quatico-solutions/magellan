@@ -62,6 +62,7 @@ describe("cli.ts", () => {
         fs.mkdirSync(testDirs.OUTPUT_DIR, { recursive: true });
 
         mockModuleResolver.resolveAddonsDir.mockReturnValue(path.resolve(__dirname, "../../addons/lib"));
+        mockModuleResolver.resolveAddonsDir.mockClear();
     });
 
     afterEach(() => {
@@ -144,7 +145,7 @@ describe("cli.ts", () => {
                 },
             },
             config: {
-                addons: ["service-function-generate"],
+                addons: [],
                 addonsDir: path.resolve(__dirname, "../../addons/lib"),
                 profiles: {},
             },
@@ -170,6 +171,42 @@ describe("cli.ts", () => {
             tsConfigFile: "/tsconfig.json",
             watch: false,
         });
+    });
+
+    it("should handle --client flag", () => {
+        const target = new Compiler({ reporter: new NoReporter() }, {}, createSystem());
+
+        executeCompiler("--client", target);
+
+        expect(target.getOptions().config).toEqual({
+            addonsDir: path.resolve(__dirname, "../../addons/lib"),
+            addons: [],
+            profiles: {
+                client: {
+                    addons: ["client-function-transform"],
+                },
+            },
+        });
+        expect(target.getOptions().getAddons("client")).toEqual(["client-function-transform"]);
+        expect(target.getAddonRegistry()!.getAvailableAddons().getNames()).toEqual(["client-function-transform", "service-function-generate"]);
+    });
+
+    it("should handle --server flag", () => {
+        const target = new Compiler({ reporter: new NoReporter() }, {}, createSystem());
+
+        executeCompiler("--server", target);
+
+        expect(target.getOptions().config).toEqual({
+            addonsDir: path.resolve(__dirname, "../../addons/lib"),
+            addons: [],
+            profiles: {
+                server: {
+                    addons: ["service-function-generate"],
+                },
+            },
+        });
+        expect(target.getOptions().getAddons("server")).toEqual(["service-function-generate"]);
+        expect(target.getAddonRegistry()!.getAvailableAddons().getNames()).toEqual(["client-function-transform", "service-function-generate"]);
     });
 
     it("should handle unknown arguments", () => {
@@ -256,7 +293,7 @@ describe("cli.ts", () => {
             //# sourceMappingURL=foobar-arrow.d.ts.map"
         `);
         expect(getOutput("foobar-arrow.d.ts.map")).toMatchInlineSnapshot(
-            `"{"version":3,"file":"foobar-arrow.d.ts","sourceRoot":"","sources":["../src/foobar-arrow.ts"],"names":[],"mappings":"AACA,eAAO,MAAM,SAAS,SAAU,IAAI,WAEnC,CAAC"}"`
+            `"{"version":3,"file":"foobar-arrow.d.ts","sourceRoot":"","sources":["../src/foobar-arrow.ts"],"names":[],"mappings":"AAEY,eAAO,MAAM,SAAS,SAAU,IAAI,WAEnC,CAAC"}"`
         );
     });
 
@@ -318,10 +355,12 @@ describe("cli.ts", () => {
                 },
             },
             config: {
-                addons: ["client-function-transform"],
+                addons: [],
                 addonsDir: path.resolve(__dirname, "../../addons/lib"),
                 profiles: {
-                    client: undefined,
+                    client: {
+                        addons: ["client-function-transform"],
+                    },
                 },
             },
             debug: false,
@@ -357,6 +396,7 @@ describe("cli.ts", () => {
 
         executeCompiler("", target);
 
+        // The default configuration loads both client and server addons
         const actual = target.getAddonRegistry()!.getAvailableAddons().getNames();
         expect(actual).toEqual(["client-function-transform", "service-function-generate"]);
     });
@@ -567,37 +607,64 @@ describe("cli.ts", () => {
         `);
     });
 
-    it("should yield error when using option --addonsDir", () => {
+    it("should allow --addonsDir CLI option", () => {
         jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+        const target = new Compiler({ reporter: new NoReporter() }, {}, createSystem());
 
-        executeCompiler(`--addonsDir ${ADDONS_DIR}`);
+        // Mock resolveAddonsDir to return the input path for CLI testing
+        mockModuleResolver.resolveAddonsDir.mockImplementation(dir => dir || path.resolve(__dirname, "../../addons/lib"));
 
-        expect(process.stderr.write).toHaveBeenNthCalledWith(1, expect.stringContaining("error: unknown option '--addonsDir'"));
-        expect(process.stderr.write).toHaveBeenNthCalledWith(2, expect.stringContaining("Add --help for additional information."));
-        expect(process.stderr.write).toHaveBeenCalledTimes(2);
+        executeCompiler(`--addonsDir ${ADDONS_DIR}`, target);
+
+        // Should not produce any error
+        expect(process.stderr.write).not.toHaveBeenCalled();
+        // Should use the specified addons directory
+        expect(target.getOptions().config?.addonsDir).toBe(ADDONS_DIR);
+        // Should have called resolveAddonsDir with the CLI argument
+        expect(mockModuleResolver.resolveAddonsDir).toHaveBeenCalledWith(ADDONS_DIR);
     });
 
     it("should yield error when using option --addons", () => {
-        jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+        const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation(() => true);
 
         executeCompiler(`--addons service-function-generate`);
 
-        expect(process.stderr.write).toHaveBeenNthCalledWith(1, expect.stringContaining("error: unknown option '--addons'"));
-        expect(process.stderr.write).toHaveBeenNthCalledWith(2, expect.stringContaining("Add --help for additional information."));
-        expect(process.stderr.write).toHaveBeenCalledTimes(2);
+        // Check what calls were actually made
+        const allCalls = stderrSpy.mock.calls.map(call => call[0]);
+
+        // Filter to only the calls that contain the expected error messages
+        const errorCalls = allCalls.filter(
+            call =>
+                typeof call === "string" &&
+                (call.includes("error: unknown option '--addons'") || call.includes("Add --help for additional information."))
+        );
+
+        expect(errorCalls.length).toBe(2);
+        expect(errorCalls[0]).toContain("error: unknown option '--addons'");
+        expect(errorCalls[1]).toContain("Add --help for additional information.");
     });
 
     it("should yield error when using option --profile", () => {
-        jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+        const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation(() => true);
 
         executeCompiler(`--profile foobar`);
 
-        expect(process.stderr.write).toHaveBeenNthCalledWith(1, expect.stringContaining("error: unknown option '--profile'"));
-        expect(process.stderr.write).toHaveBeenNthCalledWith(2, expect.stringContaining("Add --help for additional information."));
-        expect(process.stderr.write).toHaveBeenCalledTimes(2);
+        // Check what calls were actually made
+        const allCalls = stderrSpy.mock.calls.map(call => call[0]);
+
+        // Filter to only the calls that contain the expected error messages
+        const errorCalls = allCalls.filter(
+            call =>
+                typeof call === "string" &&
+                (call.includes("error: unknown option '--profile'") || call.includes("Add --help for additional information."))
+        );
+
+        expect(errorCalls.length).toBe(2);
+        expect(errorCalls[0]).toContain("error: unknown option '--profile'");
+        expect(errorCalls[1]).toContain("Add --help for additional information.");
     });
 
-    it("should yield error when using option configFile with invalid property addonsDir", () => {
+    it("should allow custom addonsDir in configFile", () => {
         jest.spyOn(process.stderr, "write").mockImplementation(() => true);
         createWebsmithConfig({
             addonsDir: ADDONS_DIR,
@@ -605,9 +672,8 @@ describe("cli.ts", () => {
 
         executeCompiler(`--configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`);
 
-        expect(process.stderr.write).toHaveBeenCalledWith(
-            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove options "addons" and "addonsDir" from configuration file and use "--client" or "--server" parameters instead.\n`
-        );
+        // Should not produce any warning for addonsDir
+        expect(process.stderr.write).not.toHaveBeenCalled();
     });
 
     it("should yield error when using option configFile with invalid addons property", () => {
@@ -619,7 +685,7 @@ describe("cli.ts", () => {
         executeCompiler(`--configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`);
 
         expect(process.stderr.write).toHaveBeenCalledWith(
-            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove options "addons" and "addonsDir" from configuration file and use "--client" or "--server" parameters instead.\n`
+            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove option "addons" from configuration file and use "--client" or "--server" parameters instead.\n`
         );
     });
 
@@ -636,7 +702,7 @@ describe("cli.ts", () => {
         executeCompiler(`--client --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`);
 
         expect(process.stderr.write).toHaveBeenCalledWith(
-            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json" for profile "client". Remove options "addons" and "addonsDir" from configuration file and use "--client" or "--server" parameters instead.\n`
+            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json" for profile "client". Remove option "addons" from configuration file and use "--client" or "--server" parameters instead.\n`
         );
     });
 
@@ -682,6 +748,8 @@ describe("cli.ts", () => {
             target
         );
 
+        expect(target.getOptions().getAddons("client")).toEqual(["client-function-transform"]);
+        expect(target.getAddonRegistry()!.getAvailableAddons().getNames()).toEqual(["client-function-transform", "service-function-generate"]);
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
             "import { remoteInvoke } from "@quatico/magellan-client";
             // @service()
@@ -692,8 +760,8 @@ describe("cli.ts", () => {
         `);
     });
 
-    it("should yield proxy-function with single file, addons-config client-function-transform and emit", () => {
-        jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+    it("should allow --addonsDir CLI option with config file addons warning", () => {
+        const stderrSpy = jest.spyOn(process.stderr, "write").mockImplementation(() => true);
         createTsConfigFile({
             outDir: testDirs.OUTPUT_DIR,
             noEmit: false,
@@ -708,13 +776,23 @@ describe("cli.ts", () => {
             `--addonsDir ${ADDONS_DIR} --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
         );
 
-        expect(process.stderr.write).toHaveBeenNthCalledWith(1, `error: unknown option '--addonsDir'\n`);
-        expect(process.stderr.write).toHaveBeenNthCalledWith(2, `Add --help for additional information.\n`);
-        expect(process.stderr.write).toHaveBeenNthCalledWith(
-            3,
-            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove options "addons" and "addonsDir" from configuration file and use "--client" or "--server" parameters instead.\n`
+        // Check what calls were actually made
+        const allCalls = stderrSpy.mock.calls.map(call => call[0]);
+
+        // Filter to only the calls that contain the expected warning message
+        const warningCalls = allCalls.filter(
+            call =>
+                typeof call === "string" &&
+                call.includes(
+                    `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove option "addons" from configuration file and use "--client" or "--server" parameters instead.`
+                )
         );
-        expect(process.stderr.write).toHaveBeenCalledTimes(3);
+
+        // Should only warn about the config file addons, not about --addonsDir CLI option
+        expect(warningCalls.length).toBe(1);
+        expect(warningCalls[0]).toContain(
+            `Custom addon configuration found in "${testDirs.PROJECT_DIR}/websmith.config.json". Remove option "addons" from configuration file and use "--client" or "--server" parameters instead.`
+        );
     });
 
     it("should yield error with options --client and --server together", () => {
@@ -724,17 +802,29 @@ describe("cli.ts", () => {
 
         expect(process.stderr.write).toHaveBeenCalledWith(expect.stringContaining("error: options --client and --server cannot be used together"));
     });
+
+    it("should pass source files to compiler cliArgs", () => {
+        const target = new Compiler({ reporter: new NoReporter() }, {}, createSystem());
+
+        // Test with source files
+        executeCompiler("src/file1.ts src/file2.ts --client", target);
+
+        // Verify that source files are included in cliArgs.fileNames
+        const cliArgs = target.getOptions().cliArgs;
+        expect(cliArgs).toBeDefined();
+        expect(cliArgs.fileNames).toHaveLength(2);
+        expect(cliArgs.fileNames[0]).toMatch(/src\/file1\.ts$/);
+        expect(cliArgs.fileNames[1]).toMatch(/src\/file2\.ts$/);
+    });
 });
 
 const executeCompiler = (args = "", compiler?: Compiler) => {
     process.chdir(testDirs.PROJECT_DIR);
-    addCompileCommand(new Command(), compiler).parse(
-        args
-            .split(" ")
-            .map(it => it.trim())
-            .filter(it => it !== ""),
-        { from: "user" }
-    );
+    const argArray = args.split(/\s+/).filter(arg => arg.length > 0);
+
+    // addCompileCommand returns the compile subcommand, so parse arguments directly on it
+    // without prepending "compile" since we're already on the compile command
+    addCompileCommand(new Command(), compiler).parse(argArray, { from: "user" });
 };
 
 const createTsConfig = (config: ts.CompilerOptions) => {

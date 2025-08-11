@@ -1,5 +1,23 @@
 {
     "ignore_vcs": [".git", ".hg", ".svn"],
-    "ignore_dirs": ["node_modules", "dist", "build", ".next", "coverage", ".nyc_output", "logs", ".vscode", ".idea", ".build"],
-    "ignore_patterns": ["*.log", "*.tmp", ".DS_Store", "test-output*"]
+    "ignore_dirs": [
+        "node_modules",
+        "dist",
+        "build",
+        ".next",
+        "coverage",
+        ".nyc_output",
+        "logs",
+        ".vscode",
+        ".idea",
+        ".build",
+        "lib",
+        "bin",
+        ".gradle",
+        "target",
+        ".maven"
+    ],
+    "ignore_patterns": ["*.log", "*.tmp", ".DS_Store", "test-output*", "*.class", "*.jar", "*.war", ".watchman-*", "pnpm-lock.yaml"],
+    "settle": 20,
+    "fsevents_latency": 0.01
 }

@@ -5,17 +5,21 @@
  * ---------------------------------------------------------------------------------------------
  */
 import ts from "typescript";
-import { CONTEXT_TYPE_NAME, DECORATOR_NAME, SERIALIZATION_TYPE_NAME } from "../magellan-shared/constants";
+import { type AddonContext } from "@quatico/websmith-api";
+import { DECORATOR_NAME } from "../magellan-shared/constants";
+import { CONTEXT_TYPE_NAME, SERIALIZATION_TYPE_NAME } from "../magellan-shared/parameters/constants";
 import { getDecoration, isNodeExported, isTransformable } from "../magellan-shared/node-helpers";
-import { createObjectParameter } from "../magellan-shared/transform-utils";
+import { type MagellanConfig } from "../magellan-shared/magellan-config";
 import { checkForCustomTypeDeclaration, validateServiceFunctionImports, validateServiceFunctionSignature } from "../magellan-shared/validation";
+import { transformFunctionDeclaration } from "./transform-function-declaration";
+import { transformArrowFunction } from "./transform-arrow-function";
 
 /**
  * Creates a TypeScript transformer that processes functions decorated with @service()
  * The transformer adds Context parameter to service functions if needed
  * and adds necessary imports
  */
-export const createServerTransformer = () => {
+export const createServerTransformer = (context: AddonContext<MagellanConfig>) => {
     return (ctx: ts.TransformationContext): ts.Transformer<ts.SourceFile> => {
         return (sf: ts.SourceFile) => {
             // Check for any Context or Serialization type declarations and throw error
@@ -32,7 +36,7 @@ export const createServerTransformer = () => {
                     return node;
                 }
 
-                const serviceDecoration = getDecoration(sf, node, DECORATOR_NAME);
+                const serviceDecoration = getDecoration(sf, node, DECORATOR_NAME, context);
                 if (!serviceDecoration) {
                     return node;
                 }
@@ -59,59 +63,3 @@ export const createServerTransformer = () => {
         };
     };
 };
-
-/**
- * Transforms an arrow function to ensure it has the Context parameter
- */
-function transformArrowFunction(node: ts.VariableStatement, ctx: ts.TransformationContext): ts.Node {
-    const declaration = node.declarationList.declarations[0];
-    if (!declaration.initializer || !ts.isArrowFunction(declaration.initializer)) {
-        return node;
-    }
-
-    const arrowFunc = declaration.initializer;
-    const [inputParam, contextParam, serializationParam] = arrowFunc.parameters;
-    const updatedParams: ts.ParameterDeclaration[] = [createObjectParameter(ctx.factory, inputParam), contextParam, serializationParam];
-
-    const updatedArrow = ctx.factory.updateArrowFunction(
-        arrowFunc,
-        arrowFunc.modifiers,
-        arrowFunc.typeParameters,
-        updatedParams,
-        arrowFunc.type,
-        arrowFunc.equalsGreaterThanToken,
-        arrowFunc.body
-    );
-
-    return ctx.factory.updateVariableStatement(
-        node,
-        node.modifiers,
-        ctx.factory.updateVariableDeclarationList(node.declarationList, [
-            ctx.factory.updateVariableDeclaration(declaration, declaration.name, declaration.exclamationToken, declaration.type, updatedArrow),
-            ...node.declarationList.declarations.slice(1),
-        ])
-    );
-}
-
-/**
- * Transforms a function declaration to ensure it has the Context parameter
- */
-function transformFunctionDeclaration(node: ts.FunctionDeclaration, ctx: ts.TransformationContext): ts.Node {
-    if (!node.body) {
-        return node;
-    }
-
-    const [inputParam, contextParam, serializationParam] = node.parameters;
-    const updatedParams: ts.ParameterDeclaration[] = [createObjectParameter(ctx.factory, inputParam), contextParam, serializationParam];
-
-    return ctx.factory.updateFunctionDeclaration(
-        node,
-        node.modifiers,
-        node.asteriskToken,
-        node.name,
-        node.typeParameters,
-        updatedParams,
-        node.type,
-        node.body
-    );
-}

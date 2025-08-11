@@ -15,7 +15,7 @@ export const createFunctionRoute = (sdk = new Sdk()): Router => {
     const router = Router();
     router.post(
         "/",
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         
         async (
             req: ExpressRequest<{ name: string }, ResponsePayload<unknown> /* ResBody */, RequestPayload /* ReqBody */>,
             res: Response<ResponsePayload<unknown>>

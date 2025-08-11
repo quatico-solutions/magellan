@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.16.0",
+    "version": "0.16.1",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -37,9 +37,9 @@
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
         "@quatico/magellan-shared": "workspace:*",
-        "@quatico/websmith-api": "0.7.9",
-        "@quatico/websmith-compiler": "0.7.9",
-        "@quatico/websmith-core": "0.7.9",
+        "@quatico/websmith-api": "0.7.12",
+        "@quatico/websmith-compiler": "0.7.12",
+        "@quatico/websmith-core": "0.7.12",
         "commander": "^13.1.0",
         "minimist": "1.2.8",
         "tslib": "^2.8.1",

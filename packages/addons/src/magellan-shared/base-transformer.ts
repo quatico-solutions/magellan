@@ -12,30 +12,29 @@ import { type MagellanConfig } from "./magellan-config";
 export const createBaseTransformer = (
     fileName: string,
     content: string,
-    ctx: AddonContext<MagellanConfig>,
+    context: AddonContext<MagellanConfig>,
     addonName: string,
-    addonFn: () => (ctx: ts.TransformationContext) => ts.Transformer<ts.SourceFile>
+    addonFn: (context: AddonContext<MagellanConfig>) => (ctx: ts.TransformationContext) => ts.Transformer<ts.SourceFile>
 ): string | never => {
-    if (!isTsAddonApplicable(fileName, ctx.getCliArgs())) {
+    if (!isTsAddonApplicable(fileName, context.getCliArgs())) {
         return content;
     }
     if (fileName.endsWith(".d.ts")) {
         return content;
     }
-    if (!ctx.getSystem().fileExists(fileName)) {
+    if (!context.getSystem().fileExists(fileName)) {
         throw new Error(`${addonName} (${fileName}) could not find source file`);
     }
 
-    const sf = ts.createSourceFile(fileName, content, ctx.getCliArgs().options.target ?? ts.ScriptTarget.Latest, true);
-    const compilationOptions = ctx.getProfileConfig();
+    const sf = ts.createSourceFile(fileName, content, context.getCliArgs().options.target ?? ts.ScriptTarget.Latest, true);
+    const compilationOptions = context.getProfileConfig();
     if (!compilationOptions) {
         throw new Error(`${addonName} profileConfig is missing`);
     }
 
-    const transformResults = ts.transform(sf, [addonFn()], ctx.getCliArgs().options);
+    const transformResults = ts.transform(sf, [addonFn(context)], context.getCliArgs().options);
     if (transformResults.diagnostics) {
-        // eslint-disable-next-line no-console, @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-        transformResults.diagnostics.forEach(it => console.error(`[${it.category}] - ${it.messageText}`));
+        transformResults.diagnostics.forEach(it => context.getReporter().reportDiagnostic(it));
     }
 
     const transformedSf = transformResults.transformed.find(it => it.fileName === sf.fileName);

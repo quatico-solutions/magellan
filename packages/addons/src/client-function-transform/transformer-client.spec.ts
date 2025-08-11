@@ -4,13 +4,18 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
+import { Compiler, NoReporter } from "@quatico/websmith-core";
 import ts from "typescript";
 import { createClientTransformer } from "./transformer-client";
+import { type MagellanConfig } from "../magellan-shared/magellan-config";
 
 // helper to create source files with standard params
 const printer = ts.createPrinter();
 const createSource = (fileContent: string) => ts.createSourceFile("test.ts", fileContent, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-const applyClientTransformer = (sourceFile: ts.SourceFile) => printer.printFile(ts.transform(sourceFile, [createClientTransformer()]).transformed[0]);
+// @ts-expect-error -- projected method
+const context = new Compiler({ reporter: new NoReporter() }).createProfileContextsIfNecessary().getContext() as ADdonsContext<MagellanConfig>;
+const applyClientTransformer = (sourceFile: ts.SourceFile) =>
+    printer.printFile(ts.transform(sourceFile, [createClientTransformer(context)]).transformed[0]);
 
 describe("createClientTransformer", () => {
     it("should set target in remoteInvoke w/ target set and correct signature", () => {
@@ -221,28 +226,29 @@ describe("createClientTransformer", () => {
         `);
         const actual = applyClientTransformer(source);
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            import { type Context } from "@quatico/magellan-shared";
-            import { type Serialization } from "@quatico/magellan-shared";
-            export type LoginParams = {
-                username: string;
-                password: string;
-            };
-            export type UserData = {
-                id: string;
-                username: string;
-                firstName: string;
-                lastName: string;
-                email: string;
-                phone: string;
-                filePath?: string;
-            };
-            // @service()
-            export const loginUser = async (params: LoginParams, context?: Context, serialization?: Serialization): Promise<UserData | void> => {
-                return remoteInvoke({ name: "loginUser", data: { params: params }, namespace: "default" }, context, serialization);
-            };
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+import { type Context } from "@quatico/magellan-shared";
+import { type Serialization } from "@quatico/magellan-shared";
+import fs from "fs";
+export type LoginParams = {
+    username: string;
+    password: string;
+};
+export type UserData = {
+    id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    filePath?: string;
+};
+// @service()
+export const loginUser = async (params: LoginParams, context?: Context, serialization?: Serialization): Promise<UserData | void> => {
+    return remoteInvoke({ name: "loginUser", data: { params: params }, namespace: "default" }, context, serialization);
+};
+"
+`);
     });
 
     it("should keep type/interface declarations but remove other code", () => {

@@ -95,7 +95,7 @@ describe("setupApp", () => {
 
         const actual = await request(target).get("/");
 
-        expect(actual.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(actual.header["content-type"]).toBe("text/html; charset=utf-8");
         expect(actual.statusCode).toBe(200);
         expect(actual.text).toEqual(expected);
     });

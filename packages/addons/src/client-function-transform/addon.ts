@@ -10,6 +10,6 @@ import { type MagellanConfig } from "../magellan-shared/magellan-config";
 import { createTransformer } from "./ClientAddon";
 
 export const activate = (ctx: AddonContext<MagellanConfig>) => {
-    validateRuntimeLibrary("@quatico/magellan-client");
+    validateRuntimeLibrary("@quatico/magellan-client", ctx);
     ctx.registerProcessor((name: string, content: string) => createTransformer(name, content, ctx));
 };

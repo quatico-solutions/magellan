@@ -1,16 +1,22 @@
 import ts from "typescript";
 import {
-    CONTEXT_TYPE_NAME,
     DESTRUCTURED_OBJECT_ERROR,
     FUNCTION_PARAMETER_ERROR,
     getTypeErrorMessage,
     MISSING_IMPORTS_ERROR,
-    SERIALIZATION_TYPE_NAME,
     SIGNATURE_ERROR_CONTEXT,
     SIGNATURE_ERROR_LENGTH,
     SIGNATURE_ERROR_SERIALIZATION,
 } from "./constants";
-import { hasImport, isContextParameter, isDestructuredParameter, isFunctionParameter, isSerializationParameter } from "./transform-utils";
+import { hasImport } from "./has-import";
+import {
+    isContextParameter,
+    isDestructuredParameter,
+    isFunctionParameter,
+    isSerializationParameter,
+    CONTEXT_TYPE_NAME,
+    SERIALIZATION_TYPE_NAME,
+} from "./parameters";
 
 /**
  * Validates the parameter signature of a service function.

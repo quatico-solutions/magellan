@@ -11,10 +11,19 @@ import fs from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 
-const PROJECT_DIR = path.resolve(__dirname, "..", "test-output");
-const OUTPUT_DIR = path.resolve(PROJECT_DIR, "dist");
-const SOURCE_DIR = path.join(PROJECT_DIR, "src");
+// Create unique test directories for each test to prevent cross-test contamination
+const getTestDirs = () => {
+    const testId = expect.getState().currentTestName?.replace(/[^a-zA-Z0-9]/g, "_") || "unknown";
+    const timestamp = Date.now();
+    const uniqueId = `${testId}_${timestamp}`;
+    const PROJECT_DIR = path.resolve(__dirname, "..", `test-output-${uniqueId}`);
+    const OUTPUT_DIR = path.resolve(PROJECT_DIR, "dist");
+    const SOURCE_DIR = path.join(PROJECT_DIR, "src");
+    return { PROJECT_DIR, OUTPUT_DIR, SOURCE_DIR };
+};
+
 const ADDONS_DIR = path.resolve(__dirname, "..", "..", "addons", "src");
+let testDirs: { PROJECT_DIR: string; OUTPUT_DIR: string; SOURCE_DIR: string };
 
 describe("cli.ts", () => {
     let originalCwd: string;
@@ -26,14 +35,23 @@ describe("cli.ts", () => {
     });
 
     beforeEach(() => {
+        // Generate unique test directories for this specific test
+        testDirs = getTestDirs();
+
         jest.spyOn(console, "time").mockImplementation(() => {}); // Don't log timing information to console
         originalCwd = process.cwd();
-        fs.rmSync(path.resolve(PROJECT_DIR), { recursive: true, force: true });
-        fs.mkdirSync(SOURCE_DIR, { recursive: true });
-        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+        // Clean up and create test directories (unique for this test)
+        try {
+            fs.rmSync(path.resolve(testDirs.PROJECT_DIR), { recursive: true, force: true });
+        } catch (_error) {
+            // Ignore errors if directory doesn't exist
+        }
+        fs.mkdirSync(testDirs.SOURCE_DIR, { recursive: true });
+        fs.mkdirSync(testDirs.OUTPUT_DIR, { recursive: true });
 
         // Create mock type declarations for @quatico/magellan-shared to prevent compilation errors
-        const sharedModuleDir = path.join(PROJECT_DIR, "node_modules", "@quatico", "magellan-shared");
+        const sharedModuleDir = path.join(testDirs.PROJECT_DIR, "node_modules", "@quatico", "magellan-shared");
+
         fs.mkdirSync(sharedModuleDir, { recursive: true });
         fs.writeFileSync(
             path.join(sharedModuleDir, "index.d.ts"),
@@ -59,7 +77,7 @@ describe("cli.ts", () => {
         );
 
         // Create mock type declarations for @quatico/magellan-client to prevent compilation errors
-        const clientModuleDir = path.join(PROJECT_DIR, "node_modules", "@quatico", "magellan-client");
+        const clientModuleDir = path.join(testDirs.PROJECT_DIR, "node_modules", "@quatico", "magellan-client");
         fs.mkdirSync(clientModuleDir, { recursive: true });
         fs.writeFileSync(
             path.join(clientModuleDir, "index.d.ts"),
@@ -88,7 +106,23 @@ describe("cli.ts", () => {
     afterEach(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         originalCwd && process.chdir(originalCwd);
-        fs.rmSync(path.resolve(PROJECT_DIR), { recursive: true, force: true });
+        // Restore working directory safely
+        try {
+            if (originalCwd && originalCwd !== process.cwd()) {
+                process.chdir(originalCwd);
+            }
+        } catch (error) {
+            console.warn(`Failed to restore working directory: ${error}`);
+        }
+
+        // Clean up test directories (unique for this test)
+        if (testDirs) {
+            try {
+                fs.rmSync(path.resolve(testDirs.PROJECT_DIR), { recursive: true, force: true });
+            } catch (_error) {
+                // Ignore cleanup errors
+            }
+        }
     });
 
     it("should create Command instance and call addCompileCommand", () => {
@@ -213,7 +247,12 @@ describe("cli.ts", () => {
     });
 
     it("should yield script file with single file and emit true", () => {
-        createTsConfigFile({ outDir: OUTPUT_DIR, noEmit: false, target: ts.ScriptTarget.ESNext, moduleResolution: ts.ModuleResolutionKind.Node10 });
+        createTsConfigFile({
+            outDir: testDirs.OUTPUT_DIR,
+            noEmit: false,
+            target: ts.ScriptTarget.ESNext,
+            moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
         createSourceFile(
             `
             export const hello = "world";            
@@ -224,7 +263,10 @@ describe("cli.ts", () => {
             "test.ts"
         );
 
-        executeCompiler(`--project ${path.join(PROJECT_DIR, "tsconfig.json")}`, new Compiler({ reporter: new NoReporter() }, {}, createSystem()));
+        executeCompiler(
+            `--project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`,
+            new Compiler({ reporter: new NoReporter() }, {}, createSystem())
+        );
 
         expect(getOutput("test.js")).toBeDefined();
         expect(getOutput("test.js")).toMatchInlineSnapshot(`
@@ -238,7 +280,7 @@ describe("cli.ts", () => {
 
     it("should yield script and declaration files with single file, declaration and emit true", () => {
         createTsConfigFile({
-            outDir: OUTPUT_DIR,
+            outDir: testDirs.OUTPUT_DIR,
             noEmit: false,
             declaration: true,
             declarationMap: true,
@@ -282,13 +324,13 @@ describe("cli.ts", () => {
     });
 
     it("should yield proxy-function with single file, addon client-function-transform in profile and emit", () => {
-        createTsConfigFile({ outDir: OUTPUT_DIR, noEmit: false, target: 1, module: 3 });
+        createTsConfigFile({ outDir: testDirs.OUTPUT_DIR, noEmit: false, target: 1, module: 3 });
         createWebsmithConfig({
             profiles: {
                 target: {
                     addons: ["client-function-transform"],
                     tsConfig: {
-                        outDir: `${OUTPUT_DIR}/target`,
+                        outDir: `${testDirs.OUTPUT_DIR}/target`,
                         target: ts.ScriptTarget.ESNext,
                         module: ts.ModuleKind.ESNext,
                         moduleResolution: ts.ModuleResolutionKind.Node10,
@@ -313,7 +355,7 @@ describe("cli.ts", () => {
         );
 
         executeCompiler(
-            `--addonsDir ${ADDONS_DIR} --profile target --project ${path.join(PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(PROJECT_DIR, "websmith.config.json")}`
+            `--addonsDir ${ADDONS_DIR} --profile target --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
         );
 
         expect(getOutput("target/service-function.js")).toMatchInlineSnapshot(`
@@ -328,7 +370,7 @@ describe("cli.ts", () => {
 
     it("should yield proxy-function and remote-function with single file, addons from profiles and emit", () => {
         createTsConfigFile({
-            outDir: OUTPUT_DIR,
+            outDir: testDirs.OUTPUT_DIR,
             noEmit: false,
             target: ts.ScriptTarget.ESNext,
             module: ts.ModuleKind.ESNext,
@@ -340,13 +382,13 @@ describe("cli.ts", () => {
                 client: {
                     addons: ["client-function-transform"],
                     tsConfig: {
-                        outDir: `${OUTPUT_DIR}/client`,
+                        outDir: `${testDirs.OUTPUT_DIR}/client`,
                     },
                 },
                 server: {
                     addons: ["service-function-generate"],
                     tsConfig: {
-                        outDir: `${OUTPUT_DIR}/server`,
+                        outDir: `${testDirs.OUTPUT_DIR}/server`,
                     },
                 },
             },
@@ -368,7 +410,7 @@ describe("cli.ts", () => {
         );
 
         executeCompiler(
-            `--profile client --project ${path.join(PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(PROJECT_DIR, "websmith.config.json")}`
+            `--profile client --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
         );
 
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
@@ -381,8 +423,16 @@ describe("cli.ts", () => {
         `);
 
         executeCompiler(
-            `--profile server --project ${path.join(PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(PROJECT_DIR, "websmith.config.json")}`
+            `--profile server --declaration --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
         );
+
+        expect(getOutput("server/service-function.d.ts")).toMatchInlineSnapshot(`
+            "import { type Context, type Serialization } from "@quatico/magellan-shared";
+            export declare function getFoobar({ date }: {
+                date: Date;
+            }, context?: Context, serialization?: Serialization): string;
+            "
+        `);
 
         expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
             "// @service()
@@ -397,7 +447,12 @@ describe("cli.ts", () => {
     });
 
     it("should yield remote-function with single file, addon service-function-generate in cli and emit", () => {
-        createTsConfigFile({ outDir: OUTPUT_DIR, noEmit: false, target: ts.ScriptTarget.ESNext, moduleResolution: ts.ModuleResolutionKind.Node10 });
+        createTsConfigFile({
+            outDir: testDirs.OUTPUT_DIR,
+            noEmit: false,
+            target: ts.ScriptTarget.ESNext,
+            moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
         createSourceFile(
             `
             import { type Context, type Serialization } from "@quatico/magellan-shared";
@@ -414,7 +469,7 @@ describe("cli.ts", () => {
             "service-function.ts"
         );
 
-        executeCompiler(`--addonsDir ${ADDONS_DIR} --addons service-function-generate --project ${path.join(PROJECT_DIR, "tsconfig.json")}`);
+        executeCompiler(`--addonsDir ${ADDONS_DIR} --addons service-function-generate --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
             "// @service()
@@ -429,7 +484,12 @@ describe("cli.ts", () => {
     });
 
     it("should yield proxy-function with single file, addons-config client-function-transform and emit", () => {
-        createTsConfigFile({ outDir: OUTPUT_DIR, noEmit: false, target: ts.ScriptTarget.ESNext, moduleResolution: ts.ModuleResolutionKind.Node10 });
+        createTsConfigFile({
+            outDir: testDirs.OUTPUT_DIR,
+            noEmit: false,
+            target: ts.ScriptTarget.ESNext,
+            moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
         createWebsmithConfig({
             addons: ["client-function-transform"],
         });
@@ -450,7 +510,7 @@ describe("cli.ts", () => {
         );
 
         executeCompiler(
-            `--addonsDir ${ADDONS_DIR} --project ${path.join(PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(PROJECT_DIR, "websmith.config.json")}`
+            `--addonsDir ${ADDONS_DIR} --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
         );
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
@@ -469,7 +529,7 @@ const executeCompiler = (args = "", compiler?: Compiler) => {
     const originalExit = process.exit;
     let exitCode = 0;
 
-    process.chdir(PROJECT_DIR);
+    process.chdir(testDirs.PROJECT_DIR);
 
     try {
         // Mock process.exit to capture exit codes without actually exiting
@@ -522,16 +582,16 @@ const createTsConfig = (config: ts.CompilerOptions) => {
 };
 
 const createTsConfigFile = (config: ts.CompilerOptions) => {
-    fs.writeFileSync(path.resolve(PROJECT_DIR, "tsconfig.json"), createTsConfig(config), { encoding: "utf-8" });
+    fs.writeFileSync(path.resolve(testDirs.PROJECT_DIR, "tsconfig.json"), createTsConfig(config), { encoding: "utf-8" });
 };
 
 const createWebsmithConfig = (config: CompilationConfig) => {
-    fs.writeFileSync(path.resolve(PROJECT_DIR, "websmith.config.json"), JSON.stringify(config), { encoding: "utf-8" });
+    fs.writeFileSync(path.resolve(testDirs.PROJECT_DIR, "websmith.config.json"), JSON.stringify(config), { encoding: "utf-8" });
 };
 
 const createSourceFile = (fileContent: string, fileName: string) => {
-    fs.writeFileSync(path.resolve(SOURCE_DIR, fileName), fileContent, { encoding: "utf-8" });
+    fs.writeFileSync(path.resolve(testDirs.SOURCE_DIR, fileName), fileContent, { encoding: "utf-8" });
 };
 
 const getOutput = (filePath: string): string | undefined =>
-    fs.existsSync(path.join(OUTPUT_DIR, filePath)) ? fs.readFileSync(path.join(OUTPUT_DIR, filePath), "utf-8") : undefined;
+    fs.existsSync(path.join(testDirs.OUTPUT_DIR, filePath)) ? fs.readFileSync(path.join(testDirs.OUTPUT_DIR, filePath), "utf-8") : undefined;

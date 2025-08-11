@@ -9,6 +9,7 @@ import { config as baseConfig } from "../../jest-base.config";
 
 const config: Config = {
     ...baseConfig,
+    watchPathIgnorePatterns: ["<rootDir>/test-output*"],
 };
 
 export default config;

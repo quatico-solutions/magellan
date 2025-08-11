@@ -8,7 +8,9 @@
 import { type Node } from "typescript";
 import type ts from "typescript";
 import { createSourceFile, ScriptTarget, SyntaxKind } from "typescript";
+import { type AddonContext } from "@quatico/websmith-api";
 import { getDecoration, getDescendantsOfKind, getFunctionName, isNodeExported, isTransformable, type ServiceDecoratorData } from "./node-helpers";
+import { type MagellanConfig } from "./magellan-config";
 
 interface SetupResult<T extends Node> {
     target: T;
@@ -74,6 +76,22 @@ describe("isTransformable", () => {
 });
 
 describe("getDecoration", () => {
+    let mockContext: AddonContext<MagellanConfig>;
+
+    beforeEach(() => {
+        mockContext = {
+            getReporter: () => ({
+                reportDiagnostic: jest.fn(),
+                reportWatchStatus: jest.fn(),
+                indent: jest.fn(),
+                unindent: jest.fn(),
+            }),
+            getConfiguration: () => ({
+                namespace: "default",
+            }),
+        } as any;
+    });
+
     it("returns local kind metadata w/ arrow function and empty call annotation", () => {
         const { target, sf } = setupNode<ts.VariableStatement>({
             kind: SyntaxKind.VariableStatement,
@@ -83,7 +101,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
     });
 
     it("returns local kind metadata w/ arrow function calling a helper function", () => {
@@ -97,7 +115,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
     });
 
     it("returns local kind metadata w/ arrow function calling another exported function", () => {
@@ -111,7 +129,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
     });
 
     it("returns external kind metadata w/ arrow function and external call annotation", () => {
@@ -123,7 +141,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toEqual(<ServiceDecoratorData>{ kind: "external", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "external", namespace: "default" });
     });
 
     it("returns undefined and error w/ arrow function without annotation", () => {
@@ -133,10 +151,16 @@ describe("getDecoration", () => {
             // @service({"kind": "invalid"})
             export const target = () => "whatever";`,
         });
-        console.error = jest.fn();
+        const mockReportDiagnostic = jest.fn();
+        mockContext.getReporter = () => ({
+            reportDiagnostic: mockReportDiagnostic,
+            reportWatchStatus: jest.fn(),
+            indent: jest.fn(),
+            unindent: jest.fn(),
+        });
 
-        expect(getDecoration(sf, target, "service")).toBeUndefined();
-        expect(console.error).toHaveBeenCalledWith('Invalid service kind "invalid" provided. Must be empty, "local" or "external"');
+        expect(getDecoration(sf, target, "service", mockContext)).toBeUndefined();
+        expect(mockReportDiagnostic).toHaveBeenCalled();
     });
 
     it("returns undefined if the 'service' decorator is not present", () => {
@@ -149,7 +173,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toBeUndefined();
+        expect(getDecoration(sf, target, "service", mockContext)).toBeUndefined();
     });
 
     it("returns undefined if the 'service' decorator is not correctly formatted", () => {
@@ -161,7 +185,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service")).toBeUndefined();
+        expect(getDecoration(sf, target, "service", mockContext)).toBeUndefined();
     });
 
     it("returns undefined w/ arrow function without annotation", () => {
@@ -170,7 +194,7 @@ describe("getDecoration", () => {
             source: `export const target = () => "whatever";`,
         });
 
-        expect(getDecoration(sf, target, "service")).toBeUndefined();
+        expect(getDecoration(sf, target, "service", mockContext)).toBeUndefined();
     });
 });
 

@@ -9,6 +9,6 @@ import { type MagellanConfig } from "../magellan-shared/magellan-config";
 import { createServerTransformer } from "./transformer-server";
 import { createBaseTransformer } from "../magellan-shared/base-transformer";
 
-export const createTransformer = (fileName: string, content: string, ctx: AddonContext<MagellanConfig>): string | never => {
-    return createBaseTransformer(fileName, content, ctx, "service-function-generate", createServerTransformer);
+export const createTransformer = (fileName: string, content: string, context: AddonContext<MagellanConfig>): string | never => {
+    return createBaseTransformer(fileName, content, context, "service-function-generate", context => createServerTransformer(context));
 };

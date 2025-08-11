@@ -1,6 +1,3 @@
-export const CONTEXT_TYPE_NAME = "Context";
-export const SERIALIZATION_TYPE_NAME = "Serialization";
-
 // Error messages moved from client transformer
 export const SIGNATURE_ERROR_LENGTH = `Service functions must have exactly three parameters: input, context?: Context, and serialization?: Serialization.`;
 export const SIGNATURE_ERROR_CONTEXT = `The second parameter of a service function must be 'context?: Context'.`;

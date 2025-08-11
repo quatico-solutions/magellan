@@ -20,7 +20,7 @@ describe("createStaticRoute", () => {
         fs.writeFileSync("./resources/index.html", "Hello World!");
 
         const res = await request(app).get("/index.html");
-        expect(res.header["content-type"]).toBe("text/html; charset=UTF-8");
+        expect(res.header["content-type"]).toBe("text/html; charset=utf-8");
         expect(res.statusCode).toBe(200);
         expect(res.text).toBe("Hello World!");
     });
