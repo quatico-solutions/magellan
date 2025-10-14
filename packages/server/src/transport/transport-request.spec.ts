@@ -143,7 +143,7 @@ describe("transportRequest", () => {
     });
 
     it("throws meaningful error with error thrown by serialize", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
+        globalThis.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },

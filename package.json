@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan",
     "description": "Compiler and runtime API for remote execution of service functions written in TypeScript.",
-    "version": "0.16.1",
+    "version": "0.16.2",
     "keywords": [
         "typescript",
         "java",

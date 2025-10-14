@@ -24,9 +24,13 @@ beforeAll(() => {
         setAll = jest.fn();
         delete = jest.fn();
         forEach = jest.fn();
+        keys = jest.fn();
+        values = jest.fn();
+        [Symbol.iterator] = jest.fn();
+        [Symbol.toStringTag] = "FormData";
     }
 
-    global.FormData = FormData
+    globalThis.FormData = FormData;
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler: jest.fn() });
 });
 

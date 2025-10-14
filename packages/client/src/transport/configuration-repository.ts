@@ -15,13 +15,16 @@ export const initProjectConfiguration = (projectConfiguration: Partial<Configura
 
 export const getConfiguration = (): Configuration => {
     const defaultConfiguration = getDefaultConfiguration();
-    return global.__qsMagellanConfig__ && !configurationNeedsMerge(defaultConfiguration)
-        ? global.__qsMagellanConfig__
-        : persistConfig(expandConfig(global.__qsMagellanConfig__));
+    return globalThis.__qsMagellanConfig__ && !configurationNeedsMerge(defaultConfiguration)
+        ? globalThis.__qsMagellanConfig__
+        : persistConfig(expandConfig(globalThis.__qsMagellanConfig__));
 };
 
 const configurationNeedsMerge = (configuration: Partial<Configuration>): boolean => {
-    return configuration.merge || (global.__qsMagellanConfig__?.lastMerged !== undefined && global.__qsMagellanConfig__?.lastMerged !== configuration);
+    return (
+        configuration.merge ||
+        (globalThis.__qsMagellanConfig__?.lastMerged !== undefined && globalThis.__qsMagellanConfig__?.lastMerged !== configuration)
+    );
 };
 
 export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
@@ -34,7 +37,7 @@ export const expandConfig = (configuration: Partial<Configuration> | undefined):
 };
 
 const persistConfig = (configuration: Configuration): Configuration => {
-    return (global.__qsMagellanConfig__ = configuration);
+    return (globalThis.__qsMagellanConfig__ = configuration);
 };
 
 const completeNamespaces = (namespaceMapping: Record<string, NamespaceMapping>): Record<string, NamespaceMapping> => {

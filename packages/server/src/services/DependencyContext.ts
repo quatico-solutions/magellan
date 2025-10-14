@@ -14,12 +14,12 @@ export type DependencyContext = {
 };
 
 export const initDependencyContext = (diContext: DependencyContext) => {
-    global.__qsMagellanDI__ = diContext;
+    globalThis.__qsMagellanDI__ = diContext;
 };
 
 export const getDependencyContext = (): DependencyContext | never => {
-    if (global.__qsMagellanDI__ === undefined) {
+    if (globalThis.__qsMagellanDI__ === undefined) {
         throw new Error("Dependency Context not initialized");
     }
-    return global.__qsMagellanDI__;
+    return globalThis.__qsMagellanDI__;
 };

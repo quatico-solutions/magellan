@@ -12,7 +12,7 @@ import { getDefaultConfiguration } from "./default-configuration";
 const defaultTransportHandler: TransportHandler = jest.fn();
 
 beforeEach(() => {
-    global.__qsMagellanServerConfig__ = undefined;
+    globalThis.__qsMagellanServerConfig__ = undefined;
     initDependencyContext({ defaultTransportRequest: jest.fn(), defaultTransportHandler });
 });
 

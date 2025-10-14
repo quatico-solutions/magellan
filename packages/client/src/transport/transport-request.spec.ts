@@ -25,9 +25,13 @@ beforeAll(() => {
         setAll = jest.fn();
         delete = jest.fn();
         forEach = jest.fn();
+        keys = jest.fn();
+        values = jest.fn();
+        [Symbol.iterator] = jest.fn();
+        [Symbol.toStringTag] = "FormData";
     }
 
-    global.FormData = FormData
+    globalThis.FormData = FormData;
 });
 
 describe("transportRequest", () => {
@@ -42,7 +46,7 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(packInput(target)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await transportRequest({ name: "whatever", data: target }, { client: { headers: { "1": "1-client" } } });
 
@@ -66,12 +70,12 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(packInput(target)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await transportRequest({ name: "whatever" });
 
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch).toHaveBeenCalledWith(`/api`, {
+        expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+        expect(globalThis.fetch).toHaveBeenCalledWith(`/api`, {
             body: expect.any(FormData),
             headers: expect.anything(),
             method: "POST",
@@ -90,7 +94,7 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(value),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
         const target = jest.fn().mockImplementation(value => value);
 
         await transportRequest(
@@ -112,7 +116,7 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(packInput(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
         const target = jest.fn();
 
         await transportRequest(
@@ -134,7 +138,7 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(packInput(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/api" } },
             transports: { default: formdataFetch },
@@ -169,7 +173,7 @@ describe("transportRequest", () => {
             ok: true,
             text: () => Promise.resolve(packInput(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/expected/path/function" } },
             transports: { default: formdataFetch },
@@ -204,7 +208,7 @@ describe("transportRequest", () => {
     });
 
     it("throws meaningful error with error thrown by fetch", async () => {
-        global.fetch = jest.fn().mockImplementation(() => {
+        globalThis.fetch = jest.fn().mockImplementation(() => {
             throw new Error("whatever");
         });
 
@@ -214,7 +218,7 @@ describe("transportRequest", () => {
     });
 
     it("throws meaningful error with error thrown by response data access", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: true,
             status: 200,
             text: () => {
@@ -228,7 +232,7 @@ describe("transportRequest", () => {
     });
 
     it("yield rejection with request with invalid format", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
+        globalThis.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
 
         const actual = transportRequest(
             { name: "foobar", data: "whatever" },
@@ -245,7 +249,7 @@ describe("transportRequest", () => {
     });
 
     it("yields rejection with response with invalid format", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: true,
             status: 200,
             text: () => "malformed JSON",
@@ -257,7 +261,7 @@ describe("transportRequest", () => {
     });
 
     it("yields rejection with response with ok flag, status and statusText set", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: false,
             status: 404,
             statusText: "not found",
@@ -269,7 +273,7 @@ describe("transportRequest", () => {
     });
 
     it("yields rejection with response with undefined ok flag", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             status: 500,
         }));
 

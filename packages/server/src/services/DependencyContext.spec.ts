@@ -14,7 +14,7 @@ describe("initDependencyContext", () => {
 
         initDependencyContext(expected);
 
-        expect(global.__qsMagellanDI__).toEqual(expected);
+        expect(globalThis.__qsMagellanDI__).toEqual(expected);
     });
 });
 
@@ -22,7 +22,7 @@ describe("getDependencyContext", () => {
     it("yields context w/ valid DependencyContext", () => {
         const defaultTransportRequest = jest.fn();
         const defaultTransportHandler = jest.fn();
-        const expected = (global.__qsMagellanDI__ = { defaultTransportRequest, defaultTransportHandler });
+        const expected = (globalThis.__qsMagellanDI__ = { defaultTransportRequest, defaultTransportHandler });
 
         const actual = getDependencyContext();
 

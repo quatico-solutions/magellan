@@ -9,12 +9,13 @@ import type { Config } from "jest";
 export const config: Config = {
     collectCoverageFrom: ["**/*.{ts,tsx}"],
     coverageDirectory: "coverage",
-    coveragePathIgnorePatterns: ["index.ts", "test/*"],
+    coveragePathIgnorePatterns: ["index.ts", "test/*", "jest.config.ts"],
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     moduleNameMapper: {
         "@quatico/magellan-cli": "<rootDir>/../cli/src",
         "@quatico/magellan-shared": "<rootDir>/../shared/src",
         "@quatico/magellan-client": "<rootDir>/../client/src",
+        "@quatico/magellan-react": "<rootDir>/../react/src",
         "@quatico/magellan-server": "<rootDir>/../server/src",
     },
     prettierPath: null,

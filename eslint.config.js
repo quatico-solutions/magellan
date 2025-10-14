@@ -72,6 +72,7 @@ module.exports = [
                         ["@quatico/magellan-addons", __dirname + "/packages/addons/src"],
                         ["@quatico/magellan-cli", __dirname + "/packages/cli/src"],
                         ["@quatico/magellan-client", __dirname + "/packages/client/src"],
+                        ["@quatico/magellan-react", __dirname + "/packages/react/src"],
                         ["@quatico/magellan-server", __dirname + "/packages/server/src"],
                     ],
                     extensions: [".ts", ".js", ".jsx", ".json"],
@@ -102,6 +103,9 @@ module.exports = [
                 },
             ],
             "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
+
+            // when using https://www.npmjs.com/package/expect-type, we need consider `expectTypeOf` as an assertion:
+            "jest/expect-expect": ["error", { assertFunctionNames: ["expect", "expectTypeOf"] }],
 
             "no-console": "error",
             "arrow-parens": ["error", "as-needed"],

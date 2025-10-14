@@ -23,9 +23,13 @@ beforeAll(() => {
         setAll = jest.fn();
         delete = jest.fn();
         forEach = jest.fn();
+        keys = jest.fn();
+        values = jest.fn();
+        [Symbol.iterator] = jest.fn();
+        [Symbol.toStringTag] = "FormData";
     }
 
-    global.FormData = FormData
+    globalThis.FormData = FormData;
 });
 
 describe("remoteInvoke", () => {
@@ -40,7 +44,7 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(serialize(target)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await remoteInvoke({ name: "whatever", data: target }, { client: { headers: { "1": "1-client" } } });
 
@@ -64,12 +68,12 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(serialize(target)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         await remoteInvoke({ name: "whatever" });
 
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch).toHaveBeenCalledWith(`/api`, {
+        expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+        expect(globalThis.fetch).toHaveBeenCalledWith(`/api`, {
             body: expect.any(FormData),
             headers: expect.anything(),
             method: "POST",
@@ -88,7 +92,7 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(value),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         const target = jest.fn().mockImplementation(value => value);
 
@@ -111,7 +115,7 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(serialize(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
         const target = jest.fn();
 
         await remoteInvoke(
@@ -133,7 +137,7 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(serialize(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/api" } },
@@ -169,7 +173,7 @@ describe("remoteInvoke", () => {
             ok: true,
             text: () => Promise.resolve(serialize(value)),
         };
-        global.fetch = jest.fn().mockResolvedValue(mockResponse);
+        globalThis.fetch = jest.fn().mockResolvedValue(mockResponse);
 
         initProjectConfiguration({
             namespaces: { default: { endpoint: "http://expected-host:3000/expected/path/function" } },
@@ -205,7 +209,7 @@ describe("remoteInvoke", () => {
     });
 
     it("throws meaningful error with error thrown by fetch", async () => {
-        global.fetch = jest.fn().mockImplementation(() => {
+        globalThis.fetch = jest.fn().mockImplementation(() => {
             throw new Error("whatever");
         });
 
@@ -215,7 +219,7 @@ describe("remoteInvoke", () => {
     });
 
     it("throws meaningful error with error thrown by response data access", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: true,
             status: 200,
             text: () => {
@@ -229,7 +233,7 @@ describe("remoteInvoke", () => {
     });
 
     it("yield rejection with request failing serialization", async () => {
-        global.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
+        globalThis.fetch = jest.fn().mockReturnValue(Promise.resolve({ text: () => "whatever" }));
 
         const actual = remoteInvoke(
             { name: "foobar", data: "whatever" },
@@ -246,7 +250,7 @@ describe("remoteInvoke", () => {
     });
 
     it("yields rejection with response failing deserialization", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: true,
             status: 200,
             text: () => "malformed JSON",
@@ -258,7 +262,7 @@ describe("remoteInvoke", () => {
     });
 
     it("yields rejection with response with ok flag, status and statusText set", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             ok: false,
             status: 404,
             statusText: "not found",
@@ -270,7 +274,7 @@ describe("remoteInvoke", () => {
     });
 
     it("yields rejection with response with undefined ok flag", async () => {
-        global.fetch = jest.fn().mockImplementation(() => ({
+        globalThis.fetch = jest.fn().mockImplementation(() => ({
             status: 500,
         }));
 

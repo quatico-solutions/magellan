@@ -11,7 +11,7 @@ import { type DefaultSdkParameters, Sdk } from "./sdk";
 import { FunctionService } from "./services";
 
 afterEach(() => {
-    global.functionService = new FunctionService(jest.fn());
+    globalThis.functionService = new FunctionService(jest.fn());
 });
 
 class TestSdk extends Sdk {
@@ -106,6 +106,6 @@ describe("constructor", () => {
         const defaultTransportHandler = jest.fn();
         new Sdk({ defaultTransportHandler, defaultTransportRequest, functionService: new FunctionService(defaultTransportRequest) });
 
-        expect(global.__qsMagellanDI__).toEqual({ defaultTransportRequest, defaultTransportHandler });
+        expect(globalThis.__qsMagellanDI__).toEqual({ defaultTransportRequest, defaultTransportHandler });
     });
 });

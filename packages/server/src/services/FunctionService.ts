@@ -31,4 +31,4 @@ export class FunctionService {
 
 
 export const getFunctionService = (defaultTransportRequest: TransportRequest) =>
-    global.functionService ?? (global.functionService = new FunctionService(defaultTransportRequest));
+    globalThis.functionService ?? (globalThis.functionService = new FunctionService(defaultTransportRequest));

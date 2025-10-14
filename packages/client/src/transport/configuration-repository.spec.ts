@@ -13,7 +13,7 @@ import config from "./config";
 jest.mock("./default-configuration");
 
 beforeEach(() => {
-    global.__qsMagellanConfig__ = undefined;
+    globalThis.__qsMagellanConfig__ = undefined;
     jest.requireMock("./default-configuration").getDefaultConfiguration.mockReturnValue(config);
 });
 
@@ -52,14 +52,14 @@ describe("getConfiguration", () => {
         expect(actual).toEqual(expected);
     });
 
-    it("should return a merged default configuration with a config.js different from global.__qsMagellanConfig__", () => {
+    it("should return a merged default configuration with a config.js different from globalThis.__qsMagellanConfig__", () => {
         const preexistingConfig = <Configuration>{
             namespaces: { original: { endpoint: "/expected", transport: "default" } },
             transports: { default: formdataFetch },
             merge: true,
         };
         jest.requireMock("./default-configuration").getDefaultConfiguration.mockReturnValue(preexistingConfig);
-        global.__qsMagellanConfig__ = config;
+        globalThis.__qsMagellanConfig__ = config;
         const expected: Configuration = {
             namespaces: { ...config.namespaces, ...preexistingConfig.namespaces },
             transports: { default: formdataFetch },

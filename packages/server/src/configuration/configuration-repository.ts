@@ -14,11 +14,11 @@ export const initProjectConfiguration = (projectConfiguration: Partial<Configura
 };
 
 export const getConfiguration = (): Configuration => {
-    return global.__qsMagellanServerConfig__ ?? setConfiguration(expandConfig(getDefaultConfiguration()));
+    return globalThis.__qsMagellanServerConfig__ ?? setConfiguration(expandConfig(getDefaultConfiguration()));
 };
 
 export const setConfiguration = (config: Configuration): Configuration => {
-    return (global.__qsMagellanServerConfig__ = config);
+    return (globalThis.__qsMagellanServerConfig__ = config);
 };
 
 export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {

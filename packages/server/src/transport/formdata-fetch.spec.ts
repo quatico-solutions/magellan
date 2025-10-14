@@ -10,12 +10,12 @@ beforeAll(() => {
 describe("formdataFetch", () => {
     it("calls fetch once using POST and endpoint with valid transport function", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/expected", payload: "whatever" };
-        jest.spyOn(global, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
+        jest.spyOn(globalThis, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
 
         await formdataFetch(validTransportFn, { client: { headers: {} } });
 
-        expect(global.fetch).toHaveBeenCalledWith("http://localhost:3000/expected", expect.objectContaining({ method: "POST" }));
-        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(globalThis.fetch).toHaveBeenCalledWith("http://localhost:3000/expected", expect.objectContaining({ method: "POST" }));
+        expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     });
 
     it("yields payload as data property with value transport function", async () => {
@@ -25,13 +25,13 @@ describe("formdataFetch", () => {
             endpoint: "/endpoint",
             payload: JSON.stringify({ expected: "value" }),
         };
-        jest.spyOn(global, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
+        jest.spyOn(globalThis, "fetch").mockResolvedValue({ ok: true, text: () => Promise.resolve("whatever") } as Response);
 
         await formdataFetch(validTransportFn, {
             client: { headers: { "token-name": "client-token-value", "x-request-id": "request-id" } },
         });
 
-        const target = global.fetch as jest.Mock;
+        const target = globalThis.fetch as jest.Mock;
 
         const body = Object.fromEntries(target.mock.calls[0][1].body.entries());
         expect(body).toStrictEqual({ data: '{"expected":"value"}', name: "name", namespace: "namespace" });
@@ -58,7 +58,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch causing an error", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        jest.spyOn(global, "fetch").mockImplementation(() => {
+        jest.spyOn(globalThis, "fetch").mockImplementation(() => {
             throw Error("Expected Error Message");
         });
 
@@ -69,7 +69,7 @@ describe("formdataFetch", () => {
 
     it("rejects promise with fetch returning 404 and status message", async () => {
         const validTransportFn = { name: "whatever", namespace: "whatever", endpoint: "/whatever", payload: "whatever" };
-        jest.spyOn(global, "fetch").mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" } as Response);
+        jest.spyOn(globalThis, "fetch").mockResolvedValue({ ok: false, status: 404, statusText: "Expected Status Message" } as Response);
 
         const actual = formdataFetch(validTransportFn, { headers: {}, client: { headers: {} } });
 
