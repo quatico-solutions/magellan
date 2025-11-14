@@ -6,6 +6,6 @@
         "noEmit": false,
         "jsx": "react"
     },
-    "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.test.ts"],
+    "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.test.ts", "test"],
     "include": ["src"]
 }

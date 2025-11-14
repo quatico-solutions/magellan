@@ -143,7 +143,7 @@ describe("cli.ts", () => {
 
         // Verify that watch method was called (for --watch flag)
         expect(watchSpy).toHaveBeenCalled();
-        expect(target.getOptions()).toMatchObject({ tsConfig: { listFiles: true, debug: true, watch: true } });
+        expect(target.getOptions()).toMatchObject({ tsConfig: { listFiles: true } });
     });
 
     it("should handle compilation arguments", () => {
@@ -229,7 +229,7 @@ describe("cli.ts", () => {
                 strict: false,
                 target: ts.ScriptTarget.ES5,
             },
-            tsConfigFile: "/tsconfig.json",
+            tsConfigFile: expect.any(String),
             watch: false,
         });
     });

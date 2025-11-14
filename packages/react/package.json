@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-react",
     "description": "React components for Magellan",
-    "version": "0.16.2",
+    "version": "0.17.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -20,9 +20,8 @@
         "build": "tsc",
         "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build:prod",
         "build:prod": "cross-env-shell NODE_ENV=production 'pnpm build'",
-        "test": "pnpm test:jest && pnpm test:typescript-integration",
-        "test:jest": "jest --color --coverage",
-        "test:typescript-integration": "tsc -p tsconfig.ts-integration.json",
+        "test": "jest --color --coverage",
+        "test:e2e": "jest --config jest.test.config.ts",
         "test:update-snapshots": "pnpm test -u",
         "watch": "tsc --watch",
         "watch:test": "jest --color --watch",
@@ -40,7 +39,6 @@
         "@eslint/compat": "^1.2.6",
         "@eslint/js": "^9.19.0",
         "@quatico/magellan-shared": "workspace:*",
-        "@swc/jest": "^0.2.37",
         "@testing-library/react": "^16.3.0",
         "@types/jest": "^29.5.1",
         "@types/node": "22",

@@ -4,7 +4,6 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-
 import { useMutation } from "@tanstack/react-query";
 import { renderHook } from "@testing-library/react";
 import { useMutationService } from "./useMutationService";
@@ -20,7 +19,38 @@ describe("useMutationService", () => {
         jest.clearAllMocks();
     });
 
-    it("should return a loading state when the mutation is pending", () => {
+    it("should return idle state when the mutation hasn't been triggered", () => {
+        mockedUseMutation.mockReturnValue({
+            isPending: false,
+            isError: false,
+            isSuccess: false,
+            data: undefined,
+            error: null,
+            mutateAsync: mockedMutateAsync,
+        });
+
+        const { result } = renderHook(() =>
+            useMutationService({
+                serviceFn: jest.fn(),
+                options: {
+                    mutationKey: ["target"],
+                },
+            })
+        );
+
+        expect(result.current).toStrictEqual({
+            data: undefined,
+            error: null,
+            isError: false,
+            isPending: false,
+            isIdle: true,
+            isSuccess: false,
+            status: "idle",
+            mutate: expect.any(Function),
+        });
+    });
+
+    it("should return pending state when the mutation is in progress", () => {
         mockedUseMutation.mockReturnValue({
             isPending: true,
             isError: false,
@@ -32,17 +62,21 @@ describe("useMutationService", () => {
 
         const { result } = renderHook(() =>
             useMutationService({
-                mutationKey: ["test"],
                 serviceFn: jest.fn(),
+                options: {
+                    mutationKey: ["target"],
+                },
             })
         );
 
         expect(result.current).toStrictEqual({
-            isLoading: true,
-            isError: false,
-            isSuccess: false,
             data: undefined,
             error: null,
+            isError: false,
+            isPending: true,
+            isIdle: false,
+            isSuccess: false,
+            status: "pending",
             mutate: expect.any(Function),
         });
     });
@@ -52,24 +86,28 @@ describe("useMutationService", () => {
             isPending: false,
             isError: false,
             isSuccess: true,
-            data: { foo: "bar" },
+            data: { expected: "value" },
             error: null,
             mutateAsync: mockedMutateAsync,
         });
 
         const { result } = renderHook(() =>
             useMutationService({
-                mutationKey: ["test"],
                 serviceFn: jest.fn(),
+                options: {
+                    mutationKey: ["target"],
+                },
             })
         );
 
         expect(result.current).toStrictEqual({
-            isLoading: false,
-            isError: false,
-            isSuccess: true,
-            data: { foo: "bar" },
+            data: { expected: "value" },
             error: null,
+            isError: false,
+            isPending: false,
+            isIdle: false,
+            isSuccess: true,
+            status: "success",
             mutate: expect.any(Function),
         });
     });
@@ -87,17 +125,21 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
+                    options: {
+                        mutationKey: ["target"],
+                    },
                     serviceFn: jest.fn(),
                 })
             );
 
             expect(result.current).toStrictEqual({
-                isLoading: false,
-                isError: true,
-                isSuccess: false,
                 data: undefined,
                 error: testError,
+                isError: true,
+                isPending: false,
+                isIdle: false,
+                isSuccess: false,
+                status: "error",
                 mutate: expect.any(Function),
             });
         });
@@ -114,17 +156,21 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
             expect(result.current).toStrictEqual({
-                isLoading: false,
-                isError: true,
-                isSuccess: false,
                 data: undefined,
                 error: new Error("Custom error object"),
+                isError: true,
+                isPending: false,
+                isIdle: false,
+                isSuccess: false,
+                status: "error",
                 mutate: expect.any(Function),
             });
         });
@@ -141,71 +187,21 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
             expect(result.current).toStrictEqual({
-                isLoading: false,
-                isError: true,
-                isSuccess: false,
                 data: undefined,
                 error: new Error("Custom error message"),
-                mutate: expect.any(Function),
-            });
-        });
-
-        it("should return an error state when mutation is not successful and has an error", () => {
-            mockedUseMutation.mockReturnValue({
-                isPending: false,
                 isError: true,
-                isSuccess: false,
-                data: undefined,
-                error: testError,
-                mutateAsync: mockedMutateAsync,
-            });
-
-            const { result } = renderHook(() =>
-                useMutationService({
-                    mutationKey: ["test"],
-                    serviceFn: jest.fn(),
-                })
-            );
-
-            expect(result.current).toStrictEqual({
-                isLoading: false,
-                isError: true,
-                isSuccess: false,
-                data: undefined,
-                error: testError,
-                mutate: expect.any(Function),
-            });
-        });
-
-        it("should return an error state when mutation is not successful and has no error", () => {
-            mockedUseMutation.mockReturnValue({
                 isPending: false,
-                isError: false,
+                isIdle: false,
                 isSuccess: false,
-                data: undefined,
-                error: null,
-                mutateAsync: mockedMutateAsync,
-            });
-
-            const { result } = renderHook(() =>
-                useMutationService({
-                    mutationKey: ["test"],
-                    serviceFn: jest.fn(),
-                })
-            );
-
-            expect(result.current).toStrictEqual({
-                isLoading: false,
-                isError: false,
-                isSuccess: false,
-                data: undefined,
-                error: null,
+                status: "error",
                 mutate: expect.any(Function),
             });
         });
@@ -225,8 +221,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -234,7 +232,28 @@ describe("useMutationService", () => {
         });
 
         it("should be available in all states", () => {
-            // Test in loading state
+            // Test in idle state
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: false,
+                data: undefined,
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            const { result: idleResult } = renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
+                })
+            );
+
+            expect(typeof idleResult.current.mutate).toBe("function");
+
+            // Test in pending state
             mockedUseMutation.mockReturnValue({
                 isPending: true,
                 isError: false,
@@ -244,14 +263,16 @@ describe("useMutationService", () => {
                 mutateAsync: mockedMutateAsync,
             });
 
-            const { result: loadingResult } = renderHook(() =>
+            const { result: pendingResult } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
-            expect(typeof loadingResult.current.mutate).toBe("function");
+            expect(typeof pendingResult.current.mutate).toBe("function");
 
             // Test in error state
             mockedUseMutation.mockReturnValue({
@@ -265,8 +286,10 @@ describe("useMutationService", () => {
 
             const { result: errorResult } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -286,8 +309,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -295,6 +320,230 @@ describe("useMutationService", () => {
             await result.current.mutate(testInput);
 
             expect(mockMutateAsync).toHaveBeenCalledWith(testInput);
+        });
+    });
+
+    describe("mutationFn behavior", () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it("should call serviceFn with the provided input parameter", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue({ result: "success" });
+            const inputData = { id: 123, name: "test" };
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { result: "success" },
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn that was passed to useMutation
+            const useMutationCall = mockedUseMutation.mock.calls[0][0];
+            const mutationFn = useMutationCall.mutationFn;
+
+            // Call the mutationFn to verify it calls serviceFn with correct input
+            await mutationFn(inputData);
+
+            expect(mockServiceFn).toHaveBeenCalledWith(inputData);
+            expect(mockServiceFn).toHaveBeenCalledTimes(1);
+        });
+
+        it("should call serviceFn with different inputs on multiple calls", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue({ result: "success" });
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { result: "success" },
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn that was passed to useMutation
+            const useMutationCall = mockedUseMutation.mock.calls[0][0];
+            const mutationFn = useMutationCall.mutationFn;
+
+            // First call with first input
+            const firstInput = { id: 1, action: "create" };
+            await mutationFn(firstInput);
+            expect(mockServiceFn).toHaveBeenCalledWith(firstInput);
+
+            // Second call with different input
+            const secondInput = { id: 2, action: "update" };
+            await mutationFn(secondInput);
+            expect(mockServiceFn).toHaveBeenCalledWith(secondInput);
+
+            // Third call with yet another input
+            const thirdInput = { id: 3, action: "delete" };
+            await mutationFn(thirdInput);
+            expect(mockServiceFn).toHaveBeenCalledWith(thirdInput);
+
+            // Verify all calls used their respective inputs
+            expect(mockServiceFn).toHaveBeenCalledTimes(3);
+            expect(mockServiceFn.mock.calls[0][0]).toEqual(firstInput);
+            expect(mockServiceFn.mock.calls[1][0]).toEqual(secondInput);
+            expect(mockServiceFn.mock.calls[2][0]).toEqual(thirdInput);
+        });
+
+        it("should pass through the exact input without modification", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue({ result: "success" });
+            const complexInput = {
+                nested: { deeply: { value: 123 } },
+                array: [1, 2, 3],
+                nullValue: null,
+                undefinedValue: undefined,
+                booleanValue: true,
+            };
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { result: "success" },
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn that was passed to useMutation
+            const useMutationCall = mockedUseMutation.mock.calls[0][0];
+            const mutationFn = useMutationCall.mutationFn;
+
+            await mutationFn(complexInput);
+
+            expect(mockServiceFn).toHaveBeenCalledWith(complexInput);
+            expect(mockServiceFn.mock.calls[0][0]).toBe(complexInput); // Same reference
+        });
+
+        it("should return null when serviceFn returns undefined", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: null,
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn that was passed to useMutation
+            const useMutationCall = mockedUseMutation.mock.calls[0][0];
+            const mutationFn = useMutationCall.mutationFn;
+
+            const result = await mutationFn({ test: "input" });
+
+            expect(result).toBe(null);
+        });
+
+        it("should handle null input parameter", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue({ result: "success" });
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { result: "success" },
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn that was passed to useMutation
+            const useMutationCall = mockedUseMutation.mock.calls[0][0];
+            const mutationFn = useMutationCall.mutationFn;
+
+            await mutationFn(null);
+
+            expect(mockServiceFn).toHaveBeenCalledWith(null);
+        });
+
+        it("should preserve input parameters across hook rerenders", async () => {
+            const mockServiceFn = jest.fn().mockResolvedValue({ result: "success" });
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { result: "success" },
+                error: null,
+                mutateAsync: jest.fn(),
+            });
+
+            const { rerender } = renderHook(() =>
+                useMutationService({
+                    serviceFn: mockServiceFn,
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Extract the mutationFn from first render
+            const firstMutationFn = mockedUseMutation.mock.calls[0][0].mutationFn;
+            const firstInput = { id: 100, render: "first" };
+            await firstMutationFn(firstInput);
+
+            // Rerender the hook
+            rerender();
+
+            // Extract the mutationFn from second render
+            const secondMutationFn = mockedUseMutation.mock.calls[1][0].mutationFn;
+            const secondInput = { id: 200, render: "second" };
+            await secondMutationFn(secondInput);
+
+            // Each call should use its respective input
+            expect(mockServiceFn).toHaveBeenCalledTimes(2);
+            expect(mockServiceFn.mock.calls[0][0]).toEqual(firstInput);
+            expect(mockServiceFn.mock.calls[1][0]).toEqual(secondInput);
         });
     });
 
@@ -311,8 +560,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -331,8 +582,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -351,8 +604,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 
@@ -371,8 +626,10 @@ describe("useMutationService", () => {
 
             const { result } = renderHook(() =>
                 useMutationService({
-                    mutationKey: ["test"],
                     serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["target"],
+                    },
                 })
             );
 

@@ -12,10 +12,16 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
-## [0.16.2] - 2025-10-14
+## [0.17.0] - 2025-10-14
 
 ### Added
+
 - `@quatico/magellan-react`: Added two react hooks for service functions, `useQueryService` and `useMutationService`
+- `@quatico/magellan-react`: Added comprehensive state flags for better state management (`isPending`, `isLoadingError`, `isRefetchError`, `isIdle`, `status`)
+
+### Changed
+
+- `@quatico/magellan-react`: Aligned `useQueryService` and `useMutationService` return types with TanStack Query's discriminated union pattern for improved type narrowing
 
 ## [0.16.0] - 2025-01-07
 

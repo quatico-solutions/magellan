@@ -1,0 +1,11 @@
+// NOTE: we are using "expect-type" in .test.ts files, we need to check them using the typescript compiler!
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "jsx": "react",
+        "lib": ["ES2020", "DOM"]
+    },
+    "exclude": ["node_modules", "coverage", "lib"],
+    "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*.ts", "test/**/*.tsx"]
+}

@@ -21,7 +21,7 @@ import {
 /**
  * Validates the parameter signature of a service function.
  */
-export function validateServiceFunctionSignature(parameters: ts.NodeArray<ts.ParameterDeclaration>): void {
+export const validateServiceFunctionSignature = (parameters: ts.NodeArray<ts.ParameterDeclaration>): void => {
     if (parameters.length !== 3) {
         throw new Error(SIGNATURE_ERROR_LENGTH);
     }
@@ -48,31 +48,31 @@ export function validateServiceFunctionSignature(parameters: ts.NodeArray<ts.Par
     if (!isSerializationParameter(serializationParam)) {
         throw new Error(SIGNATURE_ERROR_SERIALIZATION);
     }
-}
+};
 
 /**
  * Validates that a source file has the necessary imports for a service function
  * @param sf The source file to check
  * @returns True if the file has imports for both Context and Serialization from @quatico/magellan-shared
  */
-export function validateServiceFunctionImports(sf: ts.SourceFile) {
+export const validateServiceFunctionImports = (sf: ts.SourceFile) => {
     const importModule = "@quatico/magellan-shared";
     const hasContextImport = hasImport(sf, importModule, CONTEXT_TYPE_NAME);
     const hasSerializationImport = hasImport(sf, importModule, SERIALIZATION_TYPE_NAME);
     if (!hasContextImport || !hasSerializationImport) {
         throw new Error(MISSING_IMPORTS_ERROR);
     }
-}
+};
 
 /**
  * Checks for custom type declarations in the source file and throws an error if found
  * @param sourceFile The source file to check
  * @param type The type to check for
  */
-export function checkForCustomTypeDeclaration(sourceFile: ts.SourceFile, type: typeof CONTEXT_TYPE_NAME | typeof SERIALIZATION_TYPE_NAME): void {
+export const checkForCustomTypeDeclaration = (sourceFile: ts.SourceFile, type: typeof CONTEXT_TYPE_NAME | typeof SERIALIZATION_TYPE_NAME): void => {
     ts.forEachChild(sourceFile, node => {
         if ((ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node)) && ts.isIdentifier(node.name) && node.name.text === type) {
             throw new Error(getTypeErrorMessage(type));
         }
     });
-}
+};
