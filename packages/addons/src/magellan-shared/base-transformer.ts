@@ -29,7 +29,9 @@ export const createBaseTransformer = (
     const sf = ts.createSourceFile(fileName, content, context.getCliArgs().options.target ?? ts.ScriptTarget.Latest, true);
     const compilationOptions = context.getProfileConfig();
     if (!compilationOptions) {
-        throw new Error(`${addonName} profileConfig is missing`);
+        // When profileConfig is missing, return original content without transformation
+        // This allows addons to be specified without profiles (they'll just skip transformation)
+        return content;
     }
 
     const transformResults = ts.transform(sf, [addonFn(context)], context.getCliArgs().options);
@@ -38,5 +40,15 @@ export const createBaseTransformer = (
     }
 
     const transformedSf = transformResults.transformed.find(it => it.fileName === sf.fileName);
-    return transformedSf ? ts.createPrinter().printFile(transformedSf) : content;
+    // Only print if the AST was actually transformed
+    // This prevents ts.createPrinter() from reformatting unchanged files
+    if (!transformedSf || transformedSf === sf) {
+        return content;
+    }
+
+    const printed = ts.createPrinter().printFile(transformedSf);
+
+    // Final safety check: if printed content is identical to original, return original
+    // This preserves exact formatting when no semantic changes occurred
+    return printed === content ? content : printed;
 };

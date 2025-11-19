@@ -67,6 +67,7 @@ describe("addCompileCommand", () => {
             expect(helpOutput).toContain("--server");
             expect(helpOutput).toContain("--debug");
             expect(helpOutput).toContain("--transpileOnly");
+            expect(helpOutput).toContain("--addonEmitOnly");
             expect(helpOutput).toContain("--watch");
 
             // TypeScript compiler options
@@ -116,8 +117,8 @@ describe("addCompileCommand", () => {
 
             expect(helpOutput).toContain("--client");
             expect(helpOutput).toContain("--server");
-            expect(helpOutput).toContain("Apply client-side transformations");
-            expect(helpOutput).toContain("Apply server-side transformations");
+            expect(helpOutput).toContain("Generate client-side proxies for service");
+            expect(helpOutput).toContain("Generate server-side remote functions");
         });
     });
 
@@ -138,7 +139,9 @@ describe("addCompileCommand", () => {
 
             expect(helpOutput).toContain("Enable watch mode");
             expect(helpOutput).toContain("Enable the output of debug information");
-            expect(helpOutput).toContain("Enable the transpile only mode");
+            expect(helpOutput).toContain("Skip type checking for faster compilation");
+            expect(helpOutput).toContain("Only emit transformed files");
+            expect(helpOutput).toContain("Auto-enabled with --client or --server");
             expect(helpOutput).toContain('path to the "./websmith.config.json" file');
         });
 
@@ -262,6 +265,12 @@ describe("addCompileCommand", () => {
                 expect(compiler.getOptions().tsConfig!.transpileOnly).toBe(true);
             });
 
+            it("should handle --addonEmitOnly flag", () => {
+                executeCompiler("--addonEmitOnly", compiler);
+
+                expect(compiler.getOptions().config?.addonEmitOnly).toBe(true);
+            });
+
             it("should handle multiple boolean flags together", () => {
                 executeCompiler("--debug --strict --declaration", compiler);
 
@@ -357,6 +366,56 @@ describe("addCompileCommand", () => {
 
                 expect(compiler.getOptions().profile).toBe("server");
                 expect(compiler.getOptions().tsConfig!.declaration).toBe(true);
+            });
+
+            it("should handle client profile with addonEmitOnly", () => {
+                executeCompiler("--project ./tsconfig.json --client --addonEmitOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("client");
+                expect(compiler.getOptions().config?.addonEmitOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.client?.addons).toEqual(["client-function-transform"]);
+            });
+
+            it("should handle server profile with addonEmitOnly", () => {
+                executeCompiler("--project ./tsconfig.json --server --addonEmitOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("server");
+                expect(compiler.getOptions().config?.addonEmitOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.server?.addons).toEqual(["service-function-generate"]);
+            });
+
+            it("should handle client profile with transpileOnly", () => {
+                executeCompiler("--project ./tsconfig.json --client --transpileOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("client");
+                expect(compiler.getOptions().tsConfig!.transpileOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.client?.addons).toEqual(["client-function-transform"]);
+            });
+
+            it("should handle server profile with transpileOnly", () => {
+                executeCompiler("--project ./tsconfig.json --server --transpileOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("server");
+                expect(compiler.getOptions().tsConfig!.transpileOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.server?.addons).toEqual(["service-function-generate"]);
+            });
+
+            it("should handle client profile with both addonEmitOnly and transpileOnly", () => {
+                executeCompiler("--project ./tsconfig.json --client --addonEmitOnly --transpileOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("client");
+                expect(compiler.getOptions().config?.addonEmitOnly).toBe(true);
+                expect(compiler.getOptions().tsConfig!.transpileOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.client?.addons).toEqual(["client-function-transform"]);
+            });
+
+            it("should handle server profile with both addonEmitOnly and transpileOnly", () => {
+                executeCompiler("--project ./tsconfig.json --server --addonEmitOnly --transpileOnly", compiler);
+
+                expect(compiler.getOptions().profile).toBe("server");
+                expect(compiler.getOptions().config?.addonEmitOnly).toBe(true);
+                expect(compiler.getOptions().tsConfig!.transpileOnly).toBe(true);
+                expect(compiler.getOptions().config?.profiles?.server?.addons).toEqual(["service-function-generate"]);
             });
         });
     });

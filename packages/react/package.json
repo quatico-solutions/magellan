@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-react",
     "description": "React components for Magellan",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -15,9 +15,10 @@
     ],
     "scripts": {
         "clean": "rimraf lib coverage",
-        "lint": "eslint \"{src,test}/**/*.ts\" --color",
+        "lint": "eslint \"{src,test}/**/*.ts\" --color && pnpm typecheck",
         "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc",
+        "typecheck": "tsc --project tsconfig.test.json",
         "dist": "pnpm clean && pnpm lint && pnpm test && pnpm build:prod",
         "build:prod": "cross-env-shell NODE_ENV=production 'pnpm build'",
         "test": "jest --color --coverage",

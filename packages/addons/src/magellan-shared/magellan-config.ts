@@ -4,9 +4,9 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { type CompilerOptions } from "@quatico/websmith-core";
+import { type CompilerArguments } from "@quatico/websmith-api";
 
-export type MagellanConfig = CompilerOptions & {
+export type MagellanConfig = CompilerArguments & {
     hostname: string;
     port: number;
 };

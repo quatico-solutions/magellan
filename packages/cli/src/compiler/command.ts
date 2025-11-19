@@ -1,7 +1,6 @@
 /* eslint-disable curly */
-import { type CompilationProfile } from "@quatico/websmith-api";
-import { Compiler, DefaultReporter } from "@quatico/websmith-compiler";
-import { AddonRegistry, createOptions, type CompilationConfig } from "@quatico/websmith-core";
+import { type CompilationConfig, type CompilationProfile, type CompilerArguments } from "@quatico/websmith-api";
+import { AddonRegistry, Compiler, createOptions, DefaultReporter } from "@quatico/websmith-core";
 import { Command } from "commander";
 import ts from "typescript";
 import { ModuleResolver } from "./module-resolver";
@@ -13,6 +12,7 @@ interface CompilerOptions {
     debug?: boolean;
     project?: string;
     transpileOnly?: boolean;
+    addonEmitOnly?: boolean;
     watch?: boolean;
     init?: boolean;
     showConfig?: boolean;
@@ -47,11 +47,15 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler): 
         .showHelpAfterError("Add --help for additional information.")
         .argument("[source...]", "Source directory or files to compile (optional)")
         .option("-c, --configFile <filePath>", 'File path to the "./websmith.config.json" file.')
-        .option("--client", "Apply client-side transformations (client-function-transform addon)")
-        .option("--server", "Apply server-side transformations (service-function-generate addon)")
+        .option("--client", "Generate client-side proxies for service functions. Automatically enables --addonEmitOnly and --transpileOnly.")
+        .option(
+            "--server",
+            "Generate server-side remote functions to be called from the client. Automatically enables --addonEmitOnly and --transpileOnly."
+        )
         .option("--debug", "Enable the output of debug information.")
         .option("-p, --project <projectPath>", "Compile the project given the path to its configuration file, or to a folder with a 'tsconfig.json'.")
-        .option("-o, --transpileOnly", "Enable the transpile only mode.")
+        .option("-o, --transpileOnly", "Skip type checking for faster compilation. Auto-enabled with --client or --server.")
+        .option("--addonEmitOnly", "Only emit transformed files (excludes helpers, types, config). Auto-enabled with --client or --server.")
         .option("-w, --watch", "Enable watch mode.")
         .option("--init", "Initializes a TypeScript project and creates a tsconfig.json file.")
         .option("--showConfig", "Print the final configuration instead of building.")
@@ -95,6 +99,17 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler): 
                 const reporter = new DefaultReporter(system);
                 const tsConfigFile = options.project ?? "./tsconfig.json";
 
+                // Auto-enable optimizations when using --client or --server
+                // This provides the optimal development workflow: fast builds + only emit transformed files
+                if (options.client || options.server) {
+                    if (options.transpileOnly === undefined) {
+                        options.transpileOnly = true;
+                    }
+                    if (options.addonEmitOnly === undefined) {
+                        options.addonEmitOnly = true;
+                    }
+                }
+
                 const { client, server, ...rest } = options;
 
                 // Validate that client and server options are not used together
@@ -107,7 +122,7 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler): 
                 // Remove configFile to prevent websmith-core from loading it again
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { configFile: _configFile, ...restWithoutConfigFile } = rest;
-                const websmithOptions = createOptions(restWithoutConfigFile, reporter, system);
+                const websmithOptions = createOptions(restWithoutConfigFile as CompilerArguments, reporter, system);
 
                 // Create TypeScript compiler options from CLI arguments
                 const tsCompilerOptions: ts.CompilerOptions = {};
@@ -282,7 +297,8 @@ const buildWebsmithConfig = (
         }
 
         if (configFileOpts.profiles) {
-            Object.entries(configFileOpts.profiles).forEach(([profileName, profile]) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            (Object.entries(configFileOpts.profiles) as [string, CompilationProfile][]).forEach(([profileName, profile]) => {
                 if (!["client", "server"].includes(profileName)) {
                     process.stderr.write(
                         `Invalid profile name "${profileName}" found in "${options.configFile}". Remove the profile from the configuration file or rename it to "client" or "server".\n`
@@ -354,6 +370,7 @@ const buildWebsmithConfig = (
             addonsDir,
             profiles, // CLI-generated profiles with addons override config file profiles
             ...(options.transpileOnly && { transpileOnly: true }),
+            ...(options.addonEmitOnly && { addonEmitOnly: true }),
         },
         profile,
     };

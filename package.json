@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan",
     "description": "Compiler and runtime API for remote execution of service functions written in TypeScript.",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "keywords": [
         "typescript",
         "java",
@@ -20,6 +20,7 @@
         "lint": "pnpm run --recursive lint",
         "lint:fix": "pnpm run --recursive lint",
         "build": "pnpm run --recursive build",
+        "typecheck": "pnpm run --recursive typecheck",
         "test": "pnpm run --recursive test",
         "test:update": "pnpm run --recursive test:update",
         "test:e2e": "pnpm run --recursive test:e2e",

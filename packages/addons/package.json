@@ -1,6 +1,6 @@
 {
     "name": "@quatico/magellan-addons",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "description": "A example library for the websmith compiler",
     "author": "Quatico Solutions AG",
     "license": "MIT",
@@ -15,9 +15,10 @@
     ],
     "scripts": {
         "clean": "rimraf lib dist bin coverage output.yaml",
-        "lint": "eslint \"{src,test}/**/*.ts\" --color",
+        "lint": "eslint \"{src,test}/**/*.ts\" --color && pnpm typecheck",
         "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc",
+        "typecheck": "tsc --project tsconfig.test.json",
         "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
         "test": "jest --testRegex=\"src/.*\\.spec\\.ts$\" --coverage",
         "test:update-snapshots": "pnpm test -u",
@@ -31,8 +32,8 @@
     "peerDependencies": {
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
-        "@quatico/websmith-api": "0.7.x",
-        "@quatico/websmith-core": "0.7.x",
+        "@quatico/websmith-api": "0.8.x",
+        "@quatico/websmith-core": "0.8.x",
         "typescript": ">=5"
     },
     "devDependencies": {
@@ -41,10 +42,10 @@
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
         "@quatico/magellan-shared": "workspace:*",
-        "@quatico/websmith-api": "0.7.12",
-        "@quatico/websmith-compiler": "0.7.12",
-        "@quatico/websmith-core": "0.7.12",
-        "@quatico/websmith-testing": "0.7.12",
+        "@quatico/websmith-api": "0.8.3",
+        "@quatico/websmith-compiler": "0.8.3",
+        "@quatico/websmith-core": "0.8.3",
+        "@quatico/websmith-testing": "0.8.3",
         "@types/jest": "^29.5.1",
         "@types/node": "18",
         "@typescript-eslint/eslint-plugin": "^8.22.0",

@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -15,9 +15,10 @@
     ],
     "scripts": {
         "clean": "rimraf lib coverage",
-        "lint": "eslint \"{src,test}/**/*.ts\" --color",
+        "lint": "eslint \"{src,test}/**/*.ts\" --color && pnpm typecheck",
         "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
         "build": "tsc",
+        "typecheck": "tsc --project tsconfig.test.json",
         "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
         "dev": "tsc && node lib/cli/index.js serve ../../../qs-magellan-sandbox/packages/react/lib ../../../qs-magellan-sandbox/packages/react/server-esm",
         "test": "jest --color --coverage",
@@ -40,7 +41,7 @@
         "@quatico/magellan-shared": "workspace:*",
         "@types/cors": "2.8.13",
         "@types/express": "5.0.1",
-        "@types/http-errors": "^2.0.1",
+        "@types/http-errors": "^2.0.5",
         "@types/jest": "^29.5.1",
         "@types/multer": "1.4.7",
         "@types/node": "18",
@@ -60,7 +61,7 @@
         "eslint-plugin-testing-library": "^7.1.1",
         "eslint-plugin-unicorn": "^56.0.1",
         "express": "5.1.0",
-        "http-errors": "1.6.x",
+        "http-errors": "2.0.0",
         "jest": "^29.5.0",
         "memfs": "3.5.x",
         "multer": "1.4.5-lts.1",

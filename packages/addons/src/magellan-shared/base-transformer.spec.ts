@@ -141,20 +141,22 @@ describe("createBaseTransformer", () => {
             }).toThrow(`${addonName} (${testFileName}) could not find source file`);
         });
 
-        it("should throw error when profileConfig is missing", () => {
+        it("should return original content when profileConfig is missing", () => {
             mockGetProfileConfig.mockReturnValue(null);
 
-            expect(() => {
-                createBaseTransformer(testFileName, testContent, mockAddonContext, addonName, mockAddonFn);
-            }).toThrow(`${addonName} profileConfig is missing`);
+            const result = createBaseTransformer(testFileName, testContent, mockAddonContext, addonName, mockAddonFn);
+
+            expect(result).toBe(testContent);
+            expect(mockAddonFn).not.toHaveBeenCalled();
         });
 
-        it("should throw error when profileConfig is undefined", () => {
+        it("should return original content when profileConfig is undefined", () => {
             mockGetProfileConfig.mockReturnValue(undefined);
 
-            expect(() => {
-                createBaseTransformer(testFileName, testContent, mockAddonContext, addonName, mockAddonFn);
-            }).toThrow(`${addonName} profileConfig is missing`);
+            const result = createBaseTransformer(testFileName, testContent, mockAddonContext, addonName, mockAddonFn);
+
+            expect(result).toBe(testContent);
+            expect(mockAddonFn).not.toHaveBeenCalled();
         });
     });
 
@@ -166,8 +168,10 @@ describe("createBaseTransformer", () => {
         it("should transform source file and return printed result", () => {
             const transformedContent = "const y = 2;";
             const mockSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
+            // Create a different object for the transformed result to simulate actual transformation
+            const mockTransformedSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
             const mockTransformResult = {
-                transformed: [mockSourceFile],
+                transformed: [mockTransformedSourceFile],
                 diagnostics: [],
             };
             const mockPrinter = {
@@ -185,7 +189,7 @@ describe("createBaseTransformer", () => {
             expect(ts.transform).toHaveBeenCalledWith(mockSourceFile, [expect.any(Function)], {
                 target: ts.ScriptTarget.ES2020,
             });
-            expect(mockPrinter.printFile).toHaveBeenCalledWith(mockSourceFile);
+            expect(mockPrinter.printFile).toHaveBeenCalledWith(mockTransformedSourceFile);
         });
 
         it("should use default target when not specified in options", () => {
@@ -195,8 +199,9 @@ describe("createBaseTransformer", () => {
             });
 
             const mockSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
+            const mockTransformedSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
             const mockTransformResult = {
-                transformed: [mockSourceFile],
+                transformed: [mockTransformedSourceFile],
                 diagnostics: [],
             };
 
@@ -217,8 +222,9 @@ describe("createBaseTransformer", () => {
                 category: ts.DiagnosticCategory.Warning,
             } as ts.Diagnostic;
             const mockSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
+            const mockTransformedSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
             const mockTransformResult = {
-                transformed: [mockSourceFile],
+                transformed: [mockTransformedSourceFile],
                 diagnostics: [mockDiagnostic],
             };
 
@@ -235,8 +241,9 @@ describe("createBaseTransformer", () => {
 
         it("should not report diagnostics when none are present", () => {
             const mockSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
+            const mockTransformedSourceFile = { fileName: testFileName, kind: ts.SyntaxKind.SourceFile } as ts.SourceFile;
             const mockTransformResult = {
-                transformed: [mockSourceFile],
+                transformed: [mockTransformedSourceFile],
                 diagnostics: [],
             };
 

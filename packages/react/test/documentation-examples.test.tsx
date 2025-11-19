@@ -60,8 +60,6 @@ describe("Documentation Examples E2E Tests", () => {
             };
 
             it("should not fetch when user is not authenticated", () => {
-                const mockServiceFn = jest.fn().mockResolvedValue({ theme: "dark" });
-
                 render(
                     <AuthContext.Provider value={{ isAuthenticated: false, user: null }}>
                         <Dashboard />
@@ -69,12 +67,9 @@ describe("Documentation Examples E2E Tests", () => {
                 );
 
                 expect(screen.getByTestId("login-prompt")).not.toBeNull();
-                expect(mockServiceFn).not.toHaveBeenCalled();
             });
 
             it("should fetch preferences only after authentication", async () => {
-                const mockServiceFn = jest.fn().mockResolvedValue({ theme: "dark", userId: "user123" });
-
                 const { rerender } = renderWithQueryClient(
                     <AuthContext.Provider value={{ isAuthenticated: false, user: null }}>
                         <Dashboard />
@@ -143,17 +138,6 @@ describe("Documentation Examples E2E Tests", () => {
             };
 
             it("should fetch customer only after order loads", async () => {
-                const orderServiceFn = jest.fn().mockResolvedValue({
-                    id: 123,
-                    customerId: 456,
-                    total: 99.99,
-                });
-
-                const customerServiceFn = jest.fn().mockResolvedValue({
-                    id: 456,
-                    name: "Jane Smith",
-                });
-
                 renderWithQueryClient(<OrderDetails />);
 
                 // Initially loading order
@@ -173,7 +157,8 @@ describe("Documentation Examples E2E Tests", () => {
 
         describe("Manual Refetch", () => {
             it("should not auto-fetch and only search on button click", async () => {
-                const mockServiceFn = jest.fn().mockResolvedValue([{ id: 1, name: "User matching test" }]);
+                type User = { id: number; name: string };
+                const mockServiceFn = jest.fn<Promise<User[]>, [{ query: string }]>().mockResolvedValue([{ id: 1, name: "User matching test" }]);
 
                 const SearchUsers: FC = () => {
                     const [searchTerm, setSearchTerm] = useState("");
@@ -199,7 +184,7 @@ describe("Documentation Examples E2E Tests", () => {
                             </button>
                             {data && (
                                 <div data-testid="search-results">
-                                    {data.map((user: any) => (
+                                    {data.map(user => (
                                         <div key={user.id}>{user.name}</div>
                                     ))}
                                 </div>
@@ -242,9 +227,10 @@ describe("Documentation Examples E2E Tests", () => {
                 shouldFailOnRefetch,
             }) => {
                 let callCount = 0;
+                type Product = { id: number; name: string };
 
-                const { data, isError, isLoadingError, isRefetchError, refetch } = useQueryService({
-                    serviceFn: () => {
+                const { data, isLoadingError, isRefetchError, refetch } = useQueryService({
+                    serviceFn: (): Promise<Product[]> => {
                         callCount++;
                         if (callCount === 1 && shouldFailInitially) {
                             return Promise.reject(new Error("Initial fetch failed"));
@@ -297,7 +283,8 @@ describe("Documentation Examples E2E Tests", () => {
 
             it("should show stale data with warning when refetch fails", async () => {
                 let callCount = 0;
-                const mockServiceFn = jest.fn().mockImplementation(() => {
+                type Product = { id: number; name: string };
+                const mockServiceFn = jest.fn<Promise<Product[]>, []>().mockImplementation(() => {
                     callCount++;
                     if (callCount === 1) {
                         // Initial fetch succeeds
@@ -320,7 +307,7 @@ describe("Documentation Examples E2E Tests", () => {
                             {isRefetchError && <div data-testid="warning-banner">Unable to get latest updates. Showing cached data.</div>}
                             {data && (
                                 <div data-testid="product-grid">
-                                    {data.map((product: any) => (
+                                    {data.map(product => (
                                         <div key={product.id}>{product.name}</div>
                                     ))}
                                 </div>
@@ -652,7 +639,8 @@ describe("Documentation Examples E2E Tests", () => {
             it("should debounce search requests", async () => {
                 jest.useFakeTimers();
 
-                const mockServiceFn = jest.fn().mockResolvedValue([{ id: 1, name: "Product" }]);
+                type Product = { id: number; name: string };
+                const mockServiceFn = jest.fn<Promise<Product[]>, [{ query: string }]>().mockResolvedValue([{ id: 1, name: "Product" }]);
 
                 const ProductSearchWithMock: FC = () => {
                     const [searchTerm, setSearchTerm] = useState("");

@@ -9,6 +9,10 @@ import fs from "fs";
 import { getVersion } from "../extract-version";
 import { addServeCommand } from "./command";
 
+beforeEach(() => {
+    jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+});
+
 describe("addServeCommand", () => {
     it("should set the default options w/ valid functionScriptPath", () => {
         setupFolders("./resources", "./server-esm");

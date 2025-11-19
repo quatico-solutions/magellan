@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -20,8 +20,9 @@
     "scripts": {
         "clean": "rimraf lib bin coverage",
         "lint": "eslint \"{src,test}/**/*.ts\" --color",
-        "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
+        "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix && pnpm typecheck",
         "build": "tsc && pnpm bundle",
+        "typecheck": "tsc --project tsconfig.test.json",
         "bundle": "webpack",
         "dist": "cross-env-shell NODE_ENV=production \"pnpm clean && pnpm lint && pnpm test && pnpm build\"",
         "dev:compile": "tsc && node lib/index.js compile ../../../qs-magellan-sandbox/packages/react/src/functions -s ../../../qs-magellan-sandbox/packages/react/server-esm -p ../../../qs-magellan-sandbox/packages/react/tsconfig.json",
@@ -37,13 +38,14 @@
         "@quatico/magellan-client": "workspace:*",
         "@quatico/magellan-server": "workspace:*",
         "@quatico/magellan-shared": "workspace:*",
-        "@quatico/websmith-api": "0.7.12",
-        "@quatico/websmith-compiler": "0.7.12",
-        "@quatico/websmith-core": "0.7.12",
+        "@quatico/websmith-api": "0.8.3",
+        "@quatico/websmith-compiler": "0.8.3",
+        "@quatico/websmith-core": "0.8.3",
         "commander": "^13.1.0",
         "minimist": "1.2.8",
         "tslib": "^2.8.1",
-        "typescript": "5.7.3"
+        "typescript": "5.7.3",
+        "websmith-loader": "0.8.3"
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.6",

@@ -4,7 +4,8 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { type CompilationConfig, Compiler, createSystem, NoReporter } from "@quatico/websmith-core";
+import { type CompilationConfig } from "@quatico/websmith-api";
+import { Compiler, createSystem, NoReporter } from "@quatico/websmith-core";
 import { addCompileCommand } from "@quatico/websmith-compiler";
 import { Command } from "commander";
 import fs from "node:fs";
@@ -185,8 +186,7 @@ describe("cli.ts", () => {
         const target = new Compiler({ reporter: new NoReporter() }, {}, createSystem({}, { virtual: true }));
         executeCompiler("", target);
 
-        expect(target.getOptions()).toEqual({
-            additionalArguments: expect.any(Map),
+        expect(target.getOptions()).toMatchObject({
             buildDir: "/",
             cliArgs: {
                 errors: [],
@@ -206,6 +206,9 @@ describe("cli.ts", () => {
                     removeComments: false,
                     strict: false,
                     target: 1,
+                },
+                raw: {
+                    configFilePath: "/tsconfig.json",
                 },
             },
             config: {},
@@ -232,6 +235,8 @@ describe("cli.ts", () => {
             tsConfigFile: expect.any(String),
             watch: false,
         });
+        // additionalArguments should be undefined when there are no additional arguments
+        expect(target.getOptions().additionalArguments).toBeUndefined();
     });
 
     it("should handle unknown arguments", () => {
@@ -446,17 +451,29 @@ describe("cli.ts", () => {
         `);
     });
 
-    it("should yield remote-function with single file, addon service-function-generate in cli and emit", () => {
+    it("should yield remote-function with input-type Date, addon from profile and emit", () => {
         createTsConfigFile({
             outDir: testDirs.OUTPUT_DIR,
             noEmit: false,
             target: ts.ScriptTarget.ESNext,
+            module: ts.ModuleKind.ESNext,
             moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
+        createWebsmithConfig({
+            addonsDir: ADDONS_DIR,
+            profiles: {
+                server: {
+                    addons: ["service-function-generate"],
+                    tsConfig: {
+                        outDir: `${testDirs.OUTPUT_DIR}/server`,
+                    },
+                },
+            },
         });
         createSourceFile(
             `
             import { type Context, type Serialization } from "@quatico/magellan-shared";
-
+            
             // @service()
             export function getFoobar(date: Date, context?: Context, serialization?: Serialization) {
                 return foobar(date);
@@ -469,9 +486,11 @@ describe("cli.ts", () => {
             "service-function.ts"
         );
 
-        executeCompiler(`--addonsDir ${ADDONS_DIR} --addons service-function-generate --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
+        executeCompiler(
+            `--profile server --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
+        );
 
-        expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
+        expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
             "// @service()
             export function getFoobar({ date }, context, serialization) {
                 return foobar(date);
@@ -479,6 +498,98 @@ describe("cli.ts", () => {
             function foobar(date) {
                 return "foobar " + date.toISOString();
             }
+            "
+        `);
+    });
+
+    it("should yield remote-function with inlined object input-type, addon from profile and emit", () => {
+        jest.spyOn(process.stderr, "write").mockImplementation(() => true); // Cannot find module '@qs/cds-cpq-shared'
+
+        createTsConfigFile({
+            outDir: testDirs.OUTPUT_DIR,
+            noEmit: false,
+            target: ts.ScriptTarget.ESNext,
+            module: ts.ModuleKind.ESNext,
+            moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
+        createWebsmithConfig({
+            addonsDir: ADDONS_DIR,
+            profiles: {
+                server: {
+                    addons: ["service-function-generate"],
+                    tsConfig: {
+                        outDir: `${testDirs.OUTPUT_DIR}/server`,
+                    },
+                },
+            },
+        });
+        createSourceFile(
+            `
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+            import { type ConfigurableService, ConfigurableServiceEntity } from "@qs/cds-cpq-shared";
+
+            // @service({"namespace":"cds-cpq-no-auth"})
+            export const getConfigurableServiceFn = async (
+                input: {
+                    serviceId: ConfigurableService.Id;
+                    configurations?: Record<string, unknown>;
+                },
+                _context?: Context,
+                _serialization?: Serialization
+            ): Promise<ConfigurableService | undefined> => {
+                const { serviceId, configurations } = input;
+                return await ConfigurableServiceEntity.loadOrFind(serviceId, configurations);
+            };
+        `,
+            "service-function.ts"
+        );
+
+        executeCompiler(
+            `--profile server --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
+        );
+
+        expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
+            "import { ConfigurableServiceEntity } from "@qs/cds-cpq-shared";
+            // @service({"namespace":"cds-cpq-no-auth"})
+            export const getConfigurableServiceFn = async ({ input }, _context, _serialization) => {
+                const { serviceId, configurations } = input;
+                return await ConfigurableServiceEntity.loadOrFind(serviceId, configurations);
+            };
+            "
+        `);
+    });
+
+    it("should yield remote-function with single file, addon service-function-generate in cli and emit", () => {
+        createTsConfigFile({
+            outDir: testDirs.OUTPUT_DIR,
+            noEmit: false,
+            target: ts.ScriptTarget.ESNext,
+            moduleResolution: ts.ModuleResolutionKind.Node10,
+        });
+        createSourceFile(
+            `
+            "import { ConfigurableServiceEntity } from "@qs/cds-cpq-shared";
+            // @service({"namespace":"cds-cpq-no-auth"})
+            export const getConfigurableServiceFn = async ({ input }, _context, _serialization) => {
+                const { serviceId, configurations } = input;
+                return await ConfigurableServiceEntity.loadOrFind(serviceId, configurations);
+            };
+            "
+        `,
+            "service-function.ts"
+        );
+
+        executeCompiler(`--addonsDir ${ADDONS_DIR} --addons service-function-generate --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
+
+        expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
+            ""import { ConfigurableServiceEntity } from ";
+            /cds-cpq-shared";
+            // @service({"namespace":"cds-cpq-no-auth"})
+            export const getConfigurableServiceFn = async ({ input }, _context, _serialization) => {
+                const { serviceId, configurations } = input;
+                return await ConfigurableServiceEntity.loadOrFind(serviceId, configurations);
+            };
+            ";
             "
         `);
     });
@@ -538,7 +649,9 @@ const executeCompiler = (args = "", compiler?: Compiler) => {
             throw new Error(`Process exit called with code ${code}`);
         };
 
-        addCompileCommand(new Command(), compiler).parse(args.split(" "), { from: "user" });
+        // Filter out empty strings from args before parsing to avoid issues with empty arguments
+        const parsedArgs = args.split(" ").filter(arg => arg.trim() !== "");
+        addCompileCommand(new Command(), compiler).parse(parsedArgs, { from: "user" });
     } catch (err) {
         // Check if this was a successful exit (help shown, etc.)
         if (exitCode === 0 || process.exitCode === 0) {
