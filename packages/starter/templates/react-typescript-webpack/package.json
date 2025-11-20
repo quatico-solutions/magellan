@@ -15,7 +15,7 @@
     "devDependencies": {
         "@quatico/magellan-addons": "latest",
         "@quatico/magellan-cli": "latest",
-        "websmith-loader": "0.8.3",
+        "websmith-loader": "0.8.4",
         "@types/node": "^18",
         "@types/react": "^18.3.12",
         "@types/react-dom": "^18.3.1",

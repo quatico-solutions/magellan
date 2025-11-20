@@ -21,10 +21,13 @@ export class ModuleResolver {
      * Resolves the addons directory specifically
      */
     static resolveAddonsDir(addonsDir?: string): string {
+        // If user provides a path via CLI, treat it as a file system path
+        if (addonsDir) {
+            return path.resolve(addonsDir);
+        }
+
+        // Default: resolve from @quatico/magellan-addons package
         try {
-            if (addonsDir) {
-                return path.resolve(this.resolve(addonsDir));
-            }
             return path.resolve(this.resolve("@quatico/magellan-addons/package.json"), "../lib");
         } catch (_ignored) {
             // Fallback to relative path during development/testing

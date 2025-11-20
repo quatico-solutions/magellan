@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-client",
     "description": "Client library for proxies generated with @quatico/websmith-compiler",
-    "version": "0.18.0",
+    "version": "0.18.1",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
