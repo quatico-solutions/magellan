@@ -1,8 +1,8 @@
 {
   "all-addons": {
-    "sourceHash": "sx4d2h",
+    "sourceHash": "-m4a1sa",
     "compiledPath": "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/cli/.websmith-cache/addons",
-    "timestamp": 1763704784868,
+    "timestamp": 1763765961314,
     "dependencies": [
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/addon.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/ClientAddon.ts",
@@ -10,6 +10,8 @@
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/client-code-remover.spec.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/client-code-remover.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/client-function-transformer.ts",
+      "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/client-index-generator.spec.ts",
+      "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/client-index-generator.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/create-client-imports.spec.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/create-client-imports.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/create-import.spec.ts",

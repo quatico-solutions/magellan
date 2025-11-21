@@ -499,7 +499,8 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
             return {
                 ...baseContext,
                 getSystem: () => mockedSystem,
-            } as AddonContext<MagellanConfig>;
+                markFileAsAddonProcessed: jest.fn(),
+            } as unknown as AddonContext<MagellanConfig>;
         };
 
         const createSourceWithPath = (filePath: string, fileContent: string) =>
@@ -631,6 +632,109 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
             const result = applyClientTransformerWithContext(barrelSource, mockedContext);
 
             expect(result).toContain('export * from "./services/data-service"');
+        });
+
+        it("should process nested barrel file that re-exports from another barrel", () => {
+            const serviceFileContent = `
+                import { type Context } from "@quatico/magellan-shared";
+                import { type Serialization } from "@quatico/magellan-shared";
+                // @service()
+                export const getDate = async (_: never, context?: Context, serialization?: Serialization) => new Date();
+            `;
+
+            const innerBarrelContent = `export * from "./service-file";`;
+            const outerBarrelContent = `export * from "./services";`;
+
+            const mockedContext = createMockedContext({
+                "service-file.ts": serviceFileContent,
+                "services.ts": innerBarrelContent,
+            });
+
+            const outerBarrelSource = createSourceWithPath("/project/src/index.ts", outerBarrelContent);
+            const result = applyClientTransformerWithContext(outerBarrelSource, mockedContext);
+
+            expect(result).toContain('export * from "./services"');
+        });
+
+        it("should handle circular re-exports without infinite recursion", () => {
+            const fileAContent = `export * from "./file-b";`;
+            const fileBContent = `export * from "./file-a";`;
+
+            const mockedContext = createMockedContext({
+                "file-a.ts": fileAContent,
+                "file-b.ts": fileBContent,
+            });
+
+            const barrelSource = createSourceWithPath("/project/src/file-a.ts", fileAContent);
+
+            // Should not throw or hang
+            expect(() => {
+                ts.transform(barrelSource, [createClientTransformer(mockedContext)]);
+            }).not.toThrow();
+        });
+
+        it("should process barrel file with type-only re-exports from service file", () => {
+            const serviceFileContent = `
+                import { type Context } from "@quatico/magellan-shared";
+                import { type Serialization } from "@quatico/magellan-shared";
+                export type ServiceInput = { id: string };
+                // @service()
+                export const getDate = async (_: never, context?: Context, serialization?: Serialization) => new Date();
+            `;
+
+            const barrelFileContent = `
+                export type { ServiceInput } from "./service-file";
+                export { getDate } from "./service-file";
+            `;
+
+            const mockedContext = createMockedContext({ "service-file.ts": serviceFileContent });
+
+            const barrelSource = createSourceWithPath("/project/src/index.ts", barrelFileContent);
+            const result = applyClientTransformerWithContext(barrelSource, mockedContext);
+
+            expect(result).toContain('export type { ServiceInput } from "./service-file"');
+            expect(result).toContain('export { getDate } from "./service-file"');
+        });
+
+        it("should process barrel file with relative paths going up directories", () => {
+            const serviceFileContent = `
+                import { type Context } from "@quatico/magellan-shared";
+                import { type Serialization } from "@quatico/magellan-shared";
+                // @service()
+                export const getUser = async (_: never, context?: Context, serialization?: Serialization) => ({ id: "1" });
+            `;
+
+            const barrelFileContent = `export * from "../services/user-service";`;
+
+            const mockedContext = createMockedContext({
+                "services/user-service.ts": serviceFileContent,
+            });
+
+            const barrelSource = createSourceWithPath("/project/src/api/index.ts", barrelFileContent);
+            const result = applyClientTransformerWithContext(barrelSource, mockedContext);
+
+            expect(result).toContain('export * from "../services/user-service"');
+        });
+
+        it("should process barrel file with index file resolution", () => {
+            const serviceFileContent = `
+                import { type Context } from "@quatico/magellan-shared";
+                import { type Serialization } from "@quatico/magellan-shared";
+                // @service()
+                export const getData = async (_: never, context?: Context, serialization?: Serialization) => ({ data: "test" });
+            `;
+
+            // Barrel file imports from "./services" which should resolve to "./services/index.ts"
+            const barrelFileContent = `export * from "./services";`;
+
+            const mockedContext = createMockedContext({
+                "services/index.ts": serviceFileContent,
+            });
+
+            const barrelSource = createSourceWithPath("/project/src/index.ts", barrelFileContent);
+            const result = applyClientTransformerWithContext(barrelSource, mockedContext);
+
+            expect(result).toContain('export * from "./services"');
         });
     });
 });

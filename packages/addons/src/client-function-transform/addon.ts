@@ -7,9 +7,11 @@
 import { type AddonContext } from "@quatico/websmith-api";
 import { validateRuntimeLibrary } from "../magellan-shared/addon-helpers";
 import { type MagellanConfig } from "../magellan-shared/magellan-config";
+import { createClientIndexGenerator } from "./client-index-generator";
 import { createTransformer } from "./ClientAddon";
 
 export const activate = (ctx: AddonContext<MagellanConfig>) => {
     validateRuntimeLibrary("@quatico/magellan-client", ctx);
     ctx.registerProcessor((name: string, content: string) => createTransformer(name, content, ctx));
+    ctx.registerResultProcessor(createClientIndexGenerator());
 };

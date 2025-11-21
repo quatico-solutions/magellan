@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-react",
     "description": "React components for Magellan",
-    "version": "0.18.2",
+    "version": "0.18.3",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {

@@ -31,27 +31,52 @@ const resolveModulePath = (sourceFileName, moduleSpecifier) => {
     return resolvedPath;
 };
 /**
- * Checks if a file contains service function annotations.
+ * Checks if a file contains service function annotations or re-exports from service files.
+ * Uses a visited set to prevent infinite recursion with circular dependencies.
  */
-const checkFileHasServiceFunctions = (filePath, context) => {
+const checkFileHasServiceFunctions = (filePath, context, visited = new Set()) => {
     const system = context.getSystem();
-    if (!system.fileExists(filePath)) {
+    // Resolve the file path
+    let resolvedPath = filePath;
+    if (!system.fileExists(resolvedPath)) {
         // Try with .tsx extension
-        const tsxPath = filePath.replace(/\.ts$/, ".tsx");
+        const tsxPath = resolvedPath.replace(/\.ts$/, ".tsx");
         if (!system.fileExists(tsxPath)) {
-            return false;
+            // Try as directory with index.ts
+            const indexPath = path_1.default.join(resolvedPath.replace(/\.ts$/, ""), "index.ts");
+            if (system.fileExists(indexPath)) {
+                resolvedPath = indexPath;
+            }
+            else {
+                return false;
+            }
         }
-        filePath = tsxPath;
+        else {
+            resolvedPath = tsxPath;
+        }
     }
-    const content = system.readFile(filePath);
+    // Prevent infinite recursion
+    if (visited.has(resolvedPath)) {
+        return false;
+    }
+    visited.add(resolvedPath);
+    const content = system.readFile(resolvedPath);
     if (!content) {
         return false;
     }
-    const sf = typescript_1.default.createSourceFile(filePath, content, typescript_1.default.ScriptTarget.Latest, true);
+    const sf = typescript_1.default.createSourceFile(resolvedPath, content, typescript_1.default.ScriptTarget.Latest, true);
     let hasServiceFunctions = false;
     typescript_1.default.forEachChild(sf, node => {
+        // Check for direct service function declarations
         if ((0, magellan_shared_1.isNodeExported)(node) && (0, magellan_shared_1.getDecoration)(sf, node, magellan_shared_1.DECORATOR_NAME, context)) {
             hasServiceFunctions = true;
+        }
+        // Check for re-exports from other files (nested barrel file support)
+        if (typescript_1.default.isExportDeclaration(node) && node.moduleSpecifier && typescript_1.default.isStringLiteral(node.moduleSpecifier)) {
+            const modulePath = resolveModulePath(resolvedPath, node.moduleSpecifier.text);
+            if (checkFileHasServiceFunctions(modulePath, context, visited)) {
+                hasServiceFunctions = true;
+            }
         }
     });
     return hasServiceFunctions;
@@ -90,7 +115,9 @@ const createClientTransformer = (context) => {
             if (!currentFileHasServiceFunctions) {
                 // Check if this file re-exports from service files (barrel file pattern)
                 if (hasServiceReExports(sf, context)) {
-                    // Return an updated source file to mark it as processed
+                    // Mark this file as processed so it gets emitted in addonEmitOnly mode
+                    context.markFileAsAddonProcessed(sf.fileName);
+                    // Return an updated source file
                     // The content stays the same, but we create a new SourceFile object
                     return ctx.factory.updateSourceFile(sf, sf.statements);
                 }
