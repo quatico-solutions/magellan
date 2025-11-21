@@ -11,12 +11,66 @@ exports.createClientTransformer = exports.REMOTE_INVOKE_PARAM_NAME = void 0;
  * ---------------------------------------------------------------------------------------------
  */
 const websmith_api_1 = require("@quatico/websmith-api");
+const path_1 = __importDefault(require("path"));
 const typescript_1 = __importDefault(require("typescript"));
 const magellan_shared_1 = require("../magellan-shared");
 const client_code_remover_1 = require("./client-code-remover");
 const client_function_transformer_1 = require("./client-function-transformer");
 const create_client_imports_1 = require("./create-client-imports");
 exports.REMOTE_INVOKE_PARAM_NAME = "remoteInvoke";
+/**
+ * Resolves a module specifier relative to the source file.
+ */
+const resolveModulePath = (sourceFileName, moduleSpecifier) => {
+    const sourceDir = path_1.default.dirname(sourceFileName);
+    let resolvedPath = path_1.default.resolve(sourceDir, moduleSpecifier);
+    // Add .ts extension if not present
+    if (!resolvedPath.endsWith(".ts") && !resolvedPath.endsWith(".tsx")) {
+        resolvedPath = resolvedPath + ".ts";
+    }
+    return resolvedPath;
+};
+/**
+ * Checks if a file contains service function annotations.
+ */
+const checkFileHasServiceFunctions = (filePath, context) => {
+    const system = context.getSystem();
+    if (!system.fileExists(filePath)) {
+        // Try with .tsx extension
+        const tsxPath = filePath.replace(/\.ts$/, ".tsx");
+        if (!system.fileExists(tsxPath)) {
+            return false;
+        }
+        filePath = tsxPath;
+    }
+    const content = system.readFile(filePath);
+    if (!content) {
+        return false;
+    }
+    const sf = typescript_1.default.createSourceFile(filePath, content, typescript_1.default.ScriptTarget.Latest, true);
+    let hasServiceFunctions = false;
+    typescript_1.default.forEachChild(sf, node => {
+        if ((0, magellan_shared_1.isNodeExported)(node) && (0, magellan_shared_1.getDecoration)(sf, node, magellan_shared_1.DECORATOR_NAME, context)) {
+            hasServiceFunctions = true;
+        }
+    });
+    return hasServiceFunctions;
+};
+/**
+ * Checks if a file has re-exports that point to service files.
+ */
+const hasServiceReExports = (sf, context) => {
+    let result = false;
+    typescript_1.default.forEachChild(sf, node => {
+        if (typescript_1.default.isExportDeclaration(node) && node.moduleSpecifier && typescript_1.default.isStringLiteral(node.moduleSpecifier)) {
+            const modulePath = resolveModulePath(sf.fileName, node.moduleSpecifier.text);
+            if (checkFileHasServiceFunctions(modulePath, context)) {
+                result = true;
+            }
+        }
+    });
+    return result;
+};
 /**
  * Creates a transformer that converts service functions into client invocations.
  */
@@ -34,6 +88,12 @@ const createClientTransformer = (context) => {
                 }
             });
             if (!currentFileHasServiceFunctions) {
+                // Check if this file re-exports from service files (barrel file pattern)
+                if (hasServiceReExports(sf, context)) {
+                    // Return an updated source file to mark it as processed
+                    // The content stays the same, but we create a new SourceFile object
+                    return ctx.factory.updateSourceFile(sf, sf.statements);
+                }
                 return sf;
             }
             // Transform the source file

@@ -5,6 +5,7 @@
  * ---------------------------------------------------------------------------------------------
  */
 import { type AddonContext, ErrorMessage } from "@quatico/websmith-api";
+import path from "path";
 import ts from "typescript";
 import {
     checkForCustomTypeDeclaration,
@@ -20,6 +21,71 @@ import { clientFunctionTransformer } from "./client-function-transformer";
 import { createClientImports } from "./create-client-imports";
 
 export const REMOTE_INVOKE_PARAM_NAME = "remoteInvoke";
+
+/**
+ * Resolves a module specifier relative to the source file.
+ */
+const resolveModulePath = (sourceFileName: string, moduleSpecifier: string): string => {
+    const sourceDir = path.dirname(sourceFileName);
+    let resolvedPath = path.resolve(sourceDir, moduleSpecifier);
+
+    // Add .ts extension if not present
+    if (!resolvedPath.endsWith(".ts") && !resolvedPath.endsWith(".tsx")) {
+        resolvedPath = resolvedPath + ".ts";
+    }
+
+    return resolvedPath;
+};
+
+/**
+ * Checks if a file contains service function annotations.
+ */
+const checkFileHasServiceFunctions = (filePath: string, context: AddonContext<MagellanConfig>): boolean => {
+    const system = context.getSystem();
+
+    if (!system.fileExists(filePath)) {
+        // Try with .tsx extension
+        const tsxPath = filePath.replace(/\.ts$/, ".tsx");
+        if (!system.fileExists(tsxPath)) {
+            return false;
+        }
+        filePath = tsxPath;
+    }
+
+    const content = system.readFile(filePath);
+    if (!content) {
+        return false;
+    }
+
+    const sf = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
+
+    let hasServiceFunctions = false;
+    ts.forEachChild(sf, node => {
+        if (isNodeExported(node) && getDecoration(sf, node, DECORATOR_NAME, context)) {
+            hasServiceFunctions = true;
+        }
+    });
+
+    return hasServiceFunctions;
+};
+
+/**
+ * Checks if a file has re-exports that point to service files.
+ */
+const hasServiceReExports = (sf: ts.SourceFile, context: AddonContext<MagellanConfig>): boolean => {
+    let result = false;
+
+    ts.forEachChild(sf, node => {
+        if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)) {
+            const modulePath = resolveModulePath(sf.fileName, node.moduleSpecifier.text);
+            if (checkFileHasServiceFunctions(modulePath, context)) {
+                result = true;
+            }
+        }
+    });
+
+    return result;
+};
 
 /**
  * Creates a transformer that converts service functions into client invocations.
@@ -40,6 +106,12 @@ export const createClientTransformer = (context: AddonContext<MagellanConfig>) =
             });
 
             if (!currentFileHasServiceFunctions) {
+                // Check if this file re-exports from service files (barrel file pattern)
+                if (hasServiceReExports(sf, context)) {
+                    // Return an updated source file to mark it as processed
+                    // The content stays the same, but we create a new SourceFile object
+                    return ctx.factory.updateSourceFile(sf, sf.statements);
+                }
                 return sf;
             }
 
