@@ -350,4 +350,96 @@ describe("createServerTransformer", () => {
             `);
         expect(() => applyServerTransformer(source)).toThrow(constants_1.MISSING_IMPORTS_ERROR);
     });
+    it("should accept Context with single generic type argument (function declaration)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export function testFunction(input: any, ctx?: Context<{ foo: string }>, ser?: Serialization) { return {}; }
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should accept Context with two generic type arguments (function declaration)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export function testFunction(input: any, ctx?: Context<{ foo: string }, { bar: number }>, ser?: Serialization) { return {}; }
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should accept Context with complex generic type argument (function declaration)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export function testFunction(input: any, ctx?: Context<Record<string, unknown>>, ser?: Serialization) { return {}; }
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should accept Context with single generic type argument (arrow function)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export const testFunction = (input: any, ctx?: Context<{ foo: string }>, ser?: Serialization) => {};
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should accept Context with two generic type arguments (arrow function)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export const testFunction = (input: any, ctx?: Context<{ foo: string }, { bar: number }>, ser?: Serialization) => {};
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should still accept Context without generic type arguments (function declaration)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export function testFunction(input: any, ctx?: Context, ser?: Serialization) { return {}; }
+            `);
+        expect(() => applyServerTransformer(source)).not.toThrow(constants_1.SIGNATURE_ERROR_CONTEXT);
+    });
+    it("should preserve generic type arguments during transformation (function declaration)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export function testFunction(input: string, ctx?: Context<{ foo: string }>, ser?: Serialization) { return input; }
+            `);
+        const actual = applyServerTransformer(source);
+        expect(actual).toMatchInlineSnapshot(`
+            "import { type Context, type Serialization } from "@quatico/magellan-shared";
+            // @service()
+            export function testFunction({ input }: {
+                input: string;
+            }, ctx?: Context<{
+                foo: string;
+            }>, ser?: Serialization) { return input; }
+            "
+        `);
+    });
+    it("should preserve generic type arguments during transformation (arrow function)", () => {
+        const source = createSource(`
+            import { type Context, type Serialization } from "@quatico/magellan-shared";
+
+            // @service()
+            export const testFunction = (input: string, ctx?: Context<{ foo: string }>, ser?: Serialization) => input;
+            `);
+        const actual = applyServerTransformer(source);
+        expect(actual).toMatchInlineSnapshot(`
+            "import { type Context, type Serialization } from "@quatico/magellan-shared";
+            // @service()
+            export const testFunction = ({ input }: {
+                input: string;
+            }, ctx?: Context<{
+                foo: string;
+            }>, ser?: Serialization) => input;
+            "
+        `);
+    });
 });

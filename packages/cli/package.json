@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.18.3",
+    "version": "0.18.4",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {

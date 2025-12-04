@@ -1,6 +1,6 @@
 {
     "name": "@quatico/magellan-addons",
-    "version": "0.18.3",
+    "version": "0.18.4",
     "description": "A example library for the websmith compiler",
     "author": "Quatico Solutions AG",
     "license": "MIT",

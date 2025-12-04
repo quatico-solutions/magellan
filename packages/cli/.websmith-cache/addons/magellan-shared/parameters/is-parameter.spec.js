@@ -70,10 +70,6 @@ describe("isParameter", () => {
             const param = createParameterFromSource("items: string[]");
             expect((0, is_parameter_1.isParameter)(param, "string")).toBe(false);
         });
-        it("should return false for generic types", () => {
-            const param = createParameterFromSource("promise: Promise<string>");
-            expect((0, is_parameter_1.isParameter)(param, "Promise")).toBe(false);
-        });
     });
     describe("edge cases", () => {
         it("should return false for parameter without type annotation", () => {

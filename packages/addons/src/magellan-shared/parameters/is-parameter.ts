@@ -18,11 +18,6 @@ export const isParameter = (param: ts.ParameterDeclaration, type: string): boole
         return false;
     }
 
-    // Exclude generic types (types with type arguments)
-    if (param.type.typeArguments && param.type.typeArguments.length > 0) {
-        return false;
-    }
-
     // Check if this type reference points to a complex type definition in the same source file
     const sourceFile = param.getSourceFile();
     if (sourceFile) {

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DEFAULT_NAMESPACE = exports.DECORATOR_NAME = exports.getTypeErrorMessage = exports.MISSING_IMPORTS_ERROR = exports.FUNCTION_PARAMETER_ERROR = exports.DESTRUCTURED_OBJECT_ERROR = exports.SIGNATURE_ERROR_SERIALIZATION = exports.SIGNATURE_ERROR_CONTEXT = exports.SIGNATURE_ERROR_LENGTH = void 0;
 // Error messages moved from client transformer
 exports.SIGNATURE_ERROR_LENGTH = `Service functions must have exactly three parameters: input, context?: Context, and serialization?: Serialization.`;
-exports.SIGNATURE_ERROR_CONTEXT = `The second parameter of a service function must be 'context?: Context'.`;
+exports.SIGNATURE_ERROR_CONTEXT = `The second parameter of a service function must be 'context?: Context' or 'context?: Context<T>' (with optional generic type arguments).`;
 exports.SIGNATURE_ERROR_SERIALIZATION = `The third parameter of a service function must be 'serialization?: Serialization'.`;
 exports.DESTRUCTURED_OBJECT_ERROR = `
                 The first parameter (input) of a service function cannot be a destructured object.

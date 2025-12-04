@@ -93,6 +93,17 @@ describe("isContextParameter", () => {
             expect(result).toBe(true);
             expect(mockIsParameter).toHaveBeenCalledWith(param, constants_1.CONTEXT_TYPE_NAME);
         });
+        it("should work with real TypeScript AST nodes - Context with generic type argument", () => {
+            const source = "function test(ctx: Context<{ foo: string }>) {}";
+            const param = createParameterFromSource(source);
+            // Mock isParameter to return true for Context with generics
+            mockIsParameter.mockImplementation((param, typeName) => {
+                return typeName === "Context" && param.type?.kind === typescript_1.default.SyntaxKind.TypeReference;
+            });
+            const result = (0, is_context_parameter_1.isContextParameter)(param);
+            expect(result).toBe(true);
+            expect(mockIsParameter).toHaveBeenCalledWith(param, constants_1.CONTEXT_TYPE_NAME);
+        });
         it("should work with real TypeScript AST nodes - non-Context parameter", () => {
             const source = "function test(serialization: Serialization) {}";
             const param = createParameterFromSource(source);

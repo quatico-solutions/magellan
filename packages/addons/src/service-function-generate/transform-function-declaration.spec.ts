@@ -336,4 +336,19 @@ describe("transformFunctionDeclaration", () => {
             "
         `);
     });
+
+    it("should handle function with context type parameter", () => {
+        const source = `export function testFunction(input: T, context?: Context<{ foo: string }>, serialization?: Serialization) { return input; }`;
+
+        const actual = applyTransformation(source);
+
+        expect(actual).toMatchInlineSnapshot(`
+"export function testFunction({ input }: {
+    input: T;
+}, context?: Context<{
+    foo: string;
+}>, serialization?: Serialization) { return input; }
+"
+`);
+    });
 });

@@ -92,12 +92,6 @@ describe("isParameter", () => {
 
             expect(isParameter(param, "string")).toBe(false);
         });
-
-        it("should return false for generic types", () => {
-            const param = createParameterFromSource("promise: Promise<string>");
-
-            expect(isParameter(param, "Promise")).toBe(false);
-        });
     });
 
     describe("edge cases", () => {
@@ -207,4 +201,3 @@ describe("isParameter", () => {
         });
     });
 });
-

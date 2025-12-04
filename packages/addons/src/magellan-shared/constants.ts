@@ -1,6 +1,6 @@
 // Error messages moved from client transformer
 export const SIGNATURE_ERROR_LENGTH = `Service functions must have exactly three parameters: input, context?: Context, and serialization?: Serialization.`;
-export const SIGNATURE_ERROR_CONTEXT = `The second parameter of a service function must be 'context?: Context'.`;
+export const SIGNATURE_ERROR_CONTEXT = `The second parameter of a service function must be 'context?: Context' or 'context?: Context<T>' (with optional generic type arguments).`;
 export const SIGNATURE_ERROR_SERIALIZATION = `The third parameter of a service function must be 'serialization?: Serialization'.`;
 
 export const DESTRUCTURED_OBJECT_ERROR = `
