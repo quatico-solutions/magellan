@@ -51,9 +51,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: string, context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -64,9 +62,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ count }: {
-                count: number;
-            }, context?: Context, serialization?: Serialization) { return count * 2; }
+            "export function testFunction(count: number, context?: Context, serialization?: Serialization) { return count * 2; }
             "
         `);
     });
@@ -77,11 +73,9 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ obj }: {
-                obj: {
-                    name: string;
-                    age: number;
-                };
+            "export function testFunction(obj: {
+                name: string;
+                age: number;
             }, context?: Context, serialization?: Serialization) { return obj; }
             "
         `);
@@ -93,9 +87,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: UserData;
-            }, context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: UserData, context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -106,9 +98,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export async function testFunction({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) { return Promise.resolve(input); }
+            "export async function testFunction(input: string, context?: Context, serialization?: Serialization) { return Promise.resolve(input); }
             "
         `);
     });
@@ -119,9 +109,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization): string { return input; }
+            "export function testFunction(input: string, context?: Context, serialization?: Serialization): string { return input; }
             "
         `);
     });
@@ -132,9 +120,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function* testFunction({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) { yield input; }
+            "export function* testFunction(input: string, context?: Context, serialization?: Serialization) { yield input; }
             "
         `);
     });
@@ -144,9 +130,9 @@ describe("transformFunctionDeclaration", () => {
 
         const actual = applyTransformation(source);
 
-        // Check that the export modifier is preserved
+        // Check that the export modifier is preserved and input parameter is not destructured
         expect(actual).toContain("export function");
-        expect(actual).toContain("{ input }");
+        expect(actual).toContain("input: string");
     });
 
     it("should handle functions with undefined context parameter", () => {
@@ -154,8 +140,8 @@ describe("transformFunctionDeclaration", () => {
 
         const actual = applyTransformation(source);
 
-        // Should still transform correctly even when context is optional
-        expect(actual).toContain("{ input }");
+        // Should still transform correctly even when context is optional, keeping input parameter as-is
+        expect(actual).toContain("input: string");
         expect(actual).toContain("context?: Context");
         expect(actual).toContain("serialization?: Serialization");
     });
@@ -165,8 +151,8 @@ describe("transformFunctionDeclaration", () => {
 
         const actual = applyTransformation(source);
 
-        // Should still transform correctly even when serialization is optional
-        expect(actual).toContain("{ input }");
+        // Should still transform correctly even when serialization is optional, keeping input parameter as-is
+        expect(actual).toContain("input: string");
         expect(actual).toContain("context?: Context");
         expect(actual).toContain("serialization?: Serialization");
     });
@@ -194,13 +180,11 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: {
-                    user: {
-                        name: string;
-                        profile: {
-                            age: number;
-                        };
+            "export function testFunction(input: {
+                user: {
+                    name: string;
+                    profile: {
+                        age: number;
                     };
                 };
             }, context?: Context, serialization?: Serialization) { return input; }
@@ -214,9 +198,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: string | number;
-            }, context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: string | number, context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -227,9 +209,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: Array<string>;
-            }, context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: Array<string>, context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -240,9 +220,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction<T>({ input }: {
-                input: T;
-            }, context?: Context, serialization?: Serialization): T { return input; }
+            "export function testFunction<T>(input: T, context?: Context, serialization?: Serialization): T { return input; }
             "
         `);
     });
@@ -253,9 +231,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ _ }: {
-                _: never;
-            }, context?: Context, serialization?: Serialization) { return "result"; }
+            "export function testFunction(_: never, context?: Context, serialization?: Serialization) { return "result"; }
             "
         `);
     });
@@ -266,9 +242,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ _ }: {
-                _: Record<string, never>;
-            }, context?: Context, serialization?: Serialization) { return "result"; }
+            "export function testFunction(_: Record<string, never>, context?: Context, serialization?: Serialization) { return "result"; }
             "
         `);
     });
@@ -279,9 +253,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }?: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) { return input || "default"; }
+            "export function testFunction(input?: string, context?: Context, serialization?: Serialization) { return input || "default"; }
             "
         `);
     });
@@ -292,9 +264,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: string;
-            } = "default", context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: string = "default", context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -305,9 +275,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: readonly string[];
-            }, context?: Context, serialization?: Serialization) { return input; }
+            "export function testFunction(input: readonly string[], context?: Context, serialization?: Serialization) { return input; }
             "
         `);
     });
@@ -324,9 +292,7 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export function testFunction({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) {
+            "export function testFunction(input: string, context?: Context, serialization?: Serialization) {
                 const processed = input.toUpperCase();
                 if (processed.length > 10) {
                     return processed.substring(0, 10);
@@ -343,12 +309,10 @@ describe("transformFunctionDeclaration", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-"export function testFunction({ input }: {
-    input: T;
-}, context?: Context<{
-    foo: string;
-}>, serialization?: Serialization) { return input; }
-"
-`);
+            "export function testFunction(input: T, context?: Context<{
+                foo: string;
+            }>, serialization?: Serialization) { return input; }
+            "
+        `);
     });
 });

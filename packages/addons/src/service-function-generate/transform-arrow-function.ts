@@ -1,8 +1,8 @@
 import ts from "typescript";
-import { createObjectParameter } from "../magellan-shared/create-object-parameter";
 
 /**
  * Transforms an arrow function to ensure it has the Context parameter
+ * Note: We no longer add object destructuring to the input parameter to allow natural function signatures
  */
 export const transformArrowFunction = (node: ts.VariableStatement, ctx: ts.TransformationContext): ts.Node => {
     const declaration = node.declarationList.declarations[0];
@@ -12,7 +12,8 @@ export const transformArrowFunction = (node: ts.VariableStatement, ctx: ts.Trans
 
     const arrowFunc = declaration.initializer;
     const [inputParam, contextParam, serializationParam] = arrowFunc.parameters;
-    const updatedParams: ts.ParameterDeclaration[] = [createObjectParameter(ctx.factory, inputParam), contextParam, serializationParam];
+    // Keep parameters as-is without object destructuring
+    const updatedParams: ts.ParameterDeclaration[] = [inputParam, contextParam, serializationParam];
 
     const updatedArrow = ctx.factory.updateArrowFunction(
         arrowFunc,

@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-cli",
     "description": "CLI for the Magellan project",
-    "version": "0.18.4",
+    "version": "0.19.0",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -29,7 +29,7 @@
         "dev:serve": "tsc && node lib/index.js serve ../../../qs-magellan-sandbox/packages/react/lib -s ../../../qs-magellan-sandbox/packages/react/server-esm",
         "test": "jest --testRegex=\".*\\.spec\\.ts$\" --coverage",
         "test:update-snapshots": "pnpm test -u",
-        "test:e2e": "jest --testRegex=\".*\\.test\\.ts$\" --coverage",
+        "test:e2e": "jest --testRegex=\".*\\.test\\.ts$\"",
         "watch": "tsc --watch",
         "watch:test": "jest --color --watch",
         "publish-npm": "pnpm publish --access public --no-git-checks --publish-branch develop"
@@ -50,6 +50,7 @@
     "devDependencies": {
         "@eslint/compat": "^1.2.6",
         "@eslint/js": "^9.19.0",
+        "@types/express": "5.0.1",
         "@types/jest": "^29.2.2",
         "@types/minimist": "1.2.5",
         "@types/node": "18",

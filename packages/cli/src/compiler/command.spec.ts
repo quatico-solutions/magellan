@@ -10,15 +10,11 @@ import ts from "typescript";
 import { addCompileCommand } from "./command";
 
 describe("addCompileCommand", () => {
-    let mockStderrWrite: jest.SpyInstance;
     beforeEach(() => {
         jest.clearAllMocks();
 
-        mockStderrWrite = jest.spyOn(process.stderr, "write").mockImplementation(() => true);
-    });
-
-    afterEach(() => {
-        mockStderrWrite.mockRestore();
+        jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+        jest.spyOn(process.stdout, "write").mockImplementation(() => true); // Prevent console output "Warning: Addons directory " not found"
     });
 
     describe("Command Structure", () => {

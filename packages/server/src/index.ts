@@ -7,18 +7,22 @@
 /// <reference types="./types/global.d.ts" />
 import type { Configuration } from "./configuration";
 import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport } from "./configuration";
+import { createFunctionRoute } from "./routes/function-route";
 import type { ServerOptions } from "./server";
 import { configureMagellanRoutes, configureRequestMiddlewares, serve, setupMagellanModules, startServer } from "./server";
 import { getFunctionService } from "./services";
+import { Sdk } from "./sdk";
 import { formdataFetch } from "./transport";
 
 export {
     configureMagellanRoutes,
     configureRequestMiddlewares,
+    createFunctionRoute,
     formdataFetch,
     getFunctionService,
     initProjectConfiguration,
     resolveNamespace,
+    Sdk,
     serve,
     setNamespace,
     setTransport,

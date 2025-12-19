@@ -45,11 +45,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) => input;"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: string, context?: Context, serialization?: Serialization) => input;"`
+        );
     });
 
     it("should transform arrow function with never input parameter", () => {
@@ -57,11 +55,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ _ }: {
-                _: never;
-            }, context?: Context, serialization?: Serialization) => "result";"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (_: never, context?: Context, serialization?: Serialization) => "result";"`
+        );
     });
 
     it("should transform arrow function with Record<string, never> input parameter", () => {
@@ -69,11 +65,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ _ }: {
-                _: Record<string, never>;
-            }, context?: Context, serialization?: Serialization) => "result";"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (_: Record<string, never>, context?: Context, serialization?: Serialization) => "result";"`
+        );
     });
 
     it("should transform arrow function with object type input parameter", () => {
@@ -82,11 +76,9 @@ describe("transformArrowFunction", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ obj }: {
-                obj: {
-                    name: string;
-                    age: number;
-                };
+            "export const testFunction = (obj: {
+                name: string;
+                age: number;
             }, context?: Context, serialization?: Serialization) => obj;"
         `);
     });
@@ -96,11 +88,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: UserData;
-            }, context?: Context, serialization?: Serialization) => input;"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: UserData, context?: Context, serialization?: Serialization) => input;"`
+        );
     });
 
     it("should transform async arrow function", () => {
@@ -108,11 +98,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = async ({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) => Promise.resolve(input);"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = async (input: string, context?: Context, serialization?: Serialization) => Promise.resolve(input);"`
+        );
     });
 
     it("should transform arrow function with return type annotation", () => {
@@ -120,11 +108,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization): string => input;"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: string, context?: Context, serialization?: Serialization): string => input;"`
+        );
     });
 
     it("should transform arrow function with block body", () => {
@@ -132,11 +118,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: string;
-            }, context?: Context, serialization?: Serialization) => { return input.toUpperCase(); };"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: string, context?: Context, serialization?: Serialization) => { return input.toUpperCase(); };"`
+        );
     });
 
     it("should preserve modifiers on the variable statement", () => {
@@ -188,13 +172,11 @@ describe("transformArrowFunction", () => {
         const actual = applyTransformation(source);
 
         expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: {
-                    user: {
-                        name: string;
-                        profile: {
-                            age: number;
-                        };
+            "export const testFunction = (input: {
+                user: {
+                    name: string;
+                    profile: {
+                        age: number;
                     };
                 };
             }, context?: Context, serialization?: Serialization) => input;"
@@ -206,11 +188,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: string | number;
-            }, context?: Context, serialization?: Serialization) => input;"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: string | number, context?: Context, serialization?: Serialization) => input;"`
+        );
     });
 
     it("should handle generic types", () => {
@@ -218,11 +198,9 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        expect(actual).toMatchInlineSnapshot(`
-            "export const testFunction = ({ input }: {
-                input: Array<string>;
-            }, context?: Context, serialization?: Serialization) => input;"
-        `);
+        expect(actual).toMatchInlineSnapshot(
+            `"export const testFunction = (input: Array<string>, context?: Context, serialization?: Serialization) => input;"`
+        );
     });
 
     it("should handle multiple variable declarations (edge case)", () => {
@@ -230,8 +208,8 @@ describe("transformArrowFunction", () => {
 
         const actual = applyTransformation(source);
 
-        // Should preserve the additional variable declarations and transform the arrow function
-        expect(actual).toContain("{ input }");
+        // Should preserve the additional variable declarations and keep the input parameter as-is (no object destructuring)
+        expect(actual).toContain("input: string");
         expect(actual).toContain("otherVar =");
         expect(actual).toContain("export const");
     });

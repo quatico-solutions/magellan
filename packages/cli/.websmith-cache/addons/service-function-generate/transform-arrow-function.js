@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformArrowFunction = void 0;
 const typescript_1 = __importDefault(require("typescript"));
-const create_object_parameter_1 = require("../magellan-shared/create-object-parameter");
 /**
  * Transforms an arrow function to ensure it has the Context parameter
+ * Note: We no longer add object destructuring to the input parameter to allow natural function signatures
  */
 const transformArrowFunction = (node, ctx) => {
     const declaration = node.declarationList.declarations[0];
@@ -16,7 +16,8 @@ const transformArrowFunction = (node, ctx) => {
     }
     const arrowFunc = declaration.initializer;
     const [inputParam, contextParam, serializationParam] = arrowFunc.parameters;
-    const updatedParams = [(0, create_object_parameter_1.createObjectParameter)(ctx.factory, inputParam), contextParam, serializationParam];
+    // Keep parameters as-is without object destructuring
+    const updatedParams = [inputParam, contextParam, serializationParam];
     const updatedArrow = ctx.factory.updateArrowFunction(arrowFunc, arrowFunc.modifiers, arrowFunc.typeParameters, updatedParams, arrowFunc.type, arrowFunc.equalsGreaterThanToken, arrowFunc.body);
     return ctx.factory.updateVariableStatement(node, node.modifiers, ctx.factory.updateVariableDeclarationList(node.declarationList, [
         ctx.factory.updateVariableDeclaration(declaration, declaration.name, declaration.exclamationToken, declaration.type, updatedArrow),

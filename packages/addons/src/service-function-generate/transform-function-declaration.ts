@@ -1,8 +1,8 @@
 import type ts from "typescript";
-import { createObjectParameter } from "../magellan-shared/create-object-parameter";
 
 /**
  * Transforms a function declaration to ensure it has the Context parameter
+ * Note: We no longer add object destructuring to the input parameter to allow natural function signatures
  */
 export const transformFunctionDeclaration = (node: ts.FunctionDeclaration, ctx: ts.TransformationContext): ts.Node => {
     if (!node.body) {
@@ -10,7 +10,8 @@ export const transformFunctionDeclaration = (node: ts.FunctionDeclaration, ctx: 
     }
 
     const [inputParam, contextParam, serializationParam] = node.parameters;
-    const updatedParams: ts.ParameterDeclaration[] = [createObjectParameter(ctx.factory, inputParam), contextParam, serializationParam];
+    // Keep parameters as-is without object destructuring
+    const updatedParams: ts.ParameterDeclaration[] = [inputParam, contextParam, serializationParam];
 
     return ctx.factory.updateFunctionDeclaration(
         node,

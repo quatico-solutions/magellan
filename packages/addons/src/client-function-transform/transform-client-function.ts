@@ -16,28 +16,31 @@ export const transformClientFunction = (
 ): ts.Node => {
     // Parameters are already validated by validateServiceFunctionSignature
     const inputParam = func.parameters[0];
-    const dataProperties: ts.PropertyAssignment[] = [];
 
-    // Create data property only if the input parameter is not named '_'
-    if (ts.isIdentifier(inputParam.name) && inputParam.name.text !== "_") {
-        dataProperties.push(
-            factory.createPropertyAssignment(factory.createIdentifier(inputParam.name.text), factory.createIdentifier(inputParam.name.text))
-        );
-    } else if (!ts.isIdentifier(inputParam.name) || inputParam.name.text !== "_") {
-        // Handle cases where the first parameter might be complex but not '_' - this shouldn't happen if validation is correct, but good to be safe
-        // Or if it's not an identifier (e.g. binding pattern which should be caught by validation)
+    // Determine the data value: pass parameter directly (unwrapped) to match server-side natural signatures
+    // If parameter is '_', use empty object; otherwise pass the parameter value directly
+    let dataValue: ts.Expression;
+    if (ts.isIdentifier(inputParam.name) && inputParam.name.text === "_") {
+        // No input parameter - use empty object
+        dataValue = factory.createObjectLiteralExpression([], false);
+    } else if (ts.isIdentifier(inputParam.name)) {
+        // Pass parameter directly (unwrapped) - matches server-side approach
+        dataValue = factory.createIdentifier(inputParam.name.text);
+    } else {
+        // Handle unexpected cases (shouldn't happen if validation is correct)
         context
             .getReporter()
             .reportDiagnostic(
                 new WarnMessage(`Unexpected input parameter structure in function ${getFunctionName(declaration)}. Assuming no data payload.`)
             );
+        dataValue = factory.createObjectLiteralExpression([], false);
     }
 
     // Create remoteInvoke call
     const invokeParams = factory.createObjectLiteralExpression(
         [
             factory.createPropertyAssignment(factory.createIdentifier("name"), factory.createStringLiteral(getFunctionName(declaration))),
-            factory.createPropertyAssignment(factory.createIdentifier("data"), factory.createObjectLiteralExpression(dataProperties, false)),
+            factory.createPropertyAssignment(factory.createIdentifier("data"), dataValue),
             factory.createPropertyAssignment(factory.createIdentifier("namespace"), factory.createStringLiteral(namespace)),
         ],
         false

@@ -246,7 +246,7 @@ export type UserData = {
 };
 // @service()
 export const loginUser = async (params: LoginParams, context?: Context, serialization?: Serialization): Promise<UserData | void> => {
-    return remoteInvoke({ name: "loginUser", data: { params: params }, namespace: "default" }, context, serialization);
+    return remoteInvoke({ name: "loginUser", data: params, namespace: "default" }, context, serialization);
 };
 "
 `);
@@ -272,25 +272,25 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
         `);
         const actual = applyClientTransformer(source);
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            import { type Context } from "@quatico/magellan-shared";
-            import { type Serialization } from "@quatico/magellan-shared";
-            export interface MyInterface {
-                id: string;
-            }
-            export type MyType = {
-                value: number;
-            };
-            export enum MyEnum {
-                A,
-                B
-            }
-            // @service()
-            export const testFunc = (input: MyInterface, context?: Context, serialization?: Serialization): MyType => {
-                return remoteInvoke({ name: "testFunc", data: { input: input }, namespace: "default" }, context, serialization);
-            };
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+import { type Context } from "@quatico/magellan-shared";
+import { type Serialization } from "@quatico/magellan-shared";
+export interface MyInterface {
+    id: string;
+}
+export type MyType = {
+    value: number;
+};
+export enum MyEnum {
+    A,
+    B
+}
+// @service()
+export const testFunc = (input: MyInterface, context?: Context, serialization?: Serialization): MyType => {
+    return remoteInvoke({ name: "testFunc", data: input, namespace: "default" }, context, serialization);
+};
+"
+`);
     });
 
     it("should set parameter correctly as data property (primitive parameter)", () => {
@@ -300,15 +300,15 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
         );
         const actual = applyClientTransformer(source);
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            import { type Context } from "@quatico/magellan-shared";
-            import { type Serialization } from "@quatico/magellan-shared";
-            // @service()
-            export const getInputAsOutput = (input: string, context?: Context, serialization?: Serialization) => {
-                return remoteInvoke({ name: "getInputAsOutput", data: { input: input }, namespace: "default" }, context, serialization);
-            };
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+import { type Context } from "@quatico/magellan-shared";
+import { type Serialization } from "@quatico/magellan-shared";
+// @service()
+export const getInputAsOutput = (input: string, context?: Context, serialization?: Serialization) => {
+    return remoteInvoke({ name: "getInputAsOutput", data: input, namespace: "default" }, context, serialization);
+};
+"
+`);
     });
 
     it("should set parameter correctly as data property (complex object)", () => {
@@ -321,22 +321,22 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
         `);
         const actual = applyClientTransformer(source);
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            import { type Context } from "@quatico/magellan-shared";
-            import { type Serialization } from "@quatico/magellan-shared";
-            export interface MyInput {
-                name: string;
-                age: number;
-                others: {
-                    [key: string]: unknown;
-                };
-            }
-            // @service()
-            export const getInputAsOutput = (obj: MyInput, context?: Context, serialization?: Serialization) => {
-                return remoteInvoke({ name: "getInputAsOutput", data: { obj: obj }, namespace: "default" }, context, serialization);
-            };
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+import { type Context } from "@quatico/magellan-shared";
+import { type Serialization } from "@quatico/magellan-shared";
+export interface MyInput {
+    name: string;
+    age: number;
+    others: {
+        [key: string]: unknown;
+    };
+}
+// @service()
+export const getInputAsOutput = (obj: MyInput, context?: Context, serialization?: Serialization) => {
+    return remoteInvoke({ name: "getInputAsOutput", data: obj, namespace: "default" }, context, serialization);
+};
+"
+`);
     });
 
     it("should set parameter correctly as data property (complex object with inline type)", () => {
@@ -346,21 +346,21 @@ export const loginUser = async (params: LoginParams, context?: Context, serializ
         );
         const actual = applyClientTransformer(source);
         expect(actual).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            import { type Context } from "@quatico/magellan-shared";
-            import { type Serialization } from "@quatico/magellan-shared";
-            // @service()
-            export const getInputAsOutput = (obj: {
-                name: string;
-                age: number;
-                others: {
-                    [key: string]: unknown;
-                };
-            }, context?: Context, serialization?: Serialization) => {
-                return remoteInvoke({ name: "getInputAsOutput", data: { obj: obj }, namespace: "default" }, context, serialization);
-            };
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+import { type Context } from "@quatico/magellan-shared";
+import { type Serialization } from "@quatico/magellan-shared";
+// @service()
+export const getInputAsOutput = (obj: {
+    name: string;
+    age: number;
+    others: {
+        [key: string]: unknown;
+    };
+}, context?: Context, serialization?: Serialization) => {
+    return remoteInvoke({ name: "getInputAsOutput", data: obj, namespace: "default" }, context, serialization);
+};
+"
+`);
     });
 
     // --- Error Handling Tests ---

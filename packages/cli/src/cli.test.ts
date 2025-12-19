@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/unbound-method */
 /*
  * ---------------------------------------------------------------------------------------------
  *   Copyright (c) Quatico Solutions AG. All rights reserved.
@@ -445,13 +446,13 @@ describe("cli.ts", () => {
         executeCompiler(`--client --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 
     it("should call getContext using profile client with option client", () => {
@@ -566,13 +567,13 @@ describe("cli.ts", () => {
         );
 
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 
     it("should yield proxy-function and remote-function with single file, addons from profiles and emit", () => {
@@ -602,19 +603,19 @@ describe("cli.ts", () => {
         executeCompiler(`--client --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
 
         executeCompiler(`--server --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
             "// @service()
-            export function getFoobar({ date }, context, serialization) {
+            export function getFoobar(date, context, serialization) {
                 return foobar(date);
             }
             function foobar(date) {
@@ -769,13 +770,13 @@ describe("cli.ts", () => {
         // In websmith 0.8.0, getAvailableAddons() only returns explicitly requested addons
         expect(target.getAddonRegistry()!.getAvailableAddons().getNames()).toEqual(["client-function-transform"]);
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 
     it("should allow --addonsDir CLI option with config file addons warning", () => {

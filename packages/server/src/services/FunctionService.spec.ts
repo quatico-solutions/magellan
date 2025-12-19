@@ -34,6 +34,27 @@ describe("invokeFunction", () => {
 
         expect(target).toHaveBeenCalledWith({ name: "target", data: "expected", namespace: "remote" }, { server: {} });
     });
+
+    it("passes context correctly with custom server context", async () => {
+        const target = jest.fn().mockImplementation((input, context?, _serialization?) => {
+            // This mimics a user's service function that expects three parameters
+            expect(context).toBeDefined();
+            expect(context.server).toBeDefined();
+            expect(context.server.identity).toBe("test-user");
+            return Promise.resolve({ success: true });
+        });
+
+        const testObj = new FunctionService(jest.fn()).registerFunction("target", target);
+
+        // Simulate direct SDK invocation with custom context (e.g., from auth middleware)
+        const inputData = { orderNumber: "test-123" };
+        const customContext = { server: { identity: "test-user" } };
+
+        await testObj.invokeFunction({ name: "target", data: inputData }, customContext);
+
+        // Verify the function was called with the input data and custom context
+        expect(target).toHaveBeenCalledWith(inputData, customContext);
+    });
 });
 
 describe("registerFunction", () => {

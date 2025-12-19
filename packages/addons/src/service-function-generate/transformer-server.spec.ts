@@ -53,9 +53,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const getDate = async ({ _ }: {
-                _: never;
-            }, context?: Context, serialization?: Serialization) => new Date();
+            export const getDate = async (_: never, context?: Context, serialization?: Serialization) => new Date();
             "
         `);
     });
@@ -73,9 +71,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const getDate = async ({ _ }: {
-                _: Record<string, never>;
-            }, context?: Context, serialization?: Serialization) => new Date();
+            export const getDate = async (_: Record<string, never>, context?: Context, serialization?: Serialization) => new Date();
             "
         `);
     });
@@ -93,9 +89,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const testFunction = async ({ name }: {
-                name: string;
-            }, context?: Context, serialization?: Serialization) => { console.log("name", name); };
+            export const testFunction = async (name: string, context?: Context, serialization?: Serialization) => { console.log("name", name); };
             "
         `);
     });
@@ -113,9 +107,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const testFunction = ({ simple }: {
-                simple: string;
-            }, context?: Context, serialization?: Serialization) => simple;
+            export const testFunction = (simple: string, context?: Context, serialization?: Serialization) => simple;
             "
         `);
     });
@@ -133,10 +125,8 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const testFunction = ({ obj }: {
-                obj: {
-                    name: string;
-                };
+            export const testFunction = (obj: {
+                name: string;
             }, context?: Context, serialization?: Serialization) => obj;
             "
         `);
@@ -168,9 +158,7 @@ describe("createServerTransformer", () => {
                 name: string;
             }
             // @service()
-            export const getInputAsOutput = ({ obj }: {
-                obj: MyInput;
-            }, context?: Context, serialization?: Serialization): MyOutput => { return { name: obj.name }; };
+            export const getInputAsOutput = (obj: MyInput, context?: Context, serialization?: Serialization): MyOutput => { return { name: obj.name }; };
             "
         `);
     });
@@ -190,10 +178,8 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export function getInputAsOutput({ obj }: {
-                obj: {
-                    name: string;
-                };
+            export function getInputAsOutput(obj: {
+                name: string;
             }, context?: Context, serialization?: Serialization) { return obj; }
             "
         `);
@@ -533,9 +519,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export function testFunction({ input }: {
-                input: string;
-            }, ctx?: Context<{
+            export function testFunction(input: string, ctx?: Context<{
                 foo: string;
             }>, ser?: Serialization) { return input; }
             "
@@ -555,9 +539,7 @@ describe("createServerTransformer", () => {
         expect(actual).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
             // @service()
-            export const testFunction = ({ input }: {
-                input: string;
-            }, ctx?: Context<{
+            export const testFunction = (input: string, ctx?: Context<{
                 foo: string;
             }>, ser?: Serialization) => input;
             "

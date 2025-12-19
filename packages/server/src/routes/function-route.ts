@@ -15,7 +15,7 @@ export const createFunctionRoute = (sdk = new Sdk()): Router => {
     const router = Router();
     router.post(
         "/",
-         
+
         async (
             req: ExpressRequest<{ name: string }, ResponsePayload<unknown> /* ResBody */, RequestPayload /* ReqBody */>,
             res: Response<ResponsePayload<unknown>>
@@ -25,6 +25,8 @@ export const createFunctionRoute = (sdk = new Sdk()): Router => {
             try {
                 // the client provides the request context as headers
                 const ctx: Context = { server: { "x-request-id": getValidatedRequestId(req) } };
+                // Client and server now both use unwrapped parameters (natural signatures)
+                // Client transformer passes parameters directly, matching server-side approach
                 const input = unpackObject(JSON.parse(data));
                 const response = await sdk.invokeFunction(name, input, namespace, ctx);
                 res.end(serialize(response), () =>

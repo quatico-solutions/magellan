@@ -12,6 +12,41 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.19.0] - 2025-12-19
+
+### Added
+
+- `@quatico/magellan-cli`: Added comprehensive end-to-end integration tests (`cli-e2e.test.ts`) that verify the complete compilation → server → client → HTTP request flow, including context propagation and parameter handling.
+- `@quatico/magellan-server`: Exported `Sdk` and `createFunctionRoute` from the main package for easier testing and custom handler implementations.
+
+### Fixed
+
+- `@quatico/magellan-addons`: **IMPORTANT** - Server-side compiled functions now maintain natural function signatures instead of using object destructuring on the first parameter. This enables direct SDK invocation (e.g., in tests) and custom handler implementations without manual parameter wrapping.
+- `@quatico/magellan-server`: Added `extractParameterValue` helper in middleware to automatically unwrap client-wrapped parameters (`{ paramName: value }`) before passing to service functions.
+- `@quatico/magellan-server`: Enhanced parameter unwrapping to handle edge cases: empty objects, null values, primitives, arrays, and multi-property objects (backwards compatibility).
+
+### Changed
+
+- **Server Function Signatures**: Compiled server functions no longer use object destructuring.
+  - **Before**: `export const getUser = ({ id }: { id: string }, context?) => {...}`
+  - **After**: `export const getUser = (id: string, context?) => {...}`
+  - **Impact**: Service functions can now be called directly with unwrapped parameters, making BDD tests and custom handlers simpler.
+  - **Migration**: No code changes needed - just recompile with `magellan compile --server`.
+
+### Technical Details
+
+**For users with custom handlers**: The standard middleware now unwraps client-wrapped parameters before invoking functions. If you have a custom handler, ensure it follows this pattern:
+
+```typescript
+const parsedData = unpackObject(JSON.parse(data));
+const input = parsedData && typeof parsedData === "object" && Object.keys(parsedData).length === 1
+    ? Object.values(parsedData)[0]
+    : parsedData;
+await sdk.invokeFunction(name, input, namespace, context);
+```
+
+Or better yet, use the standard middleware which handles this automatically.
+
 ## [0.17.0] - 2025-10-14
 
 ### Added

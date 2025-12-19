@@ -364,13 +364,13 @@ describe("cli.ts", () => {
         );
 
         expect(getOutput("target/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 
     it("should yield proxy-function and remote-function with single file, addons from profiles and emit", () => {
@@ -419,13 +419,13 @@ describe("cli.ts", () => {
         );
 
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
 
         executeCompiler(
             `--profile server --declaration --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")} --configFile ${path.join(testDirs.PROJECT_DIR, "websmith.config.json")}`
@@ -433,15 +433,13 @@ describe("cli.ts", () => {
 
         expect(getOutput("server/service-function.d.ts")).toMatchInlineSnapshot(`
             "import { type Context, type Serialization } from "@quatico/magellan-shared";
-            export declare function getFoobar({ date }: {
-                date: Date;
-            }, context?: Context, serialization?: Serialization): string;
+            export declare function getFoobar(date: Date, context?: Context, serialization?: Serialization): string;
             "
         `);
 
         expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
             "// @service()
-            export function getFoobar({ date }, context, serialization) {
+            export function getFoobar(date, context, serialization) {
                 return foobar(date);
             }
             function foobar(date) {
@@ -492,7 +490,7 @@ describe("cli.ts", () => {
 
         expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
             "// @service()
-            export function getFoobar({ date }, context, serialization) {
+            export function getFoobar(date, context, serialization) {
                 return foobar(date);
             }
             function foobar(date) {
@@ -551,7 +549,7 @@ describe("cli.ts", () => {
         expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
             "import { ConfigurableServiceEntity } from "@qs/cds-cpq-shared";
             // @service({"namespace":"cds-cpq-no-auth"})
-            export const getConfigurableServiceFn = async ({ input }, _context, _serialization) => {
+            export const getConfigurableServiceFn = async (input, _context, _serialization) => {
                 const { serviceId, configurations } = input;
                 return await ConfigurableServiceEntity.loadOrFind(serviceId, configurations);
             };
@@ -625,13 +623,13 @@ describe("cli.ts", () => {
         );
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: { date: date }, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 });
 
