@@ -2,7 +2,7 @@
   "all-addons": {
     "sourceHash": "2rn5te",
     "compiledPath": "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/cli/.websmith-cache/addons",
-    "timestamp": 1766143844341,
+    "timestamp": 1767956779074,
     "dependencies": [
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/addon.ts",
       "/home/jenkins/agent/workspace/qs-tooling/qs-magellan/release/node/packages/addons/src/client-function-transform/ClientAddon.ts",

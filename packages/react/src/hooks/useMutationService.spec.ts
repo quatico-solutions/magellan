@@ -4,19 +4,37 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import { renderHook } from "@testing-library/react";
+import { useContext } from "react";
 import { useMutationService } from "./useMutationService";
 
-jest.mock("@tanstack/react-query");
+jest.mock("@tanstack/react-query", () => {
+    const actual = jest.requireActual("@tanstack/react-query");
+    return {
+        ...actual,
+        useMutation: jest.fn(),
+    };
+});
+
+jest.mock("react", () => {
+    const actual = jest.requireActual("react");
+    return {
+        ...actual,
+        useContext: jest.fn(),
+    };
+});
 
 describe("useMutationService", () => {
     const mockedUseMutation = jest.mocked<any>(useMutation);
+    const mockedUseContext = jest.mocked(useContext);
     const mockedMutateAsync = jest.fn();
     const testError = new Error("Test error");
 
     beforeEach(() => {
         jest.clearAllMocks();
+        // Default: no provider QueryClient
+        mockedUseContext.mockReturnValue(undefined);
     });
 
     it("should return idle state when the mutation hasn't been triggered", () => {
@@ -634,6 +652,336 @@ describe("useMutationService", () => {
             );
 
             expect(result.current.error).toEqual(new Error("42"));
+        });
+    });
+
+    describe("QueryClient configuration", () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            // Reset useContext to default (no provider)
+            mockedUseContext.mockReturnValue(undefined);
+        });
+
+        it("should use QueryClient from parameter when provided (parameter takes precedence over provider)", () => {
+            const parameterQueryClient = new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 10000, // 10 seconds
+                    },
+                },
+            });
+
+            const providerQueryClient = new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 5000, // 5 seconds
+                    },
+                },
+            });
+
+            // Mock useContext to return provider QueryClient
+            mockedUseContext.mockReturnValue(providerQueryClient);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                        queryClient: parameterQueryClient,
+                    },
+                })
+            );
+
+            // Should use parameter QueryClient, not provider QueryClient
+            expect(mockedUseMutation).toHaveBeenCalledWith(
+                {
+                    mutationKey: ["test"],
+                    mutationFn: expect.any(Function),
+                },
+                parameterQueryClient
+            );
+
+            // Verify it's not the provider QueryClient
+            const callArgs = mockedUseMutation.mock.calls[0];
+            const usedQueryClient = callArgs[1];
+            expect(usedQueryClient).toBe(parameterQueryClient);
+            expect(usedQueryClient).not.toBe(providerQueryClient);
+        });
+
+        it("should use QueryClient from provider when no parameter is provided", () => {
+            const providerQueryClient = new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 30000, // 30 seconds
+                        retry: 3,
+                    },
+                },
+            });
+
+            // Mock useContext to return provider QueryClient
+            mockedUseContext.mockReturnValue(providerQueryClient);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Should use provider QueryClient
+            expect(mockedUseMutation).toHaveBeenCalledWith(
+                {
+                    mutationKey: ["test"],
+                    mutationFn: expect.any(Function),
+                },
+                providerQueryClient
+            );
+        });
+
+        it("should use default QueryClient when neither parameter nor provider is provided", () => {
+            // Mock useContext to return undefined (no provider)
+            mockedUseContext.mockReturnValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            // Should use default QueryClient (created internally)
+            expect(mockedUseMutation).toHaveBeenCalledWith(
+                {
+                    mutationKey: ["test"],
+                    mutationFn: expect.any(Function),
+                },
+                expect.any(QueryClient)
+            );
+
+            // Verify it's a QueryClient instance
+            const callArgs = mockedUseMutation.mock.calls[0];
+            const usedQueryClient = callArgs[1];
+            expect(usedQueryClient).toBeInstanceOf(QueryClient);
+        });
+
+        it("should create default QueryClient with configured default options", () => {
+            // Mock useContext to return undefined (no provider)
+            mockedUseContext.mockReturnValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            const callArgs = mockedUseMutation.mock.calls[0];
+            const usedQueryClient = callArgs[1] as QueryClient;
+
+            // Verify default options are set correctly for mutations
+            const defaultOptions = usedQueryClient.getDefaultOptions();
+            expect(defaultOptions?.mutations).toBeDefined();
+            expect(defaultOptions.mutations).toMatchObject({
+                gcTime: 1000 * 60 * 10, // 10 minutes
+                retry: 0, // mutations should not retry by default
+            });
+        });
+
+        it("should prioritize parameter over provider, and provider over default", () => {
+            const parameterQueryClient = new QueryClient();
+            const providerQueryClient = new QueryClient();
+
+            mockedUseContext.mockReturnValue(providerQueryClient);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            // Test 1: With parameter - should use parameter
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test1"],
+                        queryClient: parameterQueryClient,
+                    },
+                })
+            );
+
+            expect(mockedUseMutation).toHaveBeenLastCalledWith(expect.any(Object), parameterQueryClient);
+
+            // Test 2: Without parameter, with provider - should use provider
+            mockedUseContext.mockReturnValue(providerQueryClient);
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test2"],
+                    },
+                })
+            );
+
+            expect(mockedUseMutation).toHaveBeenLastCalledWith(expect.any(Object), providerQueryClient);
+
+            // Test 3: Without parameter and provider - should use default
+            mockedUseContext.mockReturnValue(undefined);
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test3"],
+                    },
+                })
+            );
+
+            const lastCall = mockedUseMutation.mock.calls[mockedUseMutation.mock.calls.length - 1];
+            const defaultQueryClient = lastCall[1];
+            expect(defaultQueryClient).toBeInstanceOf(QueryClient);
+            expect(defaultQueryClient).not.toBe(parameterQueryClient);
+            expect(defaultQueryClient).not.toBe(providerQueryClient);
+        });
+
+        it("should create default QueryClient instance", () => {
+            mockedUseContext.mockReturnValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            const callArgs = mockedUseMutation.mock.calls[0];
+            const defaultQueryClient = callArgs[1] as QueryClient;
+
+            // Verify it's a QueryClient instance
+            expect(defaultQueryClient).toBeInstanceOf(QueryClient);
+        });
+
+        it("should configure default QueryClient with correct mutation options", () => {
+            mockedUseContext.mockReturnValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            renderHook(() =>
+                useMutationService({
+                    serviceFn: jest.fn(),
+                    options: {
+                        mutationKey: ["test"],
+                    },
+                })
+            );
+
+            const callArgs = mockedUseMutation.mock.calls[0];
+            const defaultQueryClient = callArgs[1] as QueryClient;
+
+            // Verify default options are configured correctly for mutations
+            const defaultOptions = defaultQueryClient.getDefaultOptions();
+            expect(defaultOptions?.mutations).toBeDefined();
+            expect(defaultOptions.mutations).toMatchObject({
+                gcTime: 1000 * 60 * 10, // 10 minutes
+                retry: 0, // mutations should not retry by default
+            });
+        });
+
+        it("should reuse the same default QueryClient instance across renders", () => {
+            mockedUseContext.mockReturnValue(undefined);
+
+            mockedUseMutation.mockReturnValue({
+                isPending: false,
+                isError: false,
+                isSuccess: true,
+                data: { test: "data" },
+                error: null,
+                mutateAsync: mockedMutateAsync,
+            });
+
+            const { rerender } = renderHook(
+                ({ mutationKey }) =>
+                    useMutationService({
+                        serviceFn: jest.fn(),
+                        options: {
+                            mutationKey,
+                        },
+                    }),
+                {
+                    initialProps: { mutationKey: ["test1"] as string[] },
+                }
+            );
+
+            const firstCallClient = mockedUseMutation.mock.calls[0][1] as QueryClient;
+
+            rerender({ mutationKey: ["test2"] });
+
+            const secondCallClient = mockedUseMutation.mock.calls[1][1] as QueryClient;
+
+            // Should reuse the same default QueryClient instance (memoized)
+            expect(firstCallClient).toBe(secondCallClient);
         });
     });
 });

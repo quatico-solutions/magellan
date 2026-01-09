@@ -141,6 +141,7 @@ export type UseQueryServiceParams<TFn extends ServiceFunction> = {
  * @param options - Further options to configure the underlying useQuery functionality.
  * @param options.queryKey - The query key to use for the query (optional, defaults to function name if possible, throws error if not).
  * @param options.enabled - Set to false if the react-query should not run automatically (optional, defaults to true).
+ * @param options.queryClient - A custom QueryClient instance to use (optional). Priority: parameter > provider > default.
  * @returns Query result with proper type narrowing. Use `isSuccess`, `isPending`, or `isError` to narrow types.
  * @throws Error if queryKey is not provided and cannot be created from serviceFn.
  *
@@ -156,6 +157,15 @@ export type UseQueryServiceParams<TFn extends ServiceFunction> = {
  * if (isSuccess) {
  *   console.log(data); // data is User (not undefined)
  * }
+ *
+ * @example
+ * // With custom QueryClient
+ * const queryClient = new QueryClient({ defaultOptions: { ... } });
+ * const { data } = useQueryService({
+ *   serviceFn: fetchUser,
+ *   serviceFnArgs: { id: 1 },
+ *   options: { queryClient }
+ * });
  *
  * @example
  * // Distinguish loading error from refetch error

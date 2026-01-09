@@ -12,6 +12,12 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.19.1] - 2026-01-09
+
+### Added
+
+- `@quatico/magellan-react`: Added `queryClient` option to `useMutationService` hook, allowing users to pass a custom `QueryClient` instance. The priority order is: parameter > provider > default (internally created with sensible defaults).
+
 ## [0.19.0] - 2025-12-19
 
 ### Added

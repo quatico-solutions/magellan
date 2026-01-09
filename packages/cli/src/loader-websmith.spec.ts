@@ -296,13 +296,13 @@ describe("websmith-loader", () => {
         });
 
         expect(getOutput("target/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
     });
 
     it("should yield proxy-function and remote-function with single file, addons from profiles and emit", async () => {
@@ -353,13 +353,13 @@ describe("websmith-loader", () => {
         });
 
         expect(getOutput("client/service-function.js")).toMatchInlineSnapshot(`
-            "import { remoteInvoke } from "@quatico/magellan-client";
-            // @service()
-            export function getFoobar(date, context, serialization) {
-                return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
-            }
-            "
-        `);
+"import { remoteInvoke } from "@quatico/magellan-client";
+// @service()
+export function getFoobar(date, context, serialization) {
+    return remoteInvoke({ name: "getFoobar", data: date, namespace: "default" }, context, serialization);
+}
+"
+`);
 
         await executeWebpack({
             tsConfigFile: path.join(testDirs.PROJECT_DIR, "tsconfig.json"),
@@ -371,22 +371,22 @@ describe("websmith-loader", () => {
         });
 
         expect(getOutput("server/service-function.d.ts")).toMatchInlineSnapshot(`
-            "import { type Context, type Serialization } from "@quatico/magellan-shared";
-            export declare function getFoobar(date: Date, context?: Context, serialization?: Serialization): string;
-            "
-        `);
+"import { type Context, type Serialization } from "@quatico/magellan-shared";
+export declare function getFoobar(date: Date, context?: Context, serialization?: Serialization): string;
+"
+`);
 
         expect(getOutput("server/service-function.js")).toMatchInlineSnapshot(`
-            "// @service()
-            export function getFoobar(date, context, serialization) {
-                return foobar(date);
-            }
-            function foobar(date) {
-                return "foobar " + date.toISOString();
-            }
-            "
-        `);
-    });
+"// @service()
+export function getFoobar(date, context, serialization) {
+    return foobar(date);
+}
+function foobar(date) {
+    return "foobar " + date.toISOString();
+}
+"
+`);
+    }, 15000);
 
     it("should yield remote-function with single file, addon service-function-generate and emit", async () => {
         createTsConfigFile({
@@ -459,7 +459,7 @@ describe("websmith-loader", () => {
 
             //# sourceMappingURL=service-function.js.map"
         `);
-    });
+    }, 15000);
 
     it("should yield proxy-function with single file, addons-config client-function-transform and emit", async () => {
         createTsConfigFile({

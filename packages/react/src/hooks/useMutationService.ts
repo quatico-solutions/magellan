@@ -1,4 +1,5 @@
-import { type MutationKey, useMutation } from "@tanstack/react-query";
+import { useContext, useMemo } from "react";
+import { type MutationKey, QueryClient, QueryClientContext, useMutation } from "@tanstack/react-query";
 import { createMutationKey } from "../utils/keyFactory";
 import { type ServiceFunction } from "../utils/ServiceFunction";
 
@@ -91,6 +92,7 @@ export type UseMutationServiceProps<TFn extends ServiceFunction> = {
     serviceFn: TFn;
     options?: {
         mutationKey?: MutationKey;
+        queryClient?: QueryClient;
     };
 };
 
@@ -102,6 +104,7 @@ export type UseMutationServiceProps<TFn extends ServiceFunction> = {
  * @param serviceFn - The magellan function to call.
  * @param options - Further options to configure the underlying useMutation functionality.
  * @param options.mutationKey - The mutation key to use for the mutation (optional, defaults to function name if possible).
+ * @param options.queryClient - A custom QueryClient instance to use (optional). Priority: parameter > provider > default.
  * @returns Mutation result with proper type narrowing. Use `isSuccess`, `isPending`, `isError`, or `isIdle` to narrow types.
  *
  * @example
@@ -117,6 +120,14 @@ export type UseMutationServiceProps<TFn extends ServiceFunction> = {
  * }
  *
  * @example
+ * // With custom QueryClient
+ * const queryClient = new QueryClient({ defaultOptions: { ... } });
+ * const { mutate } = useMutationService({
+ *   serviceFn: createUser,
+ *   options: { queryClient }
+ * });
+ *
+ * @example
  * // With custom error type
  * const { error } = useMutationService<typeof createUser, ApiError>({
  *   serviceFn: createUser
@@ -130,17 +141,39 @@ export const useMutationService = <TFn extends ServiceFunction, TError = Error>(
     type TData = UnwrapPromise<ReturnType<TFn>>;
 
     const mutationKey = options?.mutationKey;
-    const mutation = useMutation<TData, TError, TInput, MutationKey>({
-        mutationKey: mutationKey ?? createMutationKey(serviceFn),
-        mutationFn:
-            /* We omit complex mock implementation for useMutation so mutationFn is never called in unit tests */
-            /* istanbul ignore next */
-            async (input: TInput) => {
-                const result = await serviceFn(input);
-                // NOTE: return explicit `null` for empty results, because react-query does not support `undefined`
-                return (result ?? null) as TData;
-            },
-    });
+
+    const providerQueryClient = useContext(QueryClientContext);
+
+    const defaultQueryClient = useMemo(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    mutations: {
+                        gcTime: 1000 * 60 * 10, // 10 minutes
+                        retry: 0, // mutations should not retry by default (side effects)
+                    },
+                },
+            }),
+        []
+    );
+
+    // Priority: options.queryClient > providerQueryClient > defaultQueryClient
+    const queryClient = options?.queryClient ?? providerQueryClient ?? defaultQueryClient;
+
+    const mutation = useMutation<TData, TError, TInput, MutationKey>(
+        {
+            mutationKey: mutationKey ?? createMutationKey(serviceFn),
+            mutationFn:
+                /* We omit complex mock implementation for useMutation so mutationFn is never called in unit tests */
+                /* istanbul ignore next */
+                async (input: TInput) => {
+                    const result = await serviceFn(input);
+                    // NOTE: return explicit `null` for empty results, because react-query does not support `undefined`
+                    return (result ?? null) as TData;
+                },
+        },
+        queryClient
+    );
 
     // Map TanStack Mutation states to Magellan states
     // Status can be: 'idle', 'pending', 'error', 'success'

@@ -7,15 +7,31 @@
 
 import { expectTypeOf } from "expect-type";
 import { useMutation } from "@tanstack/react-query";
+import { useContext } from "react";
 import { useMutationService } from "./useMutationService";
 
 jest.mock("@tanstack/react-query");
 
+jest.mock("react", () => {
+    const actualReact = jest.requireActual("react");
+    // Create a simple useMemo implementation that just returns the value
+    const mockUseMemo = <T>(factory: () => T): T => factory();
+    return {
+        ...actualReact,
+        useContext: jest.fn(),
+        useMemo: mockUseMemo,
+    };
+});
+
 const mockedUseMutation = jest.mocked(useMutation);
+const mockedUseContext = jest.mocked(useContext);
 const mockedMutateAsync = jest.fn();
 
 // Default mock return value for useMutation - provides a valid structure for type tests
 beforeEach(() => {
+    // Mock useContext to return undefined (no provider)
+    mockedUseContext.mockReturnValue(undefined);
+
     mockedUseMutation.mockReturnValue({
         isPending: false,
         isError: false,
