@@ -115,17 +115,17 @@ importers:
         specifier: workspace:*
         version: link:../shared
       '@quatico/websmith-api':
-        specifier: 0.8.5
-        version: 0.8.5(typescript@5.7.3)
+        specifier: 0.9.0
+        version: 0.9.0(typescript@5.7.3)
       '@quatico/websmith-compiler':
-        specifier: 0.8.5
-        version: 0.8.5
+        specifier: 0.9.0
+        version: 0.9.0
       '@quatico/websmith-core':
-        specifier: 0.8.5
-        version: 0.8.5(typescript@5.7.3)
+        specifier: 0.9.0
+        version: 0.9.0(typescript@5.7.3)
       '@quatico/websmith-testing':
-        specifier: 0.8.5
-        version: 0.8.5(jest@29.7.0(@types/node@18.19.121)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@18.19.121)(typescript@5.7.3)))(typescript@5.7.3)
+        specifier: 0.9.0
+        version: 0.9.0(jest@29.7.0(@types/node@18.19.121)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@18.19.121)(typescript@5.7.3)))(typescript@5.7.3)
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.14
@@ -205,14 +205,14 @@ importers:
         specifier: workspace:*
         version: link:../shared
       '@quatico/websmith-api':
-        specifier: 0.8.5
-        version: 0.8.5(typescript@5.7.3)
+        specifier: 0.9.0
+        version: 0.9.0(typescript@5.7.3)
       '@quatico/websmith-compiler':
-        specifier: 0.8.5
-        version: 0.8.5
+        specifier: 0.9.0
+        version: 0.9.0
       '@quatico/websmith-core':
-        specifier: 0.8.5
-        version: 0.8.5(typescript@5.7.3)
+        specifier: 0.9.0
+        version: 0.9.0(typescript@5.7.3)
       commander:
         specifier: ^13.1.0
         version: 13.1.0
@@ -226,8 +226,8 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       websmith-loader:
-        specifier: 0.8.5
-        version: 0.8.5(typescript@5.7.3)(webpack@5.101.0)
+        specifier: 0.9.0
+        version: 0.9.0(typescript@5.7.3)(webpack@5.101.0)
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.6
@@ -1308,22 +1308,22 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@quatico/websmith-api@0.8.5':
-    resolution: {integrity: sha512-Rc3hhdxG/v0wKXlsR6o9qfIvhxel6dFO83EaErP+d3Au9YnRNfbZh+Ym+pNqI8Ng5esKL3xEsikxpDsIB3FFLA==}
+  '@quatico/websmith-api@0.9.0':
+    resolution: {integrity: sha512-fTQ1td9XODEKsJN0JUBpYFNw9q5gGldeh4uA3Bc1aW+TkJB1RnA1rA5/ct3iT2LvW6U7N62GTVC1sjr5gfGWAQ==}
     peerDependencies:
       typescript: 5.x
 
-  '@quatico/websmith-compiler@0.8.5':
-    resolution: {integrity: sha512-3eI74k0HHJ1xPiJSae7W9CfMxK8Fmk/OaOU1i+cH9QY/xx39CcNgeA29dUEuACegyrtNbiCaiYFOatUJKujtCw==}
+  '@quatico/websmith-compiler@0.9.0':
+    resolution: {integrity: sha512-zc8YJ65tCpEko6uaDQsnHGV+atJ/+l8/J00skf6Hss/apa7bBRaTrF85qn7g4CHzroZSMdw6rucZWn/n39ocjA==}
     hasBin: true
 
-  '@quatico/websmith-core@0.8.5':
-    resolution: {integrity: sha512-h0rR1U4QJ97GrgtAtXdTsxv8KAy7uC2bDgNQRvfzE/v1zPf/L2ZaY/o6hs95aV1dAn/rwEnfwpaQYVj5bTx9AA==}
+  '@quatico/websmith-core@0.9.0':
+    resolution: {integrity: sha512-fSSrIJeqJ3pd3GDQvE89XkS7P38Jnj8Y3+tmfiZICVfXLFDXKhr24qbDiN0rR+C1e7Zxk3ldc+CMuA9eomk7lw==}
     peerDependencies:
       typescript: 5.x
 
-  '@quatico/websmith-testing@0.8.5':
-    resolution: {integrity: sha512-msYUPh4WAfjjRqB0xDBf9CV45U8Fj3joxYSdRM1H/K8UsZKoa1sfm/njBfcfaejzPNJ1nU0+oZMHaBS4yv3rFQ==}
+  '@quatico/websmith-testing@0.9.0':
+    resolution: {integrity: sha512-5pLT7t2RyVLAA7Vh7vzfMWHWwKqzzdeOdlIEIKg8G0QZhvtAtqdeuL95pv/uVFafP9YrKcH1cwKg8o3xggIv+A==}
     peerDependencies:
       jest: 29.x
       typescript: 5.x
@@ -1366,24 +1366,28 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@swc/core-linux-arm64-musl@1.13.5':
     resolution: {integrity: sha512-9+ZxFN5GJag4CnYnq6apKTnnezpfJhCumyz0504/JbHLo+Ue+ZtJnf3RhyA9W9TINtLE0bC4hKpWi8ZKoETyOQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@swc/core-linux-x64-gnu@1.13.5':
     resolution: {integrity: sha512-WD530qvHrki8Ywt/PloKUjaRKgstQqNGvmZl54g06kA+hqtSE2FTG9gngXr3UJxYu/cNAjJYiBifm7+w4nbHbA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@swc/core-linux-x64-musl@1.13.5':
     resolution: {integrity: sha512-Luj8y4OFYx4DHNQTWjdIuKTq2f5k6uSXICqx+FSabnXptaOBAbJHNbHT/06JZh6NRUouaf0mYXN0mcsqvkhd7Q==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@swc/core-win32-arm64-msvc@1.13.5':
     resolution: {integrity: sha512-cZ6UpumhF9SDJvv4DA2fo9WIzlNFuKSkZpZmPG1c+4PFSEMy5DFOjBSllCvnqihCabzXzpn6ykCwBmHpy31vQw==}
@@ -4874,8 +4878,8 @@ packages:
       webpack-cli:
         optional: true
 
-  websmith-loader@0.8.5:
-    resolution: {integrity: sha512-GwGiYB2BCLJcrjALNyxmhrfaILTq+r5coyPEdQJDElCw2E9T0xR4n24EdDpqsIMdO/X9wRR/zgiRF2XXstjoiA==}
+  websmith-loader@0.9.0:
+    resolution: {integrity: sha512-zChxmdxPB6lZqJOTZVXjjhuC+d977VC9qkrMp95zWQqKrMeVJqhd17hmViBvhthZYs1PSTyFdLZl9iF3Q4nCIw==}
     peerDependencies:
       webpack: 5.x
 
@@ -5704,22 +5708,22 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@quatico/websmith-api@0.8.5(typescript@5.7.3)':
+  '@quatico/websmith-api@0.9.0(typescript@5.7.3)':
     dependencies:
       typescript: 5.7.3
 
-  '@quatico/websmith-compiler@0.8.5':
+  '@quatico/websmith-compiler@0.9.0':
     dependencies:
-      '@quatico/websmith-api': 0.8.5(typescript@5.7.3)
-      '@quatico/websmith-core': 0.8.5(typescript@5.7.3)
+      '@quatico/websmith-api': 0.9.0(typescript@5.7.3)
+      '@quatico/websmith-core': 0.9.0(typescript@5.7.3)
       commander: 13.1.0
       minimist: 1.2.8
       tslib: 2.8.1
       typescript: 5.7.3
 
-  '@quatico/websmith-core@0.8.5(typescript@5.7.3)':
+  '@quatico/websmith-core@0.9.0(typescript@5.7.3)':
     dependencies:
-      '@quatico/websmith-api': 0.8.5(typescript@5.7.3)
+      '@quatico/websmith-api': 0.9.0(typescript@5.7.3)
       comment-json: 4.4.1
       create-hash: 1.2.0
       deepmerge: 4.3.1
@@ -5727,10 +5731,10 @@ snapshots:
       path: 0.12.7
       typescript: 5.7.3
 
-  '@quatico/websmith-testing@0.8.5(jest@29.7.0(@types/node@18.19.121)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@18.19.121)(typescript@5.7.3)))(typescript@5.7.3)':
+  '@quatico/websmith-testing@0.9.0(jest@29.7.0(@types/node@18.19.121)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@18.19.121)(typescript@5.7.3)))(typescript@5.7.3)':
     dependencies:
-      '@quatico/websmith-api': 0.8.5(typescript@5.7.3)
-      '@quatico/websmith-core': 0.8.5(typescript@5.7.3)
+      '@quatico/websmith-api': 0.9.0(typescript@5.7.3)
+      '@quatico/websmith-core': 0.9.0(typescript@5.7.3)
       jest: 29.7.0(@types/node@18.19.121)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@18.19.121)(typescript@5.7.3))
       memfs: 4.36.0
       require-from-string: 2.0.2
@@ -10327,10 +10331,10 @@ snapshots:
       - esbuild
       - uglify-js
 
-  websmith-loader@0.8.5(typescript@5.7.3)(webpack@5.101.0):
+  websmith-loader@0.9.0(typescript@5.7.3)(webpack@5.101.0):
     dependencies:
-      '@quatico/websmith-api': 0.8.5(typescript@5.7.3)
-      '@quatico/websmith-core': 0.8.5(typescript@5.7.3)
+      '@quatico/websmith-api': 0.9.0(typescript@5.7.3)
+      '@quatico/websmith-core': 0.9.0(typescript@5.7.3)
       comment-json: 4.4.1
       webpack: 5.101.0(@swc/core@1.13.5)(webpack-cli@5.1.4)
     transitivePeerDependencies:

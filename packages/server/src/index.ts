@@ -10,7 +10,7 @@ import { initProjectConfiguration, resolveNamespace, setNamespace, setTransport 
 import { createFunctionRoute } from "./routes/function-route";
 import type { ServerOptions } from "./server";
 import { configureMagellanRoutes, configureRequestMiddlewares, serve, setupMagellanModules, startServer } from "./server";
-import { getFunctionService } from "./services";
+import { getFunctionService, type ServerFunction } from "./services";
 import { Sdk } from "./sdk";
 import { formdataFetch } from "./transport";
 
@@ -29,4 +29,4 @@ export {
     setupMagellanModules,
     startServer,
 };
-export type { Configuration, ServerOptions };
+export type { Configuration, ServerOptions, ServerFunction };

@@ -325,9 +325,15 @@ const buildWebsmithConfig = (
             profiles.client = {};
         }
         // Merge with existing client profile but override addons
+        // Disable declaration generation for client proxies (they're runtime code, not library code)
+        // This enables 10-20x faster transpileModule fast path
         profiles.client = {
             ...profiles.client,
             addons: ["client-function-transform"],
+            tsConfig: {
+                ...profiles.client.tsConfig,
+                declaration: false,
+            },
         };
         // Keep all profiles but ensure client profile has the CLI-specified addons
         profiles = {

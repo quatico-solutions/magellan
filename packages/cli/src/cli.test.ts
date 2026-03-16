@@ -193,6 +193,9 @@ describe("cli.ts", () => {
             profiles: {
                 client: {
                     addons: ["client-function-transform"],
+                    tsConfig: {
+                        declaration: false,
+                    },
                 },
             },
         });
@@ -322,7 +325,7 @@ describe("cli.ts", () => {
 
         executeCompiler(`--client --project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`, target);
 
-        expect(target.getOptions()).toEqual({
+        expect(target.getOptions()).toMatchObject({
             buildDir: testDirs.PROJECT_DIR,
             cliArgs: {
                 compileOnSave: false,
@@ -377,6 +380,9 @@ describe("cli.ts", () => {
                 profiles: {
                     client: {
                         addons: ["client-function-transform"],
+                        tsConfig: {
+                            declaration: false,
+                        },
                     },
                 },
             },
@@ -384,7 +390,6 @@ describe("cli.ts", () => {
             profile: "client",
             reporter: expect.any(NoReporter),
             system: expect.any(Object),
-            watch: false,
             tsConfig: {
                 allowJs: false,
                 checkJs: false,

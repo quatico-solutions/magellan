@@ -12,6 +12,25 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.19.3] - 2026-03-16
+
+### Added
+
+- `@quatico/magellan-server`: Exported `ServerFunction` type from root index for easier use in downstream libraries.
+
+### Changed
+
+- `@quatico/magellan-addons`: Updated all `@quatico/websmith-*` dependencies from 0.8.5 to 0.9.0.
+- `@quatico/magellan-cli`: Updated all `@quatico/websmith-*` dependencies from 0.8.5 to 0.9.0.
+- `@quatico/magellan-addons`: Added `needsTypeInfo = false` to `client-function-transform` addon, opting into the websmith transpileModule fast path for 120x faster client proxy compilation.
+- `@quatico/magellan-cli`: Disabled TypeScript declaration file (.d.ts) generation for the client profile, enabling the websmith fast path since client proxies are runtime code and don't need declarations.
+
+## [0.19.2] - 2025-11-21
+
+### Fixed
+
+- Increased timeout for tests relying on many webpack runs.
+
 ## [0.19.1] - 2026-01-09
 
 ### Added
