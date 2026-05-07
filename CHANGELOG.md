@@ -12,6 +12,26 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.19.8] - 2026-05-07
+
+## [0.19.7] - 2026-05-06
+
+### Added
+
+- `@quatico/magellan-server`: Added `mergeWithExisting` option to `initProjectConfiguration` for merging configuration with existing entries instead of overriding them.
+
+## [0.19.6] - 2026-05-06
+
+> Version skipped — release attempt aborted before any artifacts were published.
+
+## [0.19.5] - 2026-05-05
+
+> Version skipped — release attempt aborted before any artifacts were published.
+
+## [0.19.4] - 2026-05-05
+
+> Version skipped — release attempt aborted before any artifacts were published.
+
 ## [0.19.3] - 2026-03-16
 
 ### Added

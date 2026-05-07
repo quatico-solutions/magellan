@@ -1,7 +1,7 @@
 {
     "name": "@quatico/create-magellan-starter",
     "description": "A starter project for creating a React application with Magellan",
-    "version": "0.19.3",
+    "version": "0.19.8",
     "author": "Quatico Solutions AG",
     "type": "module",
     "license": "MIT",
@@ -32,8 +32,5 @@
         "esbuild": "^0.24.0",
         "rimraf": "^5.0.0",
         "typescript": "5.1.6"
-    },
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
     }
 }

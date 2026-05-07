@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-server",
     "description": "Middleware for remote service execution with the @quatico/websmith-compiler",
-    "version": "0.19.3",
+    "version": "0.19.8",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -72,8 +72,5 @@
         "tslib": "^2.8.1",
         "typescript": "5.1.6",
         "typescript-eslint": "^8.22.0"
-    },
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
     }
 }

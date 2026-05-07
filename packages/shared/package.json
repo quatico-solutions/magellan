@@ -1,7 +1,7 @@
 {
     "name": "@quatico/magellan-shared",
     "description": "Shared functionality for server/client communication",
-    "version": "0.19.3",
+    "version": "0.19.8",
     "author": "Quatico Solutions AG",
     "license": "MIT",
     "repository": {
@@ -49,8 +49,5 @@
         "ts-jest": "^29.0.3",
         "typescript": "5.1.6",
         "typescript-eslint": "^8.22.0"
-    },
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
     }
 }

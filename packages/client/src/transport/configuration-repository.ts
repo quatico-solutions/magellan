@@ -9,8 +9,12 @@ import { type NamespaceMapping } from "@quatico/magellan-shared";
 import { type Configuration } from "./Configuration";
 import { getDefaultConfiguration } from "./default-configuration";
 
-export const initProjectConfiguration = (projectConfiguration: Partial<Configuration>): Configuration => {
-    return persistConfig(expandConfig(projectConfiguration));
+export const initProjectConfiguration = (
+    projectConfiguration: Partial<Configuration>,
+    options?: { mergeWithExisting?: boolean }
+): Configuration => {
+    const base = options?.mergeWithExisting ? globalThis.__qsMagellanConfig__ : undefined;
+    return persistConfig(expandConfig(projectConfiguration, base));
 };
 
 export const getConfiguration = (): Configuration => {
@@ -27,11 +31,19 @@ const configurationNeedsMerge = (configuration: Partial<Configuration>): boolean
     );
 };
 
-export const expandConfig = (configuration: Partial<Configuration> | undefined): Configuration => {
+export const expandConfig = (configuration: Partial<Configuration> | undefined, existingConfig?: Configuration): Configuration => {
     const defaultConfiguration = getDefaultConfiguration();
     return {
-        namespaces: completeNamespaces({ ...defaultConfiguration.namespaces, ...configuration?.namespaces }),
-        transports: { ...(defaultConfiguration.transports ?? {}), ...(configuration?.transports ?? {}) },
+        namespaces: completeNamespaces({
+            ...defaultConfiguration.namespaces,
+            ...(existingConfig?.namespaces ?? {}),
+            ...configuration?.namespaces,
+        }),
+        transports: {
+            ...(defaultConfiguration.transports ?? {}),
+            ...(existingConfig?.transports ?? {}),
+            ...(configuration?.transports ?? {}),
+        },
         ...(defaultConfiguration && !!defaultConfiguration?.merge && { lastMerged: defaultConfiguration }),
     };
 };
