@@ -49,7 +49,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      # `--no-frozen-lockfile` is required because the mirror's package.json and
+      # pnpm-lock.yaml come from different layers of the Bitbucket source tree
+      # (node/package.json vs the workspace-root pnpm-lock.yaml), which are
+      # inherently inconsistent on the mirror's flat layout. This matches the
+      # convention of the previous CI workflows on the mirror.
+      - run: pnpm install --no-frozen-lockfile
 
       - run: pnpm -r run build
 
