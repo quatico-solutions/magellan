@@ -1,0 +1,65 @@
+# .github/workflows/release-npm.yml
+#
+# Publishes the @quatico/magellan-* npm packages to npmjs.org via OIDC trusted
+# publishing. Triggered when Jenkins pushes a release tag (vX.Y.Z) to the GitHub
+# mirror at quatico-solutions/magellan.
+#
+# Prerequisites:
+#   - On npmjs.com, each scoped package must have a Trusted Publisher registered
+#     pointing at this workflow filename (release-npm.yml) on this repository.
+#   - The Jenkins release pipeline must NOT also publish to npmjs.org (handled
+#     by the gradle change that removes publishNpmToNpmJs).
+
+name: Publish to npmjs.org
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'   # release tags only — never -SNAPSHOT
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to (re-)publish, e.g. v0.19.7'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write   # required for npm OIDC trusted publishing
+
+concurrency:
+  group: publish-npm
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18   # matches Jenkins build container; bump in lockstep with Jenkins
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm -r run build
+
+      # Unit tests only. Jenkins ran e2e (test:e2e) on the same source tree
+      # before pushing this tag, so we don't repeat that here.
+      - run: pnpm -r run test
+
+      # We use `pnpm publish` (not `npm publish`) because pnpm rewrites
+      # workspace:* dependencies to concrete versions during pack — npm does not.
+      - name: Publish to npmjs.org with provenance
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: pnpm -r publish --access public --no-git-checks --provenance
