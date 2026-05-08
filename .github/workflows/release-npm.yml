@@ -45,12 +45,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18   # matches Jenkins build container; bump in lockstep with Jenkins
+          # Node 20 (not 18) because npm trusted publishing requires npm >=
+          # 11.5.1, and npm 11.x requires Node ^20.17.0. Jenkins still builds
+          # on Node 18 — that's fine because the GHA only re-builds + publishes
+          # tarballs that Jenkins already tested at v0.19.X tag time. The
+          # Node version of the publish-side has no effect on the artifacts.
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      # Upgrade npm to a version with full OIDC trusted publishing support.
-      # Node 18 LTS ships with npm 10.x; trusted publishing requires npm >= 11.5.1.
+      # Upgrade to npm 11.x for OIDC trusted publishing support.
       - run: npm install -g npm@latest
 
       # `--no-frozen-lockfile` is required because the mirror's package.json and
