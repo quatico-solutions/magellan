@@ -49,6 +49,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
+      # Upgrade npm to a version with full OIDC trusted publishing support.
+      # Node 18 LTS ships with npm 10.x; trusted publishing requires npm >= 11.5.1.
+      - run: npm install -g npm@latest
+
       # `--no-frozen-lockfile` is required because the mirror's package.json and
       # pnpm-lock.yaml come from different layers of the Bitbucket source tree
       # (node/package.json vs the workspace-root pnpm-lock.yaml), which are
@@ -62,9 +66,18 @@ jobs:
       # before pushing this tag, so we don't repeat that here.
       - run: pnpm -r run test
 
-      # We use `pnpm publish` (not `npm publish`) because pnpm rewrites
-      # workspace:* dependencies to concrete versions during pack — npm does not.
-      - name: Publish to npmjs.org with provenance
+      # Publishing flow: pnpm pack rewrites workspace:* deps to concrete
+      # versions in each tarball; npm publish then handles OIDC trusted
+      # publishing. Using pnpm publish directly would not invoke npm's OIDC
+      # logic reliably with pnpm 9.
+      - name: Publish each package to npmjs.org with provenance
         env:
           NPM_CONFIG_PROVENANCE: 'true'
-        run: pnpm -r publish --access public --no-git-checks --provenance
+        run: |
+          mkdir -p /tmp/tarballs
+          pnpm -r --filter "./packages/*" exec pnpm pack --pack-destination /tmp/tarballs
+          for tgz in /tmp/tarballs/*.tgz; do
+            echo "::group::Publishing $tgz"
+            npm publish "$tgz" --access public --provenance
+            echo "::endgroup::"
+          done
