@@ -172,45 +172,18 @@ describe("websmith-loader", () => {
         });
 
         expect(getOutput("foobar-arrow.js")).toMatchInlineSnapshot(`
-            "/******/ // The require scope
-            /******/ var __webpack_require__ = {};
-            /******/ 
-            /************************************************************************/
-            /******/ /* webpack/runtime/define property getters */
-            /******/ (() => {
-            /******/ 	// define getter functions for harmony exports
-            /******/ 	__webpack_require__.d = (exports, definition) => {
-            /******/ 		for(var key in definition) {
-            /******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-            /******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-            /******/ 			}
-            /******/ 		}
-            /******/ 	};
-            /******/ })();
-            /******/ 
-            /******/ /* webpack/runtime/hasOwnProperty shorthand */
-            /******/ (() => {
-            /******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-            /******/ })();
-            /******/ 
-            /************************************************************************/
-            var __webpack_exports__ = {};
-            /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-            /* harmony export */   y: () => (/* binding */ getFoobar)
-            /* harmony export */ });
-            // @annotated()
-            const getFoobar = (date) => {
-                return foobar(date);
-            };
-            const foobar = (date) => {
-                return "foobar " + date.toISOString();
-            };
+"// @annotated()
+const getFoobar = (date) => {
+    return foobar(date);
+};
+const foobar = (date) => {
+    return "foobar " + date.toISOString();
+};
 
-            const __webpack_exports__getFoobar = __webpack_exports__.y;
-            export { __webpack_exports__getFoobar as getFoobar };
+export { getFoobar };
 
-            //# sourceMappingURL=foobar-arrow.js.map"
-        `);
+//# sourceMappingURL=foobar-arrow.js.map"
+`);
         expect(getOutput("foobar-arrow.d.ts")).toMatchInlineSnapshot(`
             "export declare const getFoobar: (date: Date) => string;
             //# sourceMappingURL=foobar-arrow.d.ts.map"
@@ -420,45 +393,18 @@ function foobar(date) {
         });
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
-            "/******/ // The require scope
-            /******/ var __webpack_require__ = {};
-            /******/ 
-            /************************************************************************/
-            /******/ /* webpack/runtime/define property getters */
-            /******/ (() => {
-            /******/ 	// define getter functions for harmony exports
-            /******/ 	__webpack_require__.d = (exports, definition) => {
-            /******/ 		for(var key in definition) {
-            /******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-            /******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-            /******/ 			}
-            /******/ 		}
-            /******/ 	};
-            /******/ })();
-            /******/ 
-            /******/ /* webpack/runtime/hasOwnProperty shorthand */
-            /******/ (() => {
-            /******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-            /******/ })();
-            /******/ 
-            /************************************************************************/
-            var __webpack_exports__ = {};
-            /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-            /* harmony export */   y: () => (/* binding */ getFoobar)
-            /* harmony export */ });
-            // @service()
-            function getFoobar(date, context, serialization) {
-                return foobar(date);
-            }
-            function foobar(date) {
-                return "foobar " + date.toISOString();
-            }
+"// @service()
+function getFoobar(date, context, serialization) {
+    return foobar(date);
+}
+function foobar(date) {
+    return "foobar " + date.toISOString();
+}
 
-            const __webpack_exports__getFoobar = __webpack_exports__.y;
-            export { __webpack_exports__getFoobar as getFoobar };
+export { getFoobar };
 
-            //# sourceMappingURL=service-function.js.map"
-        `);
+//# sourceMappingURL=service-function.js.map"
+`);
     }, 15000);
 
     it("should yield proxy-function with single file, addons-config client-function-transform and emit", async () => {
@@ -496,45 +442,18 @@ function foobar(date) {
         });
 
         expect(getOutput("service-function.js")).toMatchInlineSnapshot(`
-            "/******/ // The require scope
-            /******/ var __webpack_require__ = {};
-            /******/ 
-            /************************************************************************/
-            /******/ /* webpack/runtime/define property getters */
-            /******/ (() => {
-            /******/ 	// define getter functions for harmony exports
-            /******/ 	__webpack_require__.d = (exports, definition) => {
-            /******/ 		for(var key in definition) {
-            /******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-            /******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-            /******/ 			}
-            /******/ 		}
-            /******/ 	};
-            /******/ })();
-            /******/ 
-            /******/ /* webpack/runtime/hasOwnProperty shorthand */
-            /******/ (() => {
-            /******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-            /******/ })();
-            /******/ 
-            /************************************************************************/
-            var __webpack_exports__ = {};
-            /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-            /* harmony export */   y: () => (/* binding */ getFoobar)
-            /* harmony export */ });
-            // @service()
-            function getFoobar(date, context, serialization) {
-                return foobar(date);
-            }
-            function foobar(date) {
-                return "foobar " + date.toISOString();
-            }
+"// @service()
+function getFoobar(date, context, serialization) {
+    return foobar(date);
+}
+function foobar(date) {
+    return "foobar " + date.toISOString();
+}
 
-            const __webpack_exports__getFoobar = __webpack_exports__.y;
-            export { __webpack_exports__getFoobar as getFoobar };
+export { getFoobar };
 
-            //# sourceMappingURL=service-function.js.map"
-        `);
+//# sourceMappingURL=service-function.js.map"
+`);
     });
 });
 

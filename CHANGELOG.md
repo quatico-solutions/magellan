@@ -12,6 +12,13 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** `@quatico/magellan-server` now has a peer dependency on `multer` 2.x (was 1.x).
+- Development requires Node.js 24 LTS (`.nvmrc`) and pnpm 12.5.1, pinned through `packageManager`; activate it with `corepack enable pnpm`.
+- Upgraded all Node dependencies to their latest releases, including Jest 30, webpack 5.111, typescript-eslint 8.70 and TanStack Query 5.103. Exceptions: TypeScript stays at 5.7.3 (pinned by websmith 0.9.0), ESLint at 9.39 (eslint-plugin-import does not support ESLint 10 yet) and commander at 14.0.0 (commander 15 is ESM-only).
+- Releases to npmjs.org are now published from GitHub Actions via OIDC trusted publishing and include sigstore provenance attestations. There is no functional change to the published packages.
+
 ## [0.19.8] - 2026-05-07
 
 ## [0.19.7] - 2026-05-06

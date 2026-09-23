@@ -4,7 +4,7 @@
     "compilerOptions": {
         "noEmit": true,
         "jsx": "react",
-        "lib": ["ES2020", "DOM"]
+        "lib": ["ES2022", "DOM"]
     },
     "exclude": ["node_modules", "coverage", "lib"],
     "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*.ts", "test/**/*.tsx"]

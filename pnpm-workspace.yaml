@@ -1,2 +1,13 @@
 packages:
     - "**/packages/*"
+peerDependencyRules:
+    allowAny:
+        - eslint
+        - "@typescript-eslint/parser"
+        - eslint-config-prettier
+# Dependencies whose install scripts must not run (they ship prebuilt binaries)
+allowBuilds:
+    "@parcel/watcher": false
+    "@swc/core": false
+    esbuild: false
+    unrs-resolver: false

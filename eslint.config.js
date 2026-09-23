@@ -14,7 +14,8 @@ const { fixupPluginRules } = require("@eslint/compat");
 const importPlugin = require("eslint-plugin-import");
 const testingLibrary = require("eslint-plugin-testing-library");
 const tsPlugin = require("@typescript-eslint/eslint-plugin");
-const eslintPluginUnicorn = require("eslint-plugin-unicorn");
+// eslint-plugin-unicorn is ESM-only; require() returns its module namespace
+const eslintPluginUnicorn = require("eslint-plugin-unicorn").default;
 
 module.exports = [
     js.configs.recommended,

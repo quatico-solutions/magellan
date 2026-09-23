@@ -28,7 +28,7 @@ export const getDescendantsOfKind = <O extends ts.Node>(node: ts.Node, kind: Syn
         return node as O;
     }
     const descendant = node.forEachChild(child => getDescendantsOfKind<O>(child, kind));
-    return descendant as O;
+    return descendant;
 };
 
 /**

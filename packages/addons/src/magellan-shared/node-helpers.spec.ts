@@ -9,7 +9,7 @@ import { type Node } from "typescript";
 import type ts from "typescript";
 import { createSourceFile, ScriptTarget, SyntaxKind } from "typescript";
 import { type AddonContext } from "@quatico/websmith-api";
-import { getDecoration, getDescendantsOfKind, getFunctionName, isNodeExported, isTransformable, type ServiceDecoratorData } from "./node-helpers";
+import { getDecoration, getDescendantsOfKind, getFunctionName, isNodeExported, isTransformable } from "./node-helpers";
 import { type MagellanConfig } from "./magellan-config";
 
 interface SetupResult<T extends Node> {
@@ -101,7 +101,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual({ kind: "local", namespace: "default" });
     });
 
     it("returns local kind metadata w/ arrow function calling a helper function", () => {
@@ -115,7 +115,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual({ kind: "local", namespace: "default" });
     });
 
     it("returns local kind metadata w/ arrow function calling another exported function", () => {
@@ -129,7 +129,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "local", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual({ kind: "local", namespace: "default" });
     });
 
     it("returns external kind metadata w/ arrow function and external call annotation", () => {
@@ -141,7 +141,7 @@ describe("getDecoration", () => {
             `,
         });
 
-        expect(getDecoration(sf, target, "service", mockContext)).toEqual(<ServiceDecoratorData>{ kind: "external", namespace: "default" });
+        expect(getDecoration(sf, target, "service", mockContext)).toEqual({ kind: "external", namespace: "default" });
     });
 
     it("returns undefined and error w/ arrow function without annotation", () => {
