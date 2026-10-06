@@ -27,7 +27,7 @@ export const packObject = (value: unknown): unknown => {
     if (value instanceof Map) {
         return {
             __type__: SerializedTypes.Map,
-            value: value.size < 1 ? {} : Object.fromEntries(Array.from(value.entries()).map(it => [it.at(0), packObject(it.at(1))])),
+            value: value.size < 1 ? {} : Object.fromEntries(Array.from(value.entries()).map(it => [it[0], packObject(it[1])])),
         };
     }
     if (value instanceof Set) {
@@ -37,7 +37,7 @@ export const packObject = (value: unknown): unknown => {
         };
     }
     if (value instanceof Object) {
-        const fields = Object.entries(value).map(it => [it.at(0), packObject(it.at(1))]);
+        const fields = Object.entries(value).map(it => [it[0], packObject(it[1])]);
         return Object.fromEntries(fields);
     }
     return value;

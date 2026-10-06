@@ -1,6 +1,6 @@
 /* eslint-disable curly */
 import { type CompilationConfig, type CompilationProfile, type CompilerArguments } from "@quatico/websmith-api";
-import { AddonRegistry, Compiler, createOptions, DefaultReporter } from "@quatico/websmith-core";
+import { AddonRegistry, Compiler, createOptions, DefaultReporter, ErrorTrackingReporter } from "@quatico/websmith-core";
 import { Command } from "commander";
 import ts from "typescript";
 import { ModuleResolver } from "./module-resolver";
@@ -96,7 +96,7 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler): 
         .action((source: string[] | undefined, options: CompilerOptions) => {
             try {
                 const system = ts.sys;
-                const reporter = new DefaultReporter(system);
+                const reporter = new ErrorTrackingReporter(new DefaultReporter(system));
                 const tsConfigFile = options.project ?? "./tsconfig.json";
 
                 // Auto-enable optimizations when using --client or --server
@@ -264,6 +264,9 @@ export const addCompileCommand = (parent = new Command(), compiler?: Compiler): 
                     compiler.watch();
                 } else {
                     compiler.compile();
+                    if (reporter.hasErrors()) {
+                        process.exitCode = 1;
+                    }
                 }
             } catch (error) {
                 process.stderr.write(`Compilation failed: ${error instanceof Error ? error.message : String(error)}\n`);

@@ -500,7 +500,7 @@ export const getInputAsOutput = (obj: {
                 ...baseContext,
                 getSystem: () => mockedSystem,
                 markFileAsAddonProcessed: jest.fn(),
-            };
+            } as unknown as AddonContext<MagellanConfig>;
         };
 
         const createSourceWithPath = (filePath: string, fileContent: string) =>

@@ -14,6 +14,24 @@ Release notes follow the [keep a changelog](https://keepachangelog.com/en/1.1.0/
 
 ### Changed
 
+- **Breaking:** `magellan compile` exits with code 1 when the compilation reports an error-level diagnostic (syntax or type errors). It exited with 0 before, so scripts and CI jobs that relied on that exit code now fail on a broken build. Watch mode (`--watch`) is unchanged.
+- **Breaking:** Upgraded websmith to 0.10.0, which requires Node.js 22.12 or newer (Node.js 24 is supported). The `websmith-loader` in the `react-typescript-webpack` starter template now fails the webpack build on compilation errors; it reported them and continued before. The peer dependencies of `@quatico/magellan-addons` on `@quatico/websmith-api` and `@quatico/websmith-core` are `0.10.x` now (were `0.9.x`). TypeScript stays at 5.7.3, which websmith 0.10.0 still pins.
+- Development uses Node.js 24 (`.nvmrc`) and `@types/node` 24 in all packages.
+
+## [1.0.1] - 2026-09-24
+
+### Fixed
+
+- `@quatico/magellan-client`: A bundle merges its own namespaces into a global configuration that another client persisted, e.g. a microfrontend under a host page with its own client. Since 0.14.2 the bundle's namespaces were dropped and its service calls failed without a request.
+
+### Changed
+
+- **Breaking:** Rolled back the Node upgrades of 1.0.0. `@quatico/magellan-server` has a peer dependency on `multer` 1.x again, development uses Node.js 18 and pnpm 9 again, and all Node dependencies are back at their 0.19.8 versions.
+
+## [1.0.0] - 2026-09-23
+
+### Changed
+
 - **Breaking:** `@quatico/magellan-server` now has a peer dependency on `multer` 2.x (was 1.x).
 - Development requires Node.js 24 LTS (`.nvmrc`) and pnpm 12.5.1, pinned through `packageManager`; activate it with `corepack enable pnpm`.
 - Upgraded all Node dependencies to their latest releases, including Jest 30, webpack 5.111, typescript-eslint 8.70 and TanStack Query 5.103. Exceptions: TypeScript stays at 5.7.3 (pinned by websmith 0.9.0), ESLint at 9.39 (eslint-plugin-import does not support ESLint 10 yet) and commander at 14.0.0 (commander 15 is ESM-only).

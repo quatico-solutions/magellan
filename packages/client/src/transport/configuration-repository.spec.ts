@@ -143,6 +143,24 @@ describe("getConfiguration", () => {
         delete actual.lastMerged;
         expect(actual).toEqual(expected);
     });
+
+    // A host page and a microfrontend bundle their own client, each with its own config.js; the host's client
+    // persists the global configuration first, without lastMerged.
+    it("should merge its own namespaces into a global configuration persisted by another client", () => {
+        const bundledConfig = <Configuration>{
+            namespaces: { contracts: { endpoint: "/contracts-api", transport: "default" } },
+            transports: { default: formdataFetch },
+        };
+        jest.requireMock("./default-configuration").getDefaultConfiguration.mockReturnValue(bundledConfig);
+        globalThis.__qsMagellanConfig__ = {
+            namespaces: { portal: { endpoint: "/portal-api", transport: "default" } },
+            transports: { default: formdataFetch },
+        };
+
+        const actual = getConfiguration();
+
+        expect(Object.keys(actual.namespaces)).toEqual(expect.arrayContaining(["portal", "contracts"]));
+    });
 });
 
 describe("expandConfig", () => {

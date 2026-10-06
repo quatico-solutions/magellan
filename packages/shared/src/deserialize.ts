@@ -28,7 +28,7 @@ export const unpackObject = (value: any): unknown => {
         }
         if (complexType.__type__ === SerializedTypes.Map) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return complexType.value ? new Map(Object.entries(complexType.value).map((it: any) => [it.at(0), unpackObject(it.at(1))])) : new Map();
+            return complexType.value ? new Map(Object.entries(complexType.value).map((it: any) => [it[0], unpackObject(it[1])])) : new Map();
         }
         if (complexType.__type__ === SerializedTypes.Set) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,8 +51,8 @@ export const unpackObject = (value: any): unknown => {
 const deserializeObject = (value: any) => {
     const map = new Map<PropertyKey, unknown>();
     Object.entries(value).forEach(it => {
-        const key = it.at(0) as PropertyKey;
-        const val = it.at(1);
+        const key = it[0] as PropertyKey;
+        const val = it[1];
         if (isSerializedComplexType(val) || val instanceof Object) {
             map.set(key, unpackObject(val));
         } else if (val instanceof Array) {

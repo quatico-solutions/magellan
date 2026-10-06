@@ -4,30 +4,15 @@
  *   Licensed under the MIT License. See LICENSE in the project root for license information.
  * ---------------------------------------------------------------------------------------------
  */
-import fs, {
-    Dirent,
-    MakeDirectoryOptions,
-    ObjectEncodingOptions,
-    PathLike,
-    PathOrFileDescriptor,
-    ReadStream,
-    ReadStreamOptions,
-    Stats,
-    StatWatcher,
-    WatchFileOptions,
-    WatchOptions,
-} from "fs";
-import { memfs as createMemfs } from "memfs";
+import fs, { MakeDirectoryOptions, ObjectEncodingOptions, PathLike, PathOrFileDescriptor, Stats, WatchFileOptions } from "fs";
+import { createFsFromVolume, vol } from "memfs";
+import Dirent from "memfs/lib/Dirent";
+import { TDataOut } from "memfs/lib/encoding";
+import { IReaddirOptions, IReadStream, IReadStreamOptions, IWatchOptions, StatWatcher, TCallback } from "memfs/lib/volume";
 import { dirname } from "path";
 
-type TDataOut = string | Buffer;
-type IReaddirOptions = ObjectEncodingOptions;
-type TCallback<T> = (err: NodeJS.ErrnoException | null, result?: T) => void;
-
-// memfs 4 resolves relative paths against "/" unless the volume uses the real process (memfs 3 used process.cwd())
-const { fs: memfs, vol } = createMemfs({}, { process });
-
 export const createFs = (actualFs: typeof fs): typeof fs => {
+    const memfs = createFsFromVolume(vol);
 
     return {
         ...actualFs,
@@ -135,7 +120,7 @@ export const createFs = (actualFs: typeof fs): typeof fs => {
         stat: (path: PathLike, callback: TCallback<Stats>): void =>
             memfs.existsSync(path) ? memfs.stat(path, callback as any) : actualFs.stat(path, callback),
         statSync: (path: PathLike): Stats => (memfs.existsSync(path) ? memfs.statSync(path) : actualFs.statSync(path)),
-        createReadStream: (path: PathLike, options?: BufferEncoding | ReadStreamOptions): ReadStream =>
+        createReadStream: (path: PathLike, options?: BufferEncoding | IReadStreamOptions): IReadStream | fs.ReadStream =>
             memfs.existsSync(path) ? memfs.createReadStream(path, options) : actualFs.createReadStream(path, options as any),
         unlinkSync: memfs.unlinkSync,
         realpathSync: (path: PathLike, options?: { encoding?: BufferEncoding | null } | BufferEncoding | null): string | TDataOut | Buffer =>
@@ -150,7 +135,7 @@ export const createFs = (actualFs: typeof fs): typeof fs => {
             return memfs.openSync(path, flags, mode);
         },
         closeSync: memfs.closeSync,
-        watch: (path: PathLike, options?: WatchOptions | BufferEncoding, listener?: (eventType: string, filename: string) => void): fs.FSWatcher =>
+        watch: (path: PathLike, options?: IWatchOptions | string, listener?: (eventType: string, filename: string) => void): fs.FSWatcher =>
             memfs.existsSync(path) ? memfs.watch(path, options, listener) : actualFs.watch(path, options as any, listener),
         watchFile: (
             path: PathLike,

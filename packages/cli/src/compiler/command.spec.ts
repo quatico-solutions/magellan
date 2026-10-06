@@ -194,6 +194,58 @@ describe("addCompileCommand", () => {
         });
     });
 
+    describe("Exit code", () => {
+        const errorDiagnostic = (category: ts.DiagnosticCategory): ts.Diagnostic => ({
+            category,
+            code: 1,
+            file: undefined,
+            start: undefined,
+            length: undefined,
+            messageText: "whatever",
+        });
+
+        const mockCompile = (category?: ts.DiagnosticCategory) =>
+            jest.spyOn(Compiler.prototype, "compile").mockImplementation(function (this: Compiler) {
+                if (category !== undefined) {
+                    this.getOptions().reporter?.reportDiagnostic(errorDiagnostic(category));
+                }
+                return this;
+            });
+
+        beforeEach(() => {
+            process.exitCode = undefined;
+        });
+
+        afterEach(() => {
+            process.exitCode = undefined;
+            jest.restoreAllMocks();
+        });
+
+        it("should set exit code 1 when the compilation reports an error", () => {
+            mockCompile(ts.DiagnosticCategory.Error);
+
+            executeCompiler("");
+
+            expect(process.exitCode).toBe(1);
+        });
+
+        it("should not set exit code when the compilation reports only a warning", () => {
+            mockCompile(ts.DiagnosticCategory.Warning);
+
+            executeCompiler("");
+
+            expect(process.exitCode).toBeUndefined();
+        });
+
+        it("should not set exit code when the compilation reports nothing", () => {
+            mockCompile();
+
+            executeCompiler("");
+
+            expect(process.exitCode).toBeUndefined();
+        });
+    });
+
     describe("CLI argument handling", () => {
         let compiler: Compiler;
 

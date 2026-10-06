@@ -25,10 +25,9 @@ export const getConfiguration = (): Configuration => {
 };
 
 const configurationNeedsMerge = (configuration: Partial<Configuration>): boolean => {
-    return (
-        configuration.merge ||
-        (globalThis.__qsMagellanConfig__?.lastMerged !== undefined && globalThis.__qsMagellanConfig__?.lastMerged !== configuration)
-    );
+    // A global configuration without lastMerged was persisted by another client (e.g. the host page's), so this
+    // bundle's own namespaces still have to be merged in.
+    return configuration.merge || globalThis.__qsMagellanConfig__?.lastMerged !== configuration;
 };
 
 export const expandConfig = (configuration: Partial<Configuration> | undefined, existingConfig?: Configuration): Configuration => {

@@ -43,7 +43,7 @@ describe("clientSideCodeRemover", () => {
             set onEmitNode(value) {
                 /* no-op */
             },
-        };
+        } as any;
 
         addonContext = {
             getReporter: () => ({

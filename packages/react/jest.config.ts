@@ -1,4 +1,3 @@
-/** @jest-config-loader ts-node */
 /*
  * ---------------------------------------------------------------------------------------------
  *   Copyright (c) Quatico Solutions AG. All rights reserved.

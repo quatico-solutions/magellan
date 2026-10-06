@@ -12,7 +12,7 @@ async function main(currentDir = process.cwd()) {
         placeholder: projectNamePlaceholder,
         initialValue: projectNamePlaceholder,
         validate(value) {
-            if (!value) {
+            if (value.length === 0) {
                 return "A name is required!";
             }
         },

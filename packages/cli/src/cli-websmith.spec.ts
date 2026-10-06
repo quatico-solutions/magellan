@@ -244,10 +244,10 @@ describe("cli.ts", () => {
         executeCompiler("--unknown --another-unknown expected", target);
 
         expect(target.getOptions()).toMatchObject({
-            additionalArguments: {
-                unknown: true,
-                "another-unknown": "expected",
-            },
+            additionalArguments: new Map<string, unknown>([
+                ["unknown", true],
+                ["another-unknown", "expected"],
+            ]),
         });
     });
 

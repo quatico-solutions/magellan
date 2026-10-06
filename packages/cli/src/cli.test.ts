@@ -68,6 +68,9 @@ describe("cli.ts", () => {
     });
 
     afterEach(() => {
+        // Compilations with errors set the exit code, which must not fail the Jest process
+        process.exitCode = undefined;
+
         // Restore working directory safely
         try {
             if (originalCwd && originalCwd !== process.cwd()) {
@@ -119,6 +122,26 @@ describe("cli.ts", () => {
         executeCompiler("--project ./tsconfig.json --sourceMap", target);
 
         expect(target.getOptions()).toMatchObject({ tsConfig: { sourceMap: true, project: "./tsconfig.json" } });
+    });
+
+    it("should set exit code 1 when the source has a syntax error", () => {
+        createTsConfigFile({ outDir: testDirs.OUTPUT_DIR, noEmit: false, target: ts.ScriptTarget.ESNext });
+        createSourceFile("export const hello = ;", "broken.ts");
+
+        executeCompiler(`--project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
+
+        const actual = process.exitCode;
+        expect(actual).toBe(1);
+    });
+
+    it("should not set exit code when the source compiles cleanly", () => {
+        createTsConfigFile({ outDir: testDirs.OUTPUT_DIR, noEmit: false, target: ts.ScriptTarget.ESNext });
+        createSourceFile('export const hello = "world";', "clean.ts");
+
+        executeCompiler(`--project ${path.join(testDirs.PROJECT_DIR, "tsconfig.json")}`);
+
+        const actual = process.exitCode;
+        expect(actual).toBeUndefined();
     });
 
     it("should handle empty arguments", () => {

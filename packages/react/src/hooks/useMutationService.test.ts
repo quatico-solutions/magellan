@@ -10,11 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useMutationService } from "./useMutationService";
 
-// Jest's automock skips getter exports such as QueryClient, so only the hook is mocked here
-jest.mock("@tanstack/react-query", () => ({
-    ...jest.requireActual("@tanstack/react-query"),
-    useMutation: jest.fn(),
-}));
+jest.mock("@tanstack/react-query");
 
 jest.mock("react", () => {
     const actualReact = jest.requireActual("react");
