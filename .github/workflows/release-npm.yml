@@ -22,6 +22,11 @@ on:
         description: 'Existing tag to (re-)publish, e.g. v0.19.7'
         required: true
         type: string
+      dry_run:
+        description: 'Build, test and pack, but run npm publish with --dry-run'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -34,6 +39,8 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,17 +52,26 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # Node 20 (not 18) because npm trusted publishing requires npm >=
-          # 11.5.1, and npm 11.x requires Node ^20.17.0. Jenkins still builds
-          # on Node 18 — that's fine because the GHA only re-builds + publishes
-          # tarballs that Jenkins already tested at v0.19.X tag time. The
-          # Node version of the publish-side has no effect on the artifacts.
-          node-version: 20
+          # Node 24: npm trusted publishing requires npm >= 11.5.1, and
+          # npm@latest (12.x) requires Node ^22.22.2, ^24.15.0 or >= 26. The
+          # sources build and test on Node 24 (.nvmrc, Jenkins image
+          # nodejs-24-gradle-9-jdk25-noble).
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      # Upgrade to npm 11.x for OIDC trusted publishing support.
+      # Upgrade npm for OIDC trusted publishing support.
       - run: npm install -g npm@latest
+
+      # The mirror carries the version committed in the Bitbucket source, which
+      # is a -SNAPSHOT.0 version since the Jenkins release excludes
+      # :node:publishNpm (and with it the version rewrite). The published
+      # version must equal the tag, so set it from the tag.
+      - name: Set the package versions from the tag
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          echo "Publishing version $VERSION"
+          pnpm -r --filter "./packages/*" exec npm pkg set version="$VERSION"
 
       # `--no-frozen-lockfile` is required because the mirror's package.json and
       # pnpm-lock.yaml come from different layers of the Bitbucket source tree
@@ -77,11 +93,14 @@ jobs:
       - name: Publish each package to npmjs.org with provenance
         env:
           NPM_CONFIG_PROVENANCE: 'true'
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
         run: |
           mkdir -p /tmp/tarballs
           pnpm -r --filter "./packages/*" exec pnpm pack --pack-destination /tmp/tarballs
+          ls -1 /tmp/tarballs
           for tgz in /tmp/tarballs/*.tgz; do
             echo "::group::Publishing $tgz"
-            npm publish "$tgz" --access public --provenance
+            tar -xzOf "$tgz" package/package.json | node -e 'const p = JSON.parse(require("fs").readFileSync(0)); console.log(p.name + "@" + p.version, JSON.stringify(p.dependencies || {}))'
+            npm publish "$tgz" --access public --provenance $DRY_RUN
             echo "::endgroup::"
           done
